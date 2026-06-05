@@ -1,0 +1,27 @@
+{
+  "name": "aayushus-skills",
+  "version": "1.0.0",
+  "description": "Interactive CLI tool to install developer agent configurations, design system tokens, guidelines, and SOPs.",
+  "main": "cli.js",
+  "bin": {
+    "aayushus-skills": "./cli.js"
+  },
+  "type": "commonjs",
+  "files": [
+    "cli.js",
+    "agent-config",
+    "design",
+    "guidelines",
+    "Solo Developer AI SOP.md",
+    "README.md"
+  ],
+  "keywords": [
+    "skills",
+    "sop",
+    "design-system",
+    "agent-config",
+    "cli"
+  ],
+  "author": "Aayush Mediratta",
+  "license": "MIT"
+}

@@ -1,0 +1,50 @@
+# Project-specific rules — [PROJECT NAME]
+# Copy to .windsurfrules in the project root
+# Global rules apply on top of these via Windsurf settings
+
+## Stack
+[e.g. TypeScript + Next.js + Supabase + Vercel]
+[e.g. Python + FastAPI + SQLAlchemy + PostgreSQL]
+[e.g. Go + Gin + GORM + MySQL]
+
+---
+
+## Architecture decisions made for this project
+
+| Decision | Choice | Reason |
+|---|---|---|
+| Database | | |
+| Auth | | |
+| Queue / async | | |
+| Primary keys | | |
+| API style | | |
+| Deployment | | |
+
+---
+
+## Project-specific hard rules
+
+[Add rules specific to this codebase here — things that differ from the global defaults]
+[e.g. "This project uses Supabase RLS instead of app-level tenancy filtering"]
+[e.g. "All API routes are in /app/api/ — never in /pages/api/"]
+[e.g. "Use server actions for mutations, not API routes"]
+
+---
+
+## Current focus / context
+
+[Optional: add sprint/task context here to help the agent stay relevant]
+[e.g. "Currently building the billing module — Stripe webhooks + subscription state machine"]
+[e.g. "Do not touch the auth module — it's being refactored in a separate branch"]
+
+---
+
+## Repo structure
+
+[Brief map of the repo so the agent doesn't guess]
+[e.g.]
+[src/]
+[  app/        — Next.js App Router pages]
+[  components/ — Shared React components (use Meridian design system)]
+[  lib/        — Server-side utilities, DB client, auth helpers]
+[  types/      — Shared TypeScript types]
