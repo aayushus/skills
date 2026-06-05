@@ -18,21 +18,16 @@ const styles = {
 };
 
 const options = [
-  { name: 'AI Agent Configurations (rules files, CLAUDE.md, etc.)', value: 'agent-config', checked: true },
+  { name: 'Antigravity Rules (.antigravityrules)', value: 'antigravity', checked: true },
+  { name: 'Devin Rules (.devin/rules/rules.md & AGENTS.md)', value: 'devin', checked: true },
+  { name: 'Cursor Rules (.cursorrules)', value: 'cursor', checked: true },
+  { name: 'Claude Rules (CLAUDE.md)', value: 'claude', checked: true },
+  { name: 'Codex/Copilot Rules (.github/copilot-instructions.md)', value: 'codex', checked: true },
   { name: 'Prism Design System (tokens, components CSS/TSX)', value: 'design', checked: true },
   { name: 'Development Guidelines (Architecture, Quality, Security)', value: 'guidelines', checked: true },
   { name: 'Solo Developer AI SOP (Standard Operating Procedure)', value: 'sop', checked: true }
 ];
 
-const toolOptions = [
-  { name: 'Antigravity (.antigravityrules)', value: 'antigravity', checked: true },
-  { name: 'Devin (.devin/rules/rules.md & AGENTS.md)', value: 'devin', checked: true },
-  { name: 'Cursor (.cursorrules)', value: 'cursor', checked: true },
-  { name: 'Claude (CLAUDE.md)', value: 'claude', checked: true },
-  { name: 'Codex/Copilot (.github/copilot-instructions.md)', value: 'codex', checked: true }
-];
-
-let currentStep = 0; // 0 = Component selection, 1 = AI Tool selection
 let cursorIndex = 0;
 
 const args = process.argv.slice(2);
@@ -49,29 +44,16 @@ function printMenu() {
   }
   console.log(`${styles.cyan}${styles.bold}=========================================${styles.reset}\n`);
 
-  if (currentStep === 0) {
-    console.log(`${styles.dim}Step 1: What would you like to install?${styles.reset}`);
-    console.log(`${styles.dim}Use ${styles.bold}↑/↓${styles.reset}${styles.dim} to navigate, ${styles.bold}space${styles.reset}${styles.dim} to toggle, and ${styles.bold}enter${styles.reset}${styles.dim} to continue.\n${styles.reset}`);
+  console.log(`${styles.dim}Select components and tools to install/configure:${styles.reset}`);
+  console.log(`${styles.dim}Use ${styles.bold}↑/↓${styles.reset}${styles.dim} to navigate, ${styles.bold}space${styles.reset}${styles.dim} to toggle, and ${styles.bold}enter${styles.reset}${styles.dim} to install.\n${styles.reset}`);
 
-    options.forEach((opt, idx) => {
-      const isCursor = idx === cursorIndex;
-      const checkbox = opt.checked ? `[${styles.green}x${styles.reset}]` : '[ ]';
-      const prefix = isCursor ? `${styles.cyan}❯ ` : '  ';
-      const styledName = isCursor ? `${styles.cyan}${styles.bold}${opt.name}${styles.reset}` : opt.name;
-      console.log(`${prefix}${checkbox} ${styledName}`);
-    });
-  } else {
-    console.log(`${styles.dim}Step 2: Which AI coding tools do you use?${styles.reset}`);
-    console.log(`${styles.dim}Use ${styles.bold}↑/↓${styles.reset}${styles.dim} to navigate, ${styles.bold}space${styles.reset}${styles.dim} to toggle, and ${styles.bold}enter${styles.reset}${styles.dim} to install.\n${styles.reset}`);
-
-    toolOptions.forEach((opt, idx) => {
-      const isCursor = idx === cursorIndex;
-      const checkbox = opt.checked ? `[${styles.green}x${styles.reset}]` : '[ ]';
-      const prefix = isCursor ? `${styles.cyan}❯ ` : '  ';
-      const styledName = isCursor ? `${styles.cyan}${styles.bold}${opt.name}${styles.reset}` : opt.name;
-      console.log(`${prefix}${checkbox} ${styledName}`);
-    });
-  }
+  options.forEach((opt, idx) => {
+    const isCursor = idx === cursorIndex;
+    const checkbox = opt.checked ? `[${styles.green}x${styles.reset}]` : '[ ]';
+    const prefix = isCursor ? `${styles.cyan}❯ ` : '  ';
+    const styledName = isCursor ? `${styles.cyan}${styles.bold}${opt.name}${styles.reset}` : opt.name;
+    console.log(`${prefix}${checkbox} ${styledName}`);
+  });
 
   console.log('\n');
 }
@@ -118,47 +100,53 @@ function runInstallation() {
   const targetRoot = process.cwd();
 
   const selected = options.filter(opt => opt.checked).map(opt => opt.value);
-  const selectedTools = toolOptions.filter(opt => opt.checked).map(opt => opt.value);
 
   if (selected.length === 0) {
     console.log(`${styles.red}No options selected. Aborting.${styles.reset}\n`);
     process.exit(0);
   }
 
-  // 1. Agent Configs
-  if (selected.includes('agent-config')) {
-    console.log(`${styles.blue} Installing AI Agent Configurations...${styles.reset}`);
-    const srcAgentDir = path.join(packageRoot, 'agent-config');
+  const srcAgentDir = path.join(packageRoot, 'agent-config');
+  const hasAgentConfigs = fs.existsSync(srcAgentDir);
 
-    if (fs.existsSync(srcAgentDir)) {
-      const genericRulesFile = path.join(srcAgentDir, 'rules.md');
-      const claudeFile = path.join(srcAgentDir, 'CLAUDE.md');
-      const copilotFile = path.join(srcAgentDir, 'copilot-instructions.md');
+  if (hasAgentConfigs) {
+    const genericRulesFile = path.join(srcAgentDir, 'rules.md');
+    const claudeFile = path.join(srcAgentDir, 'CLAUDE.md');
+    const copilotFile = path.join(srcAgentDir, 'copilot-instructions.md');
 
-      if (selectedTools.includes('antigravity')) {
-        copyFileSync(genericRulesFile, path.join(targetRoot, '.antigravityrules'));
-      }
-      if (selectedTools.includes('devin')) {
-        copyFileSync(genericRulesFile, path.join(targetRoot, '.devin', 'rules', 'rules.md'));
-        copyFileSync(genericRulesFile, path.join(targetRoot, 'AGENTS.md'));
-      }
-      if (selectedTools.includes('cursor')) {
-        copyFileSync(genericRulesFile, path.join(targetRoot, '.cursorrules'));
-      }
-      if (selectedTools.includes('claude')) {
-        copyFileSync(claudeFile, path.join(targetRoot, 'CLAUDE.md'));
-      }
-      if (selectedTools.includes('codex')) {
-        copyFileSync(copilotFile, path.join(targetRoot, '.github', 'copilot-instructions.md'));
-      }
+    // 1. Antigravity
+    if (selected.includes('antigravity')) {
+      console.log(`${styles.blue} Configuring Antigravity rules...${styles.reset}`);
+      copyFileSync(genericRulesFile, path.join(targetRoot, '.antigravityrules'));
+    }
 
-      console.log(`${styles.green}  ✓ Configured selected AI rules files.${styles.reset}`);
-    } else {
-      console.log(`${styles.red}  ✗ Source agent-config directory not found.${styles.reset}`);
+    // 2. Devin
+    if (selected.includes('devin')) {
+      console.log(`${styles.blue} Configuring Devin rules...${styles.reset}`);
+      copyFileSync(genericRulesFile, path.join(targetRoot, '.devin', 'rules', 'rules.md'));
+      copyFileSync(genericRulesFile, path.join(targetRoot, 'AGENTS.md'));
+    }
+
+    // 3. Cursor
+    if (selected.includes('cursor')) {
+      console.log(`${styles.blue} Configuring Cursor rules...${styles.reset}`);
+      copyFileSync(genericRulesFile, path.join(targetRoot, '.cursorrules'));
+    }
+
+    // 4. Claude
+    if (selected.includes('claude')) {
+      console.log(`${styles.blue} Configuring Claude CLAUDE.md...${styles.reset}`);
+      copyFileSync(claudeFile, path.join(targetRoot, 'CLAUDE.md'));
+    }
+
+    // 5. Codex/Copilot
+    if (selected.includes('codex')) {
+      console.log(`${styles.blue} Configuring Codex/Copilot rules...${styles.reset}`);
+      copyFileSync(copilotFile, path.join(targetRoot, '.github', 'copilot-instructions.md'));
     }
   }
 
-  // 2. Design System
+  // 6. Design System
   if (selected.includes('design')) {
     console.log(`${styles.blue} Installing Prism Design System...${styles.reset}`);
     const srcDesignDir = path.join(packageRoot, 'design');
@@ -174,7 +162,7 @@ function runInstallation() {
     }
   }
 
-  // 3. Development Guidelines
+  // 7. Development Guidelines
   if (selected.includes('guidelines')) {
     console.log(`${styles.blue} Installing Development Guidelines...${styles.reset}`);
     const srcGuidelinesDir = path.join(packageRoot, 'guidelines');
@@ -188,7 +176,7 @@ function runInstallation() {
     }
   }
 
-  // 4. SOP
+  // 8. SOP
   if (selected.includes('sop')) {
     console.log(`${styles.blue} Installing Solo Developer AI SOP...${styles.reset}`);
     const srcSopFile = path.join(packageRoot, 'Solo Developer AI SOP.md');
@@ -217,9 +205,13 @@ Usage:
   npx aayushus-skills               Interactive installation menu (default)
   npx aayushus-skills all           Install everything directly
   npx aayushus-skills design        Install Prism Design System only
-  npx aayushus-skills agent-config  Install all AI Agent Configurations
   npx aayushus-skills guidelines    Install Development Guidelines only
   npx aayushus-skills sop           Install Solo Developer AI SOP only
+  npx aayushus-skills cursor        Install Cursor rules only
+  npx aayushus-skills antigravity   Install Antigravity rules only
+  npx aayushus-skills devin         Install Devin rules only
+  npx aayushus-skills claude        Install Claude rules only
+  npx aayushus-skills codex         Install Codex/Copilot rules only
 
 Flags:
   -d, --dry-run                     Preview installation without making actual changes
@@ -229,9 +221,13 @@ Flags:
 
 // Check for direct subcommands
 const argMap = {
+  'antigravity': 'antigravity',
+  'devin': 'devin',
+  'cursor': 'cursor',
+  'claude': 'claude',
+  'codex': 'codex',
+  'copilot': 'codex',
   'design': 'design',
-  'agent-config': 'agent-config',
-  'agent': 'agent-config',
   'guidelines': 'guidelines',
   'sop': 'sop'
 };
@@ -247,7 +243,6 @@ if (hasDirectCommand) {
       opt.checked = directArgs.some(arg => argMap[arg] === opt.value);
     });
   }
-  // If non-interactive, default to configuring rules for all AI tools
   runInstallation();
 }
 
@@ -271,41 +266,25 @@ process.stdin.on('keypress', (str, key) => {
     process.exit(0);
   }
 
-  const currentList = currentStep === 0 ? options : toolOptions;
-
   switch (key.name) {
     case 'up':
-      cursorIndex = (cursorIndex - 1 + currentList.length) % currentList.length;
+      cursorIndex = (cursorIndex - 1 + options.length) % options.length;
       printMenu();
       break;
     case 'down':
-      cursorIndex = (cursorIndex + 1) % currentList.length;
+      cursorIndex = (cursorIndex + 1) % options.length;
       printMenu();
       break;
     case 'space':
-      currentList[cursorIndex].checked = !currentList[cursorIndex].checked;
+      options[cursorIndex].checked = !options[cursorIndex].checked;
       printMenu();
       break;
     case 'return':
     case 'enter':
-      if (currentStep === 0) {
-        const isAgentSelected = options.find(o => o.value === 'agent-config').checked;
-        if (isAgentSelected) {
-          currentStep = 1;
-          cursorIndex = 0;
-          printMenu();
-        } else {
-          if (process.stdin.isTTY) {
-            process.stdin.setRawMode(false);
-          }
-          runInstallation();
-        }
-      } else {
-        if (process.stdin.isTTY) {
-          process.stdin.setRawMode(false);
-        }
-        runInstallation();
+      if (process.stdin.isTTY) {
+        process.stdin.setRawMode(false);
       }
+      runInstallation();
       break;
   }
 });
