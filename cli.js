@@ -150,21 +150,44 @@ function runInstallation() {
   process.exit(0);
 }
 
-// Check if running in a non-interactive environment (e.g., CI) or if arguments are supplied
-if (process.argv.includes('--help') || process.argv.includes('-h')) {
+const args = process.argv.slice(2);
+
+// Check if help is requested
+if (args.includes('--help') || args.includes('-h') || args.includes('help')) {
   console.log(`
 aayushus-skills CLI Installer
 
 Usage:
-  npx aayushus-skills          Interactive installation menu (default)
-  npx aayushus-skills all      Install everything directly
+  npx aayushus-skills               Interactive installation menu (default)
+  npx aayushus-skills all           Install everything directly
+  npx aayushus-skills design        Install Prism Design System only
+  npx aayushus-skills agent-config  Install AI Agent Configurations only
+  npx aayushus-skills guidelines    Install Development Guidelines only
+  npx aayushus-skills sop           Install Solo Developer AI SOP only
   `);
   process.exit(0);
 }
 
-if (process.argv.includes('all')) {
-  // Pre-select all and run
-  options.forEach(opt => opt.checked = true);
+// Map command-line args to options values
+const argMap = {
+  'design': 'design',
+  'agent-config': 'agent-config',
+  'agent': 'agent-config',
+  'guidelines': 'guidelines',
+  'sop': 'sop'
+};
+
+const hasDirectCommand = args.some(arg => argMap[arg] || arg === 'all');
+
+if (hasDirectCommand) {
+  if (args.includes('all')) {
+    options.forEach(opt => opt.checked = true);
+  } else {
+    // Select only options matching the command line arguments
+    options.forEach(opt => {
+      opt.checked = args.some(arg => argMap[arg] === opt.value);
+    });
+  }
   runInstallation();
 }
 
