@@ -49,3 +49,10 @@ To test this CLI tool locally without publishing to NPM:
    ```json
    "version": "1.0.1"
    ```
+
+---
+
+## Attribution & Disclaimer
+
+Please note that the design elements, guidelines, and templates included in the Prism Design System are not entirely original works. They have been collected, aggregated, and adapted from various online resources, design frameworks, and community best practices, and subsequently customized and refined to suit specific project requirements and agent workflows.
+
