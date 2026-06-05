@@ -23,5 +23,13 @@
     "cli"
   ],
   "author": "Aayush Mediratta",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aayushus/skills.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aayushus/skills/issues"
+  },
+  "homepage": "https://github.com/aayushus/skills#readme"
 }
