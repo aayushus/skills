@@ -25,33 +25,6 @@ npx aayushus-skills all
 
 ---
 
-## Local Development & Testing
-
-To test this CLI tool locally without publishing to NPM:
-
-1. Clone or navigate to the `Skills` repository directory.
-2. Link the CLI globally or run it directly against a test folder:
-   ```bash
-   node /path/to/Skills/cli.js
-   ```
-
-## Publishing to NPM
-
-1. Set up your NPM account and log in using the terminal:
-   ```bash
-   npm login
-   ```
-2. Publish the package:
-   ```bash
-   npm publish --access public
-   ```
-3. Update version in `package.json` for subsequent releases:
-   ```json
-   "version": "1.0.1"
-   ```
-
----
-
 ## Attribution & Disclaimer
 
 Please note that the design elements, guidelines, and templates included in the Prism Design System are not entirely original works. They have been collected, aggregated, and adapted from various online resources, design frameworks, and community best practices, and subsequently customized and refined to suit specific project requirements and agent workflows.
