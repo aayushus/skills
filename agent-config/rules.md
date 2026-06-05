@@ -131,12 +131,12 @@ Full guidelines live in the Skills folder. Load them when:
 
 | Situation | Read |
 |---|---|
-| Building any UI component or screen | `design/SKILL.md` → then the relevant `patterns-*.md` |
-| Adding auth, tenant logic, or a new service | `guidelines/architecture-guidelines.md` |
-| Adding file upload, external API, or AI feature | `guidelines/security-guidelines.md` |
-| Writing tests or refactoring | `guidelines/code-quality-guidelines.md` |
-| Slow queries, caching, bundle size | `guidelines/performance-guidelines.md` |
-| Writing an ADR or README | `guidelines/documentation-guidelines.md` |
+| Building any UI component or screen | `design/SKILL.md` (or `src/design/SKILL.md`) → then relevant `patterns-*.md` |
+| Adding auth, tenant logic, or a new service | `docs/guidelines/Architecture.md` |
+| Adding file upload, external API, or AI feature | `docs/guidelines/Security.md` |
+| Writing tests or refactoring | `docs/guidelines/Code-Quality.md` |
+| Slow queries, caching, bundle size | `docs/guidelines/Performance.md` |
+| Writing an ADR or README | `docs/guidelines/Documentation.md` |
 | Building a new component from scratch | `design/implementation-guide.md` |
 
 ---
