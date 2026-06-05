@@ -1,8 +1,8 @@
-# MERIDIAN DESIGN MANIFESTO
+# PRISM DESIGN MANIFESTO
 **Version:** 3.0 (The Soul Update)
 **Status:** Canonical Source of Truth
 
-This is the definitive design language for Meridian. It prioritizes **Human Amplification** over mere utility. It is a "Zero-Decision" system that values beauty, precision, and the disappearance of the interface.
+This is the definitive design language for Prism. It prioritizes **Human Amplification** over mere utility. It is a "Zero-Decision" system that values beauty, precision, and the disappearance of the interface.
 
 ---
 

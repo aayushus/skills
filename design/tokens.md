@@ -1,6 +1,6 @@
 # Tokens
 
-The complete token contract for the Meridian design system. Every value here has been measured against WCAG 2.2 AA requirements in both light and dark mode. See the [Contrast reference](#contrast-reference) at the end for measured ratios.
+The complete token contract for the Prism design system. Every value here has been measured against WCAG 2.2 AA requirements in both light and dark mode. See the [Contrast reference](#contrast-reference) at the end for measured ratios.
 
 **If you need a value that isn't here, add it here first.** Adding colours directly in component CSS is how design systems rot. The whole point is that components reference tokens and tokens can change centrally.
 

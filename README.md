@@ -19,7 +19,7 @@ npx aayushus-skills all
 ## Included Components
 
 - **AI Agent Configurations**: Configures `.claudecoderc` (for global rules/prompts), `.windsurfrules`, `.windsurfrules-global`, `CLAUDE.md`, and `.github/copilot-instructions.md`.
-- **Meridian Design System**: Copies zero-decision B2B/SaaS design components and styling tokens (CSS/TSX) to `./src/design/` or `./design/`.
+- **Prism Design System**: Copies zero-decision B2B/SaaS design components and styling tokens (CSS/TSX) to `./src/design/` or `./design/`.
 - **Development Guidelines**: Copies standard development docs (API Design, Architecture, Code Quality, Container Guidelines, Performance, Security, etc.) to `./docs/guidelines/`.
 - **Solo Developer AI SOP**: Installs the `Solo-Developer-AI-SOP.md` file in the project root containing guidelines for budget management and AI escalation.
 

@@ -82,7 +82,7 @@ Project-specific stack decisions live in .windsurfrules at the project root.
 
 ---
 
-## MERIDIAN DESIGN SYSTEM — applies to all UI work
+## PRISM DESIGN SYSTEM — applies to all UI work
 
 - Never hardcode colours, radii, or font names — use CSS tokens (`var(--token-name)`)
 - Never use pure `#000` or `#fff` as text — use `var(--text-default)` (warm off-black)
@@ -119,7 +119,7 @@ Project-specific stack decisions live in .windsurfrules at the project root.
 ## WHEN TO CHECK FULL DOCS
 
 Full guidelines live in the Obsidian Skills vault:
-- Any UI work → load `meridian-design` skill
+- Any UI work → load `prism-design` skill
 - Architecture, service boundaries, DB design → `guidelines/architecture-guidelines.md`
 - Auth, file upload, external APIs, AI features → `guidelines/security-guidelines.md`
 - Tests, refactoring, PR review → `guidelines/code-quality-guidelines.md`

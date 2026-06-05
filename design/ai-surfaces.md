@@ -1,6 +1,6 @@
 # AI surfaces
 
-Meridian treats AI as a first-class capability, not a feature bolted on. These rules keep AI surfaces recognisable without letting them dominate the product. The whole system is designed so a user can always tell, at a glance, *what did a person create, and what did the AI create*.
+Prism treats AI as a first-class capability, not a feature bolted on. These rules keep AI surfaces recognisable without letting them dominate the product. The whole system is designed so a user can always tell, at a glance, *what did a person create, and what did the AI create*.
 
 ## Table of contents
 

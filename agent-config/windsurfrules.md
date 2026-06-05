@@ -4,7 +4,7 @@
 TypeScript (strict) + Node.js + Express + Prisma + PostgreSQL + Redis + BullMQ.
 AI service: Python 3.12 + FastAPI (separate process).
 Frontend: Next.js + React.
-Design system: Meridian (tokens.css + components.tsx — see design/ skill folder).
+Design system: Prism (tokens.css + components.tsx — see design/ skill folder).
 
 ---
 
@@ -110,7 +110,7 @@ Design system: Meridian (tokens.css + components.tsx — see design/ skill folde
 
 ---
 
-## MERIDIAN DESIGN SYSTEM RULES
+## PRISM DESIGN SYSTEM RULES
 
 - Never hardcode colours, radii, or font names — use CSS tokens (`var(--token-name)`)
 - Never use pure `#000` or `#fff` as text — use `rgb(55, 53, 47)` (off-black) via `var(--text-default)`

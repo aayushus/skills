@@ -19,7 +19,7 @@ const styles = {
 
 const options = [
   { name: 'AI Agent Configurations (CLAUDE.md, .windsurfrules, etc.)', value: 'agent-config', checked: true },
-  { name: 'Meridian Design System (tokens, components CSS/TSX)', value: 'design', checked: true },
+  { name: 'Prism Design System (tokens, components CSS/TSX)', value: 'design', checked: true },
   { name: 'Development Guidelines (Architecture, Quality, Security)', value: 'guidelines', checked: true },
   { name: 'Solo Developer AI SOP (Standard Operating Procedure)', value: 'sop', checked: true }
 ];
@@ -104,7 +104,7 @@ function runInstallation() {
 
   // 2. Design System
   if (selected.includes('design')) {
-    console.log(`${styles.blue} Installing Meridian Design System...${styles.reset}`);
+    console.log(`${styles.blue} Installing Prism Design System...${styles.reset}`);
     const srcDesignDir = path.join(packageRoot, 'design');
     // Defaulting to root design folder or src/design if src exists
     const destDesignDir = fs.existsSync(path.join(targetRoot, 'src')) 
@@ -113,7 +113,7 @@ function runInstallation() {
 
     if (fs.existsSync(srcDesignDir)) {
       copyFolderSync(srcDesignDir, destDesignDir);
-      console.log(`${styles.green}  ✓ Copied Meridian Design System to ${path.relative(targetRoot, destDesignDir)}${styles.reset}`);
+      console.log(`${styles.green}  ✓ Copied Prism Design System to ${path.relative(targetRoot, destDesignDir)}${styles.reset}`);
     } else {
       console.log(`${styles.red}  ✗ Source design directory not found.${styles.reset}`);
     }

@@ -65,7 +65,7 @@ cp CLAUDE.md ~/.claude/CLAUDE.md
 
 The project-level `CLAUDE.md` is merged with the global one — use global for universal rules, project-level for repo-specific context.
 
-The design system skill (`@meridian-design`) is already set up in your Obsidian vault and Claude Code loads it automatically when referenced.
+The design system skill (`@prism-design`) is already set up in your Obsidian vault and Claude Code loads it automatically when referenced.
 
 ---
 

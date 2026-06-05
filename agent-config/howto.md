@@ -5,7 +5,7 @@ tags: [howto, ai-tools, windsurf, vscode, claude-code, setup]
 # How to wire AI coding agents to follow project guidelines
 
 This vault contains two sets of rules that all AI coding agents should follow:
-- **Design system** — `design/SKILL.md` + supporting files (Meridian)
+- **Design system** — `design/SKILL.md` + supporting files (Prism)
 - **Engineering guidelines** — `guidelines/` (architecture, security, performance, code quality, documentation)
 
 This guide explains how to load them into Windsurf, VS Code Copilot, and Claude Code so agents follow them automatically — without you having to paste context into every conversation.
@@ -17,7 +17,7 @@ This guide explains how to load them into Windsurf, VS Code Copilot, and Claude 
 Rules split into two layers so they work across multiple projects (Anti Gravity, new projects, etc.) without rewriting anything:
 
 **Layer 1 — Universal (global, set once)**
-Stack-agnostic hard rules: security principles, code quality, performance budgets, Meridian design system, observability. These never change between projects.
+Stack-agnostic hard rules: security principles, code quality, performance budgets, Prism design system, observability. These never change between projects.
 
 **Layer 2 — Project-specific (per repo)**
 Stack decisions, architectural choices, module structure. Different for every project.
@@ -114,10 +114,10 @@ Project-level and global `CLAUDE.md` are merged — use global for universal rul
 
 ### Design system skill (Claude Code only)
 
-The Meridian design system is already set up as a Claude Code skill in this vault. When working on UI, tell Claude:
+The Prism design system is already set up as a Claude Code skill in this vault. When working on UI, tell Claude:
 
 ```
-use the meridian-design skill
+use the prism-design skill
 ```
 
 Claude will load `design/SKILL.md` and the relevant pattern files automatically. No extra setup needed.
@@ -128,7 +128,7 @@ Claude will load `design/SKILL.md` and the relevant pattern files automatically.
 
 ```
 Windsurf global settings (windsurfrules-global)
-  └─ Universal rules: security, code quality, performance budgets, Meridian design
+  └─ Universal rules: security, code quality, performance budgets, Prism design
   └─ Active on every conversation, every project — Anti Gravity, new projects, all of them
 
 .windsurfrules (project root — different per project)
@@ -141,7 +141,7 @@ Windsurf global settings (windsurfrules-global)
   └─ Committed to repo — teammates get it automatically
 
 CLAUDE.md (project root or ~/.claude/)
-  └─ Universal rules + instructions to load Meridian skill for UI work
+  └─ Universal rules + instructions to load Prism skill for UI work
   └─ Points to full guidelines for deep dives
 ```
 
@@ -150,7 +150,7 @@ CLAUDE.md (project root or ~/.claude/)
 An agent in **any** project gets:
 1. Universal hard rules (from global settings) — automatically
 2. That project's stack and architecture decisions (from `.windsurfrules`) — from the repo
-3. Design system (from Meridian skill or CLAUDE.md reference) — on demand
+3. Design system (from Prism skill or CLAUDE.md reference) — on demand
 
 ---
 

@@ -1,5 +1,5 @@
 /**
- * Meridian Component Library
+ * Prism Component Library
  * v1.0 · 16 April 2026
  *
  * Every component here is token-driven — colours and radii reference
@@ -2241,7 +2241,7 @@ export function ChartContainer({ children, className = "" }: { children: ReactNo
 }
 
 /**
- * Standard Meridian chart tooltip.
+ * Standard Prism chart tooltip.
  */
 export function ChartTooltip({ label, items }: { label: string; items: { name: string; value: string | number; color: string }[] }) {
   return (

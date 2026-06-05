@@ -1,13 +1,13 @@
-# Meridian Design System v3.0
+# Prism Design System v3.0
 
 **A Zero-Decision AI Design System for B2B/SaaS Cathedral-Grade Interfaces.**
 
-Meridian is not a component library you "use"—it is a language you "speak." It is designed for absolute AI autonomy, ensuring that production-grade interfaces can be built at the speed of thought without manual visual intervention.
+Prism is not a component library you "use"—it is a language you "speak." It is designed for absolute AI autonomy, ensuring that production-grade interfaces can be built at the speed of thought without manual visual intervention.
 
 ## 🚀 Quick Start (Production Setup)
 
 ### 1. Install Fonts
-Meridian requires **Instrument Sans** and **IBM Plex Mono**. Add this to your HTML `<head>` or CSS:
+Prism requires **Instrument Sans** and **IBM Plex Mono**. Add this to your HTML `<head>` or CSS:
 
 ```css
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=IBM+Plex+Mono:ital,wght@0,100..700;1,100..700&display=swap');
@@ -39,7 +39,7 @@ export default function RootLayout({ children }) {
 ```
 
 ## 🧠 The AI Skill Protocol
-If you are using an AI agent (like Gemini CLI) to build with Meridian, ensure you feed it the `MERIDIAN_MANIFESTO.md`. 
+If you are using an AI agent (like Gemini CLI) to build with Prism, ensure you feed it the `PRISM_MANIFESTO.md`. 
 
 **The AI Mandate:**
 - **Zero Visual Choice:** Do not ask for colors or radii. Use the Manifesto's Decision Tree.

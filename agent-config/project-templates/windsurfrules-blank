@@ -45,6 +45,6 @@
 [e.g.]
 [src/]
 [  app/        — Next.js App Router pages]
-[  components/ — Shared React components (use Meridian design system)]
+[  components/ — Shared React components (use Prism design system)]
 [  lib/        — Server-side utilities, DB client, auth helpers]
 [  types/      — Shared TypeScript types]

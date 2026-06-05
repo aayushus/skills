@@ -1,6 +1,6 @@
 # Implementation guide
 
-Practical rules for building new components in Meridian. Read this before writing any CSS or TSX.
+Practical rules for building new components in Prism. Read this before writing any CSS or TSX.
 
 ---
 
@@ -57,7 +57,7 @@ You need an explicit `[data-theme="dark"]` rule when:
 
 ### `prefers-color-scheme` — important note
 
-Meridian uses **`[data-theme]` attribute theming**, NOT `@media (prefers-color-scheme: dark)`.
+Prism uses **`[data-theme]` attribute theming**, NOT `@media (prefers-color-scheme: dark)`.
 
 This is intentional — it lets the app respect OS preference on first load AND let the user override it in-app. Wire it up at startup:
 

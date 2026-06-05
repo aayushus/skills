@@ -2,7 +2,7 @@
 
 Desktop patterns don't port cleanly to phones. The sidebar gets replaced, the split workspace collapses, touch targets grow, navigation flips from persistent to contextual. This file documents how each desktop pattern adapts, and the mobile-specific patterns that only exist on small screens.
 
-Mobile-first is **not** the default stance for this system — Meridian targets desktop-primary B2B/SaaS products. But the mobile experience still has to be first-class when it's needed (checking an inbox on the train; approving a review while travelling).
+Mobile-first is **not** the default stance for this system — Prism targets desktop-primary B2B/SaaS products. But the mobile experience still has to be first-class when it's needed (checking an inbox on the train; approving a review while travelling).
 
 ## Table of contents
 

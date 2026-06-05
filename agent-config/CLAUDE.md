@@ -3,7 +3,7 @@
 ## Skills to load
 This project uses two Claude Code skills. Load them at the start of relevant tasks:
 
-- **Design system**: `@meridian-design` — load when building any UI, component, screen, or styling
+- **Design system**: `@prism-design` — load when building any UI, component, screen, or styling
 - **Architecture + guidelines**: read the relevant file from `04_Resources/Skills/guidelines/` when making architectural decisions, writing security-sensitive code, or optimising performance
 
 ## Hard rules (never ask — always follow these)
@@ -54,7 +54,7 @@ This project uses two Claude Code skills. Load them at the start of relevant tas
 | Tests, refactoring, PR review | `guidelines/code-quality-guidelines.md` |
 | Performance, caching, queries | `guidelines/performance-guidelines.md` |
 | ADRs, READMEs, API docs | `guidelines/documentation-guidelines.md` |
-| Any UI work | Load `@meridian-design` skill |
+| Any UI work | Load `@prism-design` skill |
 
 ## Decisions already made — don't re-open
 

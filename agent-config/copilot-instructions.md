@@ -5,7 +5,7 @@ Always follow these. When in doubt, check the full guidelines in the Skills fold
 
 ## Stack
 TypeScript strict + Node.js + Express + Prisma + PostgreSQL + Redis + BullMQ.
-AI service: Python 3.12 + FastAPI. Frontend: Next.js + React + Meridian design system.
+AI service: Python 3.12 + FastAPI. Frontend: Next.js + React + Prism design system.
 
 ## Critical rules (catastrophic if missed)
 

@@ -5,7 +5,7 @@
 ## Stack
 TypeScript strict + Node.js + Express + Prisma + PostgreSQL + Redis + BullMQ.
 AI service: Python 3.12 + FastAPI (separate process, separate failure domain).
-Frontend: Next.js + React + Meridian design system.
+Frontend: Next.js + React + Prism design system.
 
 ---
 
