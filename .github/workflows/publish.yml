@@ -2,8 +2,6 @@ name: Publish to npm
 
 on:
   push:
-    tags:
-      - 'v*'
 
 jobs:
   publish:
@@ -16,6 +14,33 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
-      - run: npm publish
+      - name: Validate CLI
+        run: node --check cli.js
+
+      - name: Validate package contents
+        run: npm pack --dry-run
+
+      - name: Read package metadata
+        id: package
+        run: |
+          node - <<'NODE' >> "$GITHUB_OUTPUT"
+          const pkg = require('./package.json');
+          console.log(`name=${pkg.name}`);
+          console.log(`version=${pkg.version}`);
+          NODE
+
+      - name: Check npm version
+        id: npm
+        run: |
+          if npm view "${{ steps.package.outputs.name }}@${{ steps.package.outputs.version }}" version >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "${{ steps.package.outputs.name }}@${{ steps.package.outputs.version }} is already published; skipping npm publish."
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish to npm
+        if: ${{ steps.npm.outputs.exists != 'true' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')) }}
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
