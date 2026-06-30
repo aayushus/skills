@@ -4,7 +4,7 @@
   "description": "Interactive CLI tool to install developer agent configurations, design system tokens, guidelines, and SOPs.",
   "main": "cli.js",
   "bin": {
-    "aayushus-skills": "./cli.js"
+    "aayushus-skills": "cli.js"
   },
   "type": "commonjs",
   "files": [
