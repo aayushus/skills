@@ -15,7 +15,7 @@ npx aayushus-skills
 | Component | What gets installed | Destination |
 |---|---|---|
 | **Antigravity Rules** | `.antigravityrules` | project root |
-| **Devin Rules** | `.devin/rules/rules.md` + `AGENTS.md` | project root |
+| **Devin / Windsurf Rules** | `.devin/rules/rules.md` + `AGENTS.md` | project root |
 | **Cursor Rules** | `.cursorrules` | project root |
 | **Claude Rules** | `CLAUDE.md` | project root |
 | **Codex / Copilot Rules** | `.github/copilot-instructions.md` | project root |
@@ -55,7 +55,7 @@ Skip all menus and install specific components:
 npx aayushus-skills all           # everything
 npx aayushus-skills claude        # CLAUDE.md only
 npx aayushus-skills cursor        # .cursorrules only
-npx aayushus-skills devin         # Devin rules only
+npx aayushus-skills devin         # Devin / Windsurf rules only
 npx aayushus-skills antigravity   # Antigravity rules only
 npx aayushus-skills codex         # Codex/Copilot rules only
 npx aayushus-skills design        # Prism Design System only
@@ -90,7 +90,7 @@ The **Prism Design System** is a zero-decision B2B/SaaS design language. It inst
 - `tokens.css` — CSS custom properties for color, spacing, radius, shadow, and typography
 - `components.tsx` + `components.css` — ready-to-use React components
 - `SKILL.md` — agent instruction file (load this into your AI agent so it builds UI autonomously without asking for visual direction)
-- Component specs: accordion, alerts, avatars, badges, button groups, tabs, pagination, form controls (radios, checkboxes, toggles), and more
+- 11 component & pattern specs: accordion, alerts, avatars, badges, button groups, tabs, pagination, form controls (radios, checkboxes, toggles), AI surfaces, and more
 
 ---
 

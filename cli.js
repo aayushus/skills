@@ -30,15 +30,15 @@ const state = {
   projectName: '',
   existingFiles: [],
   agents: new Set(),
-  stack: { frontend: null, orm: null, database: null, queue: null, tenancy: null },
+  stack: { frontend: null, orm: null, database: null, queue: null, apiStyle: null, sessions: null, tenancy: null },
   extras: new Set(),
 };
 
 // ─── Step definitions ─────────────────────────────────────────────────────────
 const agentOpts = [
-  { value: 'claude',      label: 'Claude Code',    dest: 'CLAUDE.md',                         defaultOn: true  },
-  { value: 'cursor',      label: 'Cursor',          dest: '.cursorrules',                      defaultOn: true  },
-  { value: 'devin',       label: 'Devin',           dest: '.devin/rules/rules.md + AGENTS.md', defaultOn: false },
+  { value: 'claude',      label: 'Claude Code',         dest: 'CLAUDE.md',                         defaultOn: true  },
+  { value: 'cursor',      label: 'Cursor',               dest: '.cursorrules',                      defaultOn: true  },
+  { value: 'devin',       label: 'Devin / Windsurf',     dest: '.devin/rules/rules.md + AGENTS.md', defaultOn: false },
   { value: 'antigravity', label: 'Antigravity',     dest: '.antigravityrules',                 defaultOn: false },
   { value: 'codex',       label: 'Codex / Copilot', dest: '.github/copilot-instructions.md',   defaultOn: false },
 ];
@@ -85,11 +85,31 @@ const stackQuestions = [
     ],
   },
   {
+    key: 'apiStyle',
+    q: 'API style?',
+    opts: [
+      { value: 'REST + JSON', label: 'REST + JSON', tag: 'Recommended', desc: 'standard HTTP verbs, wide tooling support' },
+      { value: 'tRPC',        label: 'tRPC',                             desc: 'end-to-end type safety, TypeScript-only' },
+      { value: 'GraphQL',     label: 'GraphQL',                          desc: 'flexible queries, good for complex data graphs' },
+      { value: null,          label: 'Other / Skip',                     desc: 'leave blank, fill in manually later' },
+    ],
+  },
+  {
+    key: 'sessions',
+    q: 'Auth / session strategy?',
+    opts: [
+      { value: 'Opaque tokens in Redis',   label: 'Server sessions (Redis)', tag: 'Recommended', desc: 'revocable, secure, needs Redis' },
+      { value: 'Database-backed sessions', label: 'Server sessions (DB)',                         desc: 'revocable, no Redis dependency' },
+      { value: 'JWTs',                     label: 'JWTs',                                         desc: 'stateless, harder to revoke' },
+      { value: null,                       label: 'Other / Skip',                                 desc: 'leave blank, fill in manually later' },
+    ],
+  },
+  {
     key: 'tenancy',
     q: 'Multi-tenant project?',
     opts: [
       { value: 'Single tenant', label: 'No — single tenant', desc: 'no tenantId filtering needed' },
-      { value: 'Multi-tenant',  label: 'Yes — multi-tenant',                               desc: 'every DB query must filter by tenantId' },
+      { value: 'Multi-tenant',  label: 'Yes — multi-tenant', desc: 'every DB query must filter by tenantId' },
     ],
   },
 ];
@@ -99,7 +119,7 @@ const extraOpts = [
     value: 'design',
     label: 'Prism Design System',
     desc1: 'Zero-decision B2B/SaaS design language — tokens, React components,',
-    desc2: '25 component specs (accordion, tabs, pagination, form controls, and more).',
+    desc2: '11 component & pattern specs (accordion, tabs, pagination, form controls, and more).',
     dest:  'src/design/  or  design/',
   },
   {
@@ -168,7 +188,7 @@ function agentDestFile(value) {
 function applyStack(content, stack) {
   if (!stack) return content;
   let out = content;
-  const { frontend, orm, database, queue, tenancy } = stack;
+  const { frontend, orm, database, queue, apiStyle, sessions, tenancy } = stack;
 
   if (frontend) {
     out = out.replace('[e.g., Next.js 14 App Router, React + Vite, Express, FastAPI]', frontend);
@@ -188,6 +208,13 @@ function applyStack(content, stack) {
   const dbDecision = [orm, database].filter(Boolean).join(' + ');
   if (dbDecision) {
     out = out.replace('[e.g., Prisma + PostgreSQL / Drizzle + SQLite]', dbDecision);
+  }
+  if (apiStyle) {
+    out = out.replace('[e.g., REST + JSON / GraphQL / tRPC]', apiStyle);
+  }
+  if (sessions) {
+    out = out.replace('[e.g., Redis, database-backed sessions, JWTs]', sessions);
+    out = out.replace('[e.g., opaque tokens in Redis / database sessions / JWTs]', sessions);
   }
   if (tenancy === 'Single tenant') {
     out = out.replace(
@@ -498,7 +525,7 @@ function renderStep6() {
   const hasStack = Object.values(state.stack).some(v => v !== null);
   if (hasStack) {
     console.log(`  ${s.bold}Stack${s.reset}  ${s.dim}(written into your agent rules)${s.reset}`);
-    const labels = { frontend: 'Framework', orm: 'ORM', database: 'Database', queue: 'Queue', tenancy: 'Tenancy' };
+    const labels = { frontend: 'Framework', orm: 'ORM', database: 'Database', queue: 'Queue', apiStyle: 'API style', sessions: 'Sessions', tenancy: 'Tenancy' };
     Object.entries(state.stack).forEach(([k, v]) => {
       if (v) console.log(`  ${s.dim}${labels[k].padEnd(10)}${s.reset}  ${v}`);
       else   console.log(`  ${s.dim}${labels[k].padEnd(10)}  — (skipped)${s.reset}`);
@@ -626,7 +653,7 @@ function handleKey(key) {
 // ─── Legacy simple menu (--simple flag) ───────────────────────────────────────
 const simpleOptions = [
   { name: 'Antigravity Rules (.antigravityrules)',               value: 'antigravity', checked: true  },
-  { name: 'Devin Rules (.devin/rules/rules.md & AGENTS.md)',     value: 'devin',       checked: true  },
+  { name: 'Devin / Windsurf Rules (.devin/rules/rules.md & AGENTS.md)', value: 'devin', checked: true  },
   { name: 'Cursor Rules (.cursorrules)',                          value: 'cursor',      checked: true  },
   { name: 'Claude Rules (CLAUDE.md)',                            value: 'claude',      checked: true  },
   { name: 'Codex/Copilot Rules (.github/copilot-instructions.md)', value: 'codex',    checked: true  },
@@ -732,7 +759,7 @@ Usage:
   npx aayushus-skills pm            Install Product Management Skill only
   npx aayushus-skills cursor        Install Cursor rules only
   npx aayushus-skills antigravity   Install Antigravity rules only
-  npx aayushus-skills devin         Install Devin rules only
+  npx aayushus-skills devin         Install Devin / Windsurf rules only
   npx aayushus-skills claude        Install Claude rules only
   npx aayushus-skills codex         Install Codex/Copilot rules only
   npx aayushus-skills copilot       Alias for codex
