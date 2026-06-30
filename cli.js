@@ -106,8 +106,15 @@ const extraOpts = [
     value: 'guidelines',
     label: 'Engineering Guidelines',
     desc1: 'Reference playbook — Architecture, Security, Performance, API Design,',
-    desc2: 'Testing, Code Quality, AI Workflow, and more (15 docs total).',
+    desc2: 'Testing, Code Quality, AI Workflow, and more (13 docs total).',
     dest:  'docs/guidelines/',
+  },
+  {
+    value: 'pm',
+    label: 'Product Management Skill',
+    desc1: 'AI skill for PRDs, user stories, acceptance criteria, and roadmap structure.',
+    desc2: 'Load into your agent when doing product planning or scoping work.',
+    dest:  'docs/pm/',
   },
 ];
 
@@ -431,6 +438,9 @@ function buildFileList() {
   if (state.extras.has('guidelines')) {
     files.push({ label: 'docs/guidelines/', dest: path.join(targetRoot, 'docs', 'guidelines'), isFolder: true });
   }
+  if (state.extras.has('pm')) {
+    files.push({ label: 'docs/pm/SKILL.md', dest: path.join(targetRoot, 'docs', 'pm', 'SKILL.md') });
+  }
   return files;
 }
 
@@ -585,6 +595,18 @@ function runWizardInstallation() {
     }
   }
 
+  if (state.extras.has('pm')) {
+    const src  = path.join(pkgRoot, 'pm', 'SKILL.md');
+    const dest = path.join(targetRoot, 'docs', 'pm', 'SKILL.md');
+    console.log(`${s.blue}  Installing Product Management Skill...${s.reset}`);
+    if (fs.existsSync(src)) {
+      writeFile(src, dest);
+      if (!isDryRun) console.log(`${s.green}  ✓ Installed to docs/pm/SKILL.md${s.reset}`);
+    } else {
+      console.log(`${s.red}  ✗ Source PM skill not found.${s.reset}`);
+    }
+  }
+
   console.log(`\n${s.green}${s.bold}  ${isDryRun ? '✓ Dry run complete — no files were modified.' : '✓ Setup complete!'}${s.reset}\n`);
   process.exit(0);
 }
@@ -610,6 +632,7 @@ const simpleOptions = [
   { name: 'Codex/Copilot Rules (.github/copilot-instructions.md)', value: 'codex',    checked: true  },
   { name: 'Prism Design System (tokens, components CSS/TSX)',                  value: 'design',      checked: false },
   { name: 'Engineering Guidelines (Architecture, Security, AI Workflow...)',  value: 'guidelines',  checked: false },
+  { name: 'Product Management Skill (PRDs, user stories, AC templates)',       value: 'pm',          checked: false },
 ];
 let simpleCursorIdx = 0;
 
@@ -682,6 +705,14 @@ function runSimpleInstallation() {
     else console.log(`${s.red}  ✗ Source guidelines directory not found.${s.reset}`);
   }
 
+  if (selected.includes('pm')) {
+    const src  = path.join(pkgRoot, 'pm', 'SKILL.md');
+    const dest = path.join(targetRoot, 'docs', 'pm', 'SKILL.md');
+    console.log(`${s.blue} Installing Product Management Skill...${s.reset}`);
+    if (fs.existsSync(src)) { writeFile(src, dest); if (!isDryRun) console.log(`${s.green}  ✓ Copied to docs/pm/SKILL.md${s.reset}`); }
+    else console.log(`${s.red}  ✗ Source PM skill not found.${s.reset}`);
+  }
+
   const msg = isDryRun ? '✓ Dry run complete — no files were modified.' : '✓ Installation complete!';
   console.log(`\n${s.green}${s.bold}${msg}${s.reset}\n`);
   process.exit(0);
@@ -698,6 +729,7 @@ Usage:
   npx aayushus-skills all           Install everything directly
   npx aayushus-skills design        Install Prism Design System only
   npx aayushus-skills guidelines    Install Engineering Guidelines only
+  npx aayushus-skills pm            Install Product Management Skill only
   npx aayushus-skills cursor        Install Cursor rules only
   npx aayushus-skills antigravity   Install Antigravity rules only
   npx aayushus-skills devin         Install Devin rules only
@@ -714,7 +746,7 @@ Flags:
 }
 
 // ─── Direct subcommands ───────────────────────────────────────────────────────
-const argMap = { antigravity: 'antigravity', devin: 'devin', cursor: 'cursor', claude: 'claude', codex: 'codex', copilot: 'codex', design: 'design', guidelines: 'guidelines' };
+const argMap = { antigravity: 'antigravity', devin: 'devin', cursor: 'cursor', claude: 'claude', codex: 'codex', copilot: 'codex', design: 'design', guidelines: 'guidelines', pm: 'pm' };
 const directArgs = args.filter(a => a !== '--dry-run' && a !== '-d' && a !== '--force' && a !== '-f' && a !== '--simple');
 const hasDirectCmd = directArgs.some(a => argMap[a] || a === 'all');
 
