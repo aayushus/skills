@@ -11,6 +11,8 @@ Always follow these. When in doubt, check installed project docs such as `docs/g
 - **Async Queue**: [e.g., BullMQ, Celery, None/Direct Background Streaming]
 - **Session Store**: [e.g., Redis, database-backed sessions, JWTs]
 - **API style**: [e.g., REST + JSON / GraphQL / tRPC]
+- **Testing / QA**: [e.g., Unit + integration + E2E smoke tests / Unit + integration / Manual QA]
+- **CI Quality Gates**: [e.g., Typecheck + lint + tests on every PR / Typecheck + unit tests / Existing CI only]
 
 ## Critical rules (catastrophic if missed)
 
@@ -50,6 +52,12 @@ Always follow these. When in doubt, check installed project docs such as `docs/g
 - No commented-out code — delete it
 - Boolean variables: `is/has/can/should` prefix
 - No TypeScript `enum` — use string literal unions
+
+## Testing and QA
+- Follow the project's selected testing / QA approach from the Stack section
+- Add or update tests for changed behavior when adjacent test patterns exist
+- Run the narrowest relevant validation first, then broader checks when confidence is needed
+- If QA is manual or not yet configured, say so explicitly
 
 ## Performance hard caps
 - UI response: ≤ 100ms | API p95: < 300ms | DB indexed lookup: ≤ 10ms

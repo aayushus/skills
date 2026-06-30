@@ -24,7 +24,7 @@ npx --yes aayushus-skills
 | **Engineering Guidelines** | Architecture, Security, Performance, API Design, Testing, Code Quality, AI Workflow, and more | `docs/guidelines/` |
 | **Product Management Skill** | PRD templates, user story standards, acceptance criteria patterns | `docs/pm/` |
 
-All rule files are **stack-agnostic** with `<!-- CUSTOMIZE -->` markers where your project-specific tech choices belong (ORM, queue, session strategy, etc.).
+All rule files are **stack-agnostic** with `<!-- CUSTOMIZE -->` markers where your project-specific choices belong (ORM, queue, session strategy, QA approach, CI gates, etc.).
 
 ---
 
@@ -32,13 +32,26 @@ All rule files are **stack-agnostic** with `<!-- CUSTOMIZE -->` markers where yo
 
 ### Setup wizard (default)
 
-Run in your project root. The wizard walks you through agent selection, stack configuration, and optional components — then writes everything in one shot.
+Run in your project root. The wizard walks you through agent selection, stack/QA configuration, and optional components — then writes everything in one shot.
 
 ```bash
 npx --yes aayushus-skills
 ```
 
-Claude and Cursor configs are pre-selected; every other agent/config component can be picked independently. Stack answers are injected directly into selected rule files. Design system, guidelines, and PM skill are opt-in.
+Claude and Cursor configs are pre-selected; every other agent/config component can be picked independently. Stack and QA answers are injected directly into selected rule files. Design system, guidelines, and PM skill are opt-in.
+
+### Wizard questions
+
+The default wizard captures the core decisions agents need before they start editing a project:
+
+| Area | What it asks |
+|---|---|
+| Agent rules | Claude, Cursor, Devin/Windsurf, Codex, GitHub Copilot, Antigravity |
+| Application stack | Frontend/framework, ORM/query layer, database, queue, API style, auth/session strategy, tenancy |
+| Quality setup | Testing/QA approach and CI quality gates |
+| Optional installs | Prism design system, engineering guidelines, product-management skill |
+
+Answers are written only into the rule files you choose. Optional installs remain independent; you can install just QA-aware rules without installing the design system, guidelines, or PM skill.
 
 ### Flat menu
 

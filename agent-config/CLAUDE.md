@@ -15,7 +15,10 @@
 - **Primary Database**: [e.g., PostgreSQL, SQLite, MySQL]
 - **Async Queue**: [e.g., BullMQ, Celery, None/Direct Background Streaming]
 - **Session Store**: [e.g., Redis, database-backed sessions, JWTs]
+- **API Style**: [e.g., REST + JSON / GraphQL / tRPC]
 - **Design System**: [e.g., existing component library / Prism if installed / project CSS system]
+- **Testing / QA**: [e.g., Unit + integration + E2E smoke tests / Unit + integration / Manual QA]
+- **CI Quality Gates**: [e.g., Typecheck + lint + tests on every PR / Typecheck + unit tests / Existing CI only]
 
 ---
 
@@ -59,6 +62,12 @@
 - Error handling: throw for unexpected/programming errors; return a Result/Either type for expected business-logic failures.
 - No `console.log` in production paths — use the structured logger.
 
+### Testing & QA
+- Follow the project's selected testing / QA approach from the Stack section.
+- Add or update tests for changed behavior whenever an adjacent test pattern exists.
+- Run the narrowest relevant validation first, then broader checks when confidence is needed.
+- If QA is manual or not yet configured, call that out explicitly rather than pretending coverage exists.
+
 ---
 
 ## When to read optional full guidelines
@@ -81,6 +90,8 @@
 - **Sessions**: [e.g., opaque tokens in Redis / database sessions / JWTs]
 - **Search**: [e.g., PostgreSQL FTS / Typesense / Elasticsearch]
 - **API style**: [e.g., REST + JSON / GraphQL / tRPC]
+- **Testing / QA**: [e.g., Unit + integration + E2E smoke tests / Unit + integration / Manual QA]
+- **CI gates**: [e.g., Typecheck + lint + tests on every PR / Typecheck + unit tests / Existing CI only]
 - **Passwords**: [e.g., Argon2id / bcrypt cost 12]
 - **IDs**: [e.g., ULIDs / UUID v4 / auto-increment]
 - **Deployment**: [e.g., Fly.io / Railway / ECS / K8s]

@@ -25,12 +25,12 @@ const isSimple = args.includes('--simple');
 // ─── Wizard state ─────────────────────────────────────────────────────────────
 const state = {
   step: 1,          // 1=welcome 2=agents 3=stack 4=extras 5=preview 6=summary
-  stackSubStep: 0,  // 0–4 within step 3
+  stackSubStep: 0,  // index within step 3
   cursorIdx: 0,
   projectName: '',
   existingFiles: [],
   agents: new Set(),
-  stack: { frontend: null, orm: null, database: null, queue: null, apiStyle: null, sessions: null, tenancy: null },
+  stack: { frontend: null, orm: null, database: null, queue: null, apiStyle: null, sessions: null, tenancy: null, qa: null, ci: null },
   extras: new Set(),
 };
 
@@ -111,6 +111,28 @@ const stackQuestions = [
     opts: [
       { value: 'Single tenant', label: 'No — single tenant', desc: 'no tenantId filtering needed' },
       { value: 'Multi-tenant',  label: 'Yes — multi-tenant', desc: 'every DB query must filter by tenantId' },
+    ],
+  },
+  {
+    key: 'qa',
+    q: 'Testing / QA approach?',
+    opts: [
+      { value: 'Unit + integration + E2E smoke tests', label: 'Unit + integration + E2E smoke', tag: 'Recommended', desc: 'balanced coverage for product flows and regressions' },
+      { value: 'Unit + integration tests',             label: 'Unit + integration',                              desc: 'good backend/domain confidence without browser automation' },
+      { value: 'Unit tests only',                      label: 'Unit tests only',                                 desc: 'fastest baseline for small or early projects' },
+      { value: 'Manual QA / none yet',                 label: 'Manual QA / none yet',                            desc: 'document the gap and add automation later' },
+      { value: null,                                   label: 'Other / Skip',                                    desc: 'leave blank, fill in manually later' },
+    ],
+  },
+  {
+    key: 'ci',
+    q: 'CI quality gates?',
+    opts: [
+      { value: 'Typecheck + lint + tests on every PR', label: 'Typecheck + lint + tests', tag: 'Recommended', desc: 'standard gate before merging changes' },
+      { value: 'Typecheck + unit tests',               label: 'Typecheck + unit tests',                       desc: 'lighter gate for small teams or fast-moving repos' },
+      { value: 'Existing CI only',                     label: 'Existing CI only',                             desc: 'do not prescribe new gates' },
+      { value: 'Manual checks / none yet',             label: 'Manual checks / none yet',                     desc: 'document the gap and add CI later' },
+      { value: null,                                   label: 'Other / Skip',                                 desc: 'leave blank, fill in manually later' },
     ],
   },
 ];
@@ -216,7 +238,7 @@ function agentDestFile(value) {
 function applyStack(content, stack) {
   if (!stack) return content;
   let out = content;
-  const { frontend, orm, database, queue, apiStyle, sessions, tenancy } = stack;
+  const { frontend, orm, database, queue, apiStyle, sessions, tenancy, qa, ci } = stack;
 
   if (frontend) {
     out = out.replace('[e.g., Next.js 14 App Router, React + Vite, Express, FastAPI]', frontend);
@@ -238,11 +260,17 @@ function applyStack(content, stack) {
     out = out.replace('[e.g., Prisma + PostgreSQL / Drizzle + SQLite]', dbDecision);
   }
   if (apiStyle) {
-    out = out.replace('[e.g., REST + JSON / GraphQL / tRPC]', apiStyle);
+    out = out.split('[e.g., REST + JSON / GraphQL / tRPC]').join(apiStyle);
   }
   if (sessions) {
     out = out.replace('[e.g., Redis, database-backed sessions, JWTs]', sessions);
     out = out.replace('[e.g., opaque tokens in Redis / database sessions / JWTs]', sessions);
+  }
+  if (qa) {
+    out = out.split('[e.g., Unit + integration + E2E smoke tests / Unit + integration / Manual QA]').join(qa);
+  }
+  if (ci) {
+    out = out.split('[e.g., Typecheck + lint + tests on every PR / Typecheck + unit tests / Existing CI only]').join(ci);
   }
   if (tenancy === 'Single tenant') {
     out = out.replace(
@@ -558,7 +586,7 @@ function renderStep6() {
   const hasStack = Object.values(state.stack).some(v => v !== null);
   if (hasStack) {
     console.log(`  ${s.bold}Stack${s.reset}  ${s.dim}(written into your agent rules)${s.reset}`);
-    const labels = { frontend: 'Framework', orm: 'ORM', database: 'Database', queue: 'Queue', apiStyle: 'API style', sessions: 'Sessions', tenancy: 'Tenancy' };
+    const labels = { frontend: 'Framework', orm: 'ORM', database: 'Database', queue: 'Queue', apiStyle: 'API style', sessions: 'Sessions', tenancy: 'Tenancy', qa: 'Testing', ci: 'CI gates' };
     Object.entries(state.stack).forEach(([k, v]) => {
       if (v) console.log(`  ${s.dim}${labels[k].padEnd(10)}${s.reset}  ${v}`);
       else   console.log(`  ${s.dim}${labels[k].padEnd(10)}  — (skipped)${s.reset}`);

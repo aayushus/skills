@@ -2,7 +2,12 @@
 
 ## 1.3.x
 
-### 1.3.2 *(next)*
+### 1.3.3 *(next)*
+- Add wizard questions for testing/QA approach and CI quality gates
+- Inject QA and CI answers into selected agent rule files
+- Document wizard question coverage in README
+
+### 1.3.2
 - Document `npx --yes` usage to avoid npm's first-run install prompt and explain npm's pre-CLI cancellation behavior
 
 ### 1.3.1

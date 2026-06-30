@@ -9,7 +9,11 @@
 - **Database/ORM**: [e.g., Drizzle ORM, Prisma, SQLAlchemy]
 - **Primary Database**: [e.g., PostgreSQL, SQLite, MySQL]
 - **Async Queue**: [e.g., BullMQ, Celery, None/Direct Background Streaming]
+- **Session Store**: [e.g., Redis, database-backed sessions, JWTs]
+- **API Style**: [e.g., REST + JSON / GraphQL / tRPC]
 - **Design System**: [e.g., existing component library / Prism if installed / project CSS system]
+- **Testing / QA**: [e.g., Unit + integration + E2E smoke tests / Unit + integration / Manual QA]
+- **CI Quality Gates**: [e.g., Typecheck + lint + tests on every PR / Typecheck + unit tests / Existing CI only]
 
 ---
 
@@ -46,6 +50,8 @@
 - **Narrowing**: Never bypass type safety with `any` — use `unknown` or union type narrowing.
 - **Readability**: Keep functions concise (aim under 40 lines) and files focused (aim under 300 lines).
 - **Error Handling**: Throw exceptions for programming/unexpected errors; return structured success/failure wrappers (e.g., Result/Either patterns) for expected business logic path failures.
+- **Tests**: Add or update tests for changed behavior when adjacent test patterns exist. If coverage is manual or absent, say so explicitly.
+- **Validation Order**: Run the narrowest relevant check first, then broader CI-style checks when confidence is needed.
 
 ---
 
