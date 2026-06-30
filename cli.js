@@ -79,7 +79,7 @@ const stackQuestions = [
     key: 'queue',
     q: 'Background queue?',
     opts: [
-      { value: 'None',            label: 'None',            tag: 'Recommended for solo', desc: 'no async queue needed' },
+      { value: 'None',            label: 'None',            desc: 'no async queue needed' },
       { value: 'BullMQ on Redis', label: 'BullMQ on Redis',                              desc: 'robust job queue, retries, scheduling' },
       { value: null,              label: 'Other / Skip',                                 desc: 'leave blank, fill in manually later' },
     ],
@@ -88,7 +88,7 @@ const stackQuestions = [
     key: 'tenancy',
     q: 'Multi-tenant project?',
     opts: [
-      { value: 'Single tenant', label: 'No — single tenant', tag: 'Recommended for solo', desc: 'no tenantId filtering needed' },
+      { value: 'Single tenant', label: 'No — single tenant', desc: 'no tenantId filtering needed' },
       { value: 'Multi-tenant',  label: 'Yes — multi-tenant',                               desc: 'every DB query must filter by tenantId' },
     ],
   },
