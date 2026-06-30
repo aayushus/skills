@@ -1,57 +1,109 @@
 # aayushus-skills
 
-A zero-dependency interactive CLI to install custom AI agent configurations, design system templates, engineering guidelines, and SOPs into any target repository.
+**One command to scaffold AI agent configs, a design system, engineering guidelines, and a developer SOP into any project.**
 
-## Installation / Usage
-
-Run the following command in your target project directory to open the interactive checklist menu:
+Zero dependencies. Works with any stack. Safe by default — never overwrites existing files unless you say so.
 
 ```bash
 npx aayushus-skills
 ```
 
-### Options & Subcommands
-You can bypass the interactive menu to install specific components directly:
+---
 
-- **All Components**: `npx aayushus-skills all`
-- **Prism Design System**: `npx aayushus-skills design`
-- **Development Guidelines**: `npx aayushus-skills guidelines`
-- **Solo Developer AI SOP**: `npx aayushus-skills sop`
-- **Cursor Rules**: `npx aayushus-skills cursor`
-- **Antigravity Rules**: `npx aayushus-skills antigravity`
-- **Devin Rules**: `npx aayushus-skills devin`
-- **Claude Rules**: `npx aayushus-skills claude`
-- **Codex/Copilot Rules**: `npx aayushus-skills codex`
+## What's included
 
-### Preview changes (Dry Run)
-Add `-d` or `--dry-run` to preview the files that would be installed without making any modifications to disk:
-```bash
-npx aayushus-skills --dry-run
-npx aayushus-skills design --dry-run
-```
+| Component | What gets installed | Destination |
+|---|---|---|
+| **Antigravity Rules** | `.antigravityrules` | project root |
+| **Devin Rules** | `.devin/rules/rules.md` + `AGENTS.md` | project root |
+| **Cursor Rules** | `.cursorrules` | project root |
+| **Claude Rules** | `CLAUDE.md` | project root |
+| **Codex / Copilot Rules** | `.github/copilot-instructions.md` | project root |
+| **Prism Design System** | tokens, components CSS/TSX, design spec docs | `src/design/` or `design/` |
+| **Development Guidelines** | API Design, Architecture, Code Quality, Security, Performance, Testing, and more | `docs/guidelines/` |
+| **Solo Developer AI SOP** | `Solo-Developer-AI-SOP.md` | project root |
 
-### Overwriting existing files
-By default, the installer **skips** any file that already exists at the destination and prints a warning. To overwrite, pass `-f` or `--force`:
-```bash
-npx aayushus-skills --force
-npx aayushus-skills claude --force
-```
-
-## Included Components
-
-- **AI Agent Configurations**: Custom-tailored rule files matching your selected editor:
-  - **Antigravity**: `.antigravityrules`
-  - **Devin**: `.devin/rules/rules.md` & `AGENTS.md`
-  - **Cursor**: `.cursorrules`
-  - **Claude**: `CLAUDE.md`
-  - **Codex/Copilot**: `.github/copilot-instructions.md`
-- **Prism Design System**: Copies zero-decision B2B/SaaS design components and styling tokens (CSS/TSX) to `./src/design/` or `./design/`.
-- **Development Guidelines**: Copies standard stack-agnostic development reference docs (API Design, Architecture, Code Quality, Security, Performance, etc.) to `./docs/guidelines/`.
-- **Solo Developer AI SOP**: Installs the `Solo-Developer-AI-SOP.md` file in the project root containing guidelines for budget management and AI escalation.
+All rule files are **stack-agnostic** with `<!-- CUSTOMIZE -->` markers where your project-specific tech choices belong (ORM, queue, session strategy, etc.).
 
 ---
 
-## Attribution & Disclaimer
+## Usage
 
-Please note that the design elements, guidelines, and templates included in the Prism Design System are not entirely original works. They have been collected, aggregated, and adapted from various online resources, design frameworks, and community best practices, and subsequently customized and refined to suit specific project requirements and agent workflows.
+### Interactive menu (default)
 
+Run in your project root. Use `↑ ↓` to navigate, `space` to toggle, `enter` to install.
+
+```bash
+npx aayushus-skills
+```
+
+Agent configs are pre-selected. Design system, guidelines, and SOP are opt-in.
+
+### Direct subcommands
+
+Skip the menu and install specific components:
+
+```bash
+npx aayushus-skills all           # everything
+npx aayushus-skills claude        # CLAUDE.md only
+npx aayushus-skills cursor        # .cursorrules only
+npx aayushus-skills devin         # Devin rules only
+npx aayushus-skills antigravity   # Antigravity rules only
+npx aayushus-skills codex         # Codex/Copilot rules only
+npx aayushus-skills design        # Prism Design System only
+npx aayushus-skills guidelines    # Development Guidelines only
+npx aayushus-skills sop           # Solo Developer AI SOP only
+```
+
+### Flags
+
+| Flag | Description |
+|---|---|
+| `-d`, `--dry-run` | Preview every file that would be written — nothing is modified |
+| `-f`, `--force` | Overwrite files that already exist (default skips them with a warning) |
+
+```bash
+# See exactly what would be installed before committing
+npx aayushus-skills --dry-run
+npx aayushus-skills design --dry-run
+
+# Re-install over an existing setup
+npx aayushus-skills claude --force
+npx aayushus-skills all --force
+```
+
+---
+
+## Design system detail
+
+The **Prism Design System** is a zero-decision B2B/SaaS design language. It installs a complete set of:
+
+- `tokens.css` — CSS custom properties for color, spacing, radius, shadow, and typography
+- `components.tsx` + `components.css` — ready-to-use React components
+- `SKILL.md` — agent instruction file (load this into your AI agent so it builds UI autonomously without asking for visual direction)
+- Component specs: accordion, alerts, avatars, badges, button groups, tabs, pagination, form controls (radios, checkboxes, toggles), and more
+
+---
+
+## Guidelines detail
+
+The **Development Guidelines** are a stack-agnostic engineering playbook:
+
+- `Architecture.md` — service structure, DB schema, module boundaries
+- `Security.md` — auth, file uploads, API security, secrets management
+- `Code-Quality.md` — testing, refactoring, PR review standards
+- `Performance.md` — caching, indexing, query optimization
+- `API-Design.md` — REST conventions, versioning, error shapes
+- `Testing.md` — unit, integration, and E2E test strategy
+- `Documentation.md` — ADR templates, README standards
+- And more — see `docs/guidelines/` after install
+
+---
+
+## Attribution
+
+The design elements, guidelines, and templates included in this package have been collected, adapted, and refined from various open resources, design frameworks, and community best practices — then customized for AI agent workflows. They are not entirely original works.
+
+---
+
+*Made by [Aayush Mediratta](https://github.com/aayushus)*
