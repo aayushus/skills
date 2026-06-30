@@ -14,7 +14,7 @@ Prism requires **Instrument Sans** and **IBM Plex Mono**. Add this to your HTML 
 ```
 
 ### 2. Import the Design Contract
-Copy the following files into your project's UI folder (e.g., `src/components/ui`):
+If installed through `aayushus-skills`, these files live in `src/design/` when your project has `src/`, otherwise `design/`:
 - `tokens.css`
 - `components.css`
 - `mobile.css`
@@ -25,9 +25,9 @@ Copy the following files into your project's UI folder (e.g., `src/components/ui
 Import the styles once in your root layout file (e.g., `layout.tsx` or `main.tsx`):
 
 ```tsx
-import './styles/tokens.css';
-import './styles/components.css';
-import './styles/mobile.css'; // Optional: for responsive overrides
+import './design/tokens.css';
+import './design/components.css';
+import './design/mobile.css'; // Optional: for responsive overrides
 
 export default function RootLayout({ children }) {
   return (

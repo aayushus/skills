@@ -2,7 +2,7 @@
 
 **Version 1.0** · Last updated 16 April 2026
 
-This document is the contract for how code is written and reviewed across all projects. The rules are language-agnostic where they can be, language-specific where they have to be (TypeScript and Python are the worked examples — translate the spirit to other languages as you adopt them).
+This document is a reference contract for how code is written and reviewed. Local project rules, installed agent configs, and the actual language/toolchain take precedence over examples here. The rules are language-agnostic where they can be, language-specific where they have to be (TypeScript and Python are the worked examples — translate the spirit to other languages as you adopt them).
 
 This is a **companion** to `Architecture.md` and `Security.md`. Architecture covers system shape; security covers attack defences; this doc covers everything in between — the daily craft of writing code that won't make you wince in six months.
 

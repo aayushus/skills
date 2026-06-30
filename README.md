@@ -15,10 +15,11 @@ npx aayushus-skills
 | Component | What gets installed | Destination |
 |---|---|---|
 | **Antigravity Rules** | `.antigravityrules` | project root |
-| **Devin / Windsurf Rules** | `.devin/rules/rules.md` + `AGENTS.md` | project root |
+| **Devin / Windsurf Rules** | `.devin/rules/rules.md` | project root |
 | **Cursor Rules** | `.cursorrules` | project root |
 | **Claude Rules** | `CLAUDE.md` | project root |
-| **Codex / Copilot Rules** | `.github/copilot-instructions.md` | project root |
+| **Codex Rules** | `AGENTS.md` | project root |
+| **GitHub Copilot Rules** | `.github/copilot-instructions.md` | project root |
 | **Prism Design System** | tokens, components CSS/TSX, design spec docs | `src/design/` or `design/` |
 | **Engineering Guidelines** | Architecture, Security, Performance, API Design, Testing, Code Quality, AI Workflow, and more | `docs/guidelines/` |
 | **Product Management Skill** | PRD templates, user story standards, acceptance criteria patterns | `docs/pm/` |
@@ -37,7 +38,7 @@ Run in your project root. The wizard walks you through agent selection, stack co
 npx aayushus-skills
 ```
 
-Agent configs are pre-selected. Stack answers are injected directly into your rule files. Design system, guidelines, and PM skill are opt-in.
+Claude and Cursor configs are pre-selected; every other agent/config component can be picked independently. Stack answers are injected directly into selected rule files. Design system, guidelines, and PM skill are opt-in.
 
 ### Flat menu
 
@@ -57,7 +58,8 @@ npx aayushus-skills claude        # CLAUDE.md only
 npx aayushus-skills cursor        # .cursorrules only
 npx aayushus-skills devin         # Devin / Windsurf rules only
 npx aayushus-skills antigravity   # Antigravity rules only
-npx aayushus-skills codex         # Codex/Copilot rules only
+npx aayushus-skills codex         # AGENTS.md only
+npx aayushus-skills copilot       # GitHub Copilot rules only
 npx aayushus-skills design        # Prism Design System only
 npx aayushus-skills guidelines    # Engineering Guidelines only
 npx aayushus-skills pm            # Product Management Skill only

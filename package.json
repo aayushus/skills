@@ -1,7 +1,7 @@
 {
   "name": "aayushus-skills",
   "version": "1.3.1",
-  "description": "Interactive setup wizard to scaffold AI agent configs, Prism design system, and engineering guidelines into any project.",
+  "description": "Interactive setup wizard to scaffold independent AI agent configs, Prism design system, engineering guidelines, and PM skill into any project.",
   "main": "cli.js",
   "bin": {
     "aayushus-skills": "cli.js"
@@ -19,7 +19,7 @@
   ],
   "keywords": [
     "skills",
-    "sop",
+    "pm",
     "design-system",
     "agent-config",
     "cli"

@@ -38,9 +38,10 @@ const state = {
 const agentOpts = [
   { value: 'claude',      label: 'Claude Code',         dest: 'CLAUDE.md',                         defaultOn: true  },
   { value: 'cursor',      label: 'Cursor',               dest: '.cursorrules',                      defaultOn: true  },
-  { value: 'devin',       label: 'Devin / Windsurf',     dest: '.devin/rules/rules.md + AGENTS.md', defaultOn: false },
-  { value: 'antigravity', label: 'Antigravity',     dest: '.antigravityrules',                 defaultOn: false },
-  { value: 'codex',       label: 'Codex / Copilot', dest: '.github/copilot-instructions.md',   defaultOn: false },
+  { value: 'devin',       label: 'Devin / Windsurf',     dest: '.devin/rules/rules.md',             defaultOn: false },
+  { value: 'codex',       label: 'Codex',                dest: 'AGENTS.md',                         defaultOn: false },
+  { value: 'copilot',     label: 'GitHub Copilot',       dest: '.github/copilot-instructions.md',   defaultOn: false },
+  { value: 'antigravity', label: 'Antigravity',          dest: '.antigravityrules',                 defaultOn: false },
 ];
 
 const stackQuestions = [
@@ -126,7 +127,7 @@ const extraOpts = [
     value: 'guidelines',
     label: 'Engineering Guidelines',
     desc1: 'Reference playbook — Architecture, Security, Performance, API Design,',
-    desc2: 'Testing, Code Quality, AI Workflow, and more (13 docs total).',
+    desc2: 'Testing, Code Quality, AI Workflow, and more (12 docs total).',
     dest:  'docs/guidelines/',
   },
   {
@@ -155,6 +156,31 @@ function printHeader(stepLabel) {
   console.log('');
 }
 
+function printUsage() {
+  console.log(`
+aayushus-skills — Setup Wizard & CLI Installer
+
+Usage:
+  npx aayushus-skills               Interactive setup wizard (default)
+  npx aayushus-skills --simple      Flat checklist menu (no wizard)
+  npx aayushus-skills all           Install everything directly
+  npx aayushus-skills design        Install Prism Design System only
+  npx aayushus-skills guidelines    Install Engineering Guidelines only
+  npx aayushus-skills pm            Install Product Management Skill only
+  npx aayushus-skills cursor        Install Cursor rules only
+  npx aayushus-skills antigravity   Install Antigravity rules only
+  npx aayushus-skills devin         Install Devin / Windsurf rules only
+  npx aayushus-skills claude        Install Claude rules only
+  npx aayushus-skills codex         Install Codex rules only
+  npx aayushus-skills copilot       Install GitHub Copilot rules only
+
+Flags:
+  -d, --dry-run    Preview what would be installed without writing files
+  -f, --force      Overwrite files that already exist
+      --simple     Skip the wizard and use the flat checklist menu
+  `);
+}
+
 // ─── Project detection ────────────────────────────────────────────────────────
 function detectProject() {
   try {
@@ -165,6 +191,7 @@ function detectProject() {
   const checks = [
     { file: 'CLAUDE.md' },
     { file: '.cursorrules' },
+    { file: path.join('.devin', 'rules', 'rules.md') },
     { file: 'AGENTS.md' },
     { file: '.antigravityrules' },
     { file: path.join('.github', 'copilot-instructions.md') },
@@ -178,9 +205,10 @@ function agentDestFile(value) {
   return {
     claude:      'CLAUDE.md',
     cursor:      '.cursorrules',
-    devin:       'AGENTS.md',
+    devin:       path.join('.devin', 'rules', 'rules.md'),
+    codex:       'AGENTS.md',
+    copilot:     path.join('.github', 'copilot-instructions.md'),
     antigravity: '.antigravityrules',
-    codex:       path.join('.github', 'copilot-instructions.md'),
   }[value] || null;
 }
 
@@ -240,7 +268,9 @@ function listFilesRecursively(dir) {
 function writeFile(src, dest, templateStack) {
   if (isDryRun) {
     const exists = fs.existsSync(dest);
-    const note = exists ? ` ${s.red}(would overwrite)${s.reset}` : '';
+    const note = exists
+      ? ` ${isForce ? `${s.red}(would overwrite)${s.reset}` : `${s.yellow}(would skip; use --force to overwrite)${s.reset}`}`
+      : '';
     console.log(`${s.yellow}  [Dry Run] ${path.relative(process.cwd(), dest)}${note}${s.reset}`);
     return;
   }
@@ -263,7 +293,9 @@ function writeFolder(src, dest) {
     listFilesRecursively(src).forEach(f => {
       const rel = path.relative(src, f);
       const d = path.join(dest, rel);
-      const note = fs.existsSync(d) ? ` ${s.red}(would overwrite)${s.reset}` : '';
+      const note = fs.existsSync(d)
+        ? ` ${isForce ? `${s.red}(would overwrite)${s.reset}` : `${s.yellow}(would skip; use --force to overwrite)${s.reset}`}`
+        : '';
       console.log(`${s.yellow}  [Dry Run] ${path.relative(process.cwd(), d)}${note}${s.reset}`);
     });
     return;
@@ -436,7 +468,6 @@ function handleStep4Key(key) {
 
 // ─── Step 5 — Preview ────────────────────────────────────────────────────────
 function buildFileList() {
-  const pkgRoot   = __dirname;
   const targetRoot = process.cwd();
   const hasStack  = Object.values(state.stack).some(v => v !== null);
   const files = [];
@@ -449,12 +480,14 @@ function buildFileList() {
   }
   if (state.agents.has('devin')) {
     files.push({ label: '.devin/rules/rules.md', dest: path.join(targetRoot, '.devin', 'rules', 'rules.md'), note: hasStack ? 'configured with your stack' : null });
-    files.push({ label: 'AGENTS.md', dest: path.join(targetRoot, 'AGENTS.md') });
-  }
-  if (state.agents.has('antigravity')) {
-    files.push({ label: '.antigravityrules', dest: path.join(targetRoot, '.antigravityrules') });
   }
   if (state.agents.has('codex')) {
+    files.push({ label: 'AGENTS.md', dest: path.join(targetRoot, 'AGENTS.md'), note: hasStack ? 'configured with your stack' : null });
+  }
+  if (state.agents.has('antigravity')) {
+    files.push({ label: '.antigravityrules', dest: path.join(targetRoot, '.antigravityrules'), note: hasStack ? 'configured with your stack' : null });
+  }
+  if (state.agents.has('copilot')) {
     files.push({ label: '.github/copilot-instructions.md', dest: path.join(targetRoot, '.github', 'copilot-instructions.md') });
   }
   if (state.extras.has('design')) {
@@ -484,7 +517,7 @@ function renderStep5() {
       const exists = !f.isFolder && fs.existsSync(f.dest);
       const icon   = exists ? `${s.yellow}⚠${s.reset}` : `${s.green}✓${s.reset}`;
       const note   = f.note    ? `  ${s.dim}(${f.note})${s.reset}`      : '';
-      const warn   = exists    ? `  ${s.yellow}will overwrite${s.reset}` : '';
+      const warn   = exists    ? `  ${s.yellow}${isForce ? 'will overwrite' : 'will skip'}${s.reset}` : '';
       console.log(`  ${icon}  ${f.label}${note}${warn}`);
     });
 
@@ -585,15 +618,18 @@ function runWizardInstallation() {
     if (state.agents.has('devin')) {
       console.log(`${s.blue}  Configuring Devin rules...${s.reset}`);
       writeFile(rulesFile, path.join(targetRoot, '.devin', 'rules', 'rules.md'), stack);
+    }
+    if (state.agents.has('codex')) {
+      console.log(`${s.blue}  Configuring Codex (AGENTS.md)...${s.reset}`);
       writeFile(rulesFile, path.join(targetRoot, 'AGENTS.md'), stack);
     }
     if (state.agents.has('antigravity')) {
       console.log(`${s.blue}  Configuring Antigravity rules...${s.reset}`);
       writeFile(rulesFile, path.join(targetRoot, '.antigravityrules'), stack);
     }
-    if (state.agents.has('codex')) {
-      console.log(`${s.blue}  Configuring Codex/Copilot rules...${s.reset}`);
-      writeFile(copilotFile, path.join(targetRoot, '.github', 'copilot-instructions.md'));
+    if (state.agents.has('copilot')) {
+      console.log(`${s.blue}  Configuring GitHub Copilot rules...${s.reset}`);
+      writeFile(copilotFile, path.join(targetRoot, '.github', 'copilot-instructions.md'), stack);
     }
   }
 
@@ -653,10 +689,11 @@ function handleKey(key) {
 // ─── Legacy simple menu (--simple flag) ───────────────────────────────────────
 const simpleOptions = [
   { name: 'Antigravity Rules (.antigravityrules)',               value: 'antigravity', checked: true  },
-  { name: 'Devin / Windsurf Rules (.devin/rules/rules.md & AGENTS.md)', value: 'devin', checked: true  },
+  { name: 'Devin / Windsurf Rules (.devin/rules/rules.md)',      value: 'devin',       checked: true  },
+  { name: 'Codex Rules (AGENTS.md)',                             value: 'codex',       checked: true  },
   { name: 'Cursor Rules (.cursorrules)',                          value: 'cursor',      checked: true  },
   { name: 'Claude Rules (CLAUDE.md)',                            value: 'claude',      checked: true  },
-  { name: 'Codex/Copilot Rules (.github/copilot-instructions.md)', value: 'codex',    checked: true  },
+  { name: 'GitHub Copilot Rules (.github/copilot-instructions.md)', value: 'copilot', checked: true  },
   { name: 'Prism Design System (tokens, components CSS/TSX)',                  value: 'design',      checked: false },
   { name: 'Engineering Guidelines (Architecture, Security, AI Workflow...)',  value: 'guidelines',  checked: false },
   { name: 'Product Management Skill (PRDs, user stories, AC templates)',       value: 'pm',          checked: false },
@@ -696,7 +733,7 @@ function runSimpleInstallation() {
 
   const agentDir       = path.join(pkgRoot, 'agent-config');
   const hasAgentConfigs = fs.existsSync(agentDir);
-  const agentKeys      = ['antigravity', 'devin', 'cursor', 'claude', 'codex'];
+  const agentKeys      = ['antigravity', 'devin', 'codex', 'cursor', 'claude', 'copilot'];
   const wantsAgent     = agentKeys.some(v => selected.includes(v));
 
   if (wantsAgent && !hasAgentConfigs) {
@@ -709,10 +746,11 @@ function runSimpleInstallation() {
     const copilotFile = path.join(agentDir, 'copilot-instructions.md');
 
     if (selected.includes('antigravity')) { console.log(`${s.blue} Configuring Antigravity rules...${s.reset}`);   writeFile(rulesFile,   path.join(targetRoot, '.antigravityrules')); }
-    if (selected.includes('devin'))       { console.log(`${s.blue} Configuring Devin rules...${s.reset}`);         writeFile(rulesFile,   path.join(targetRoot, '.devin', 'rules', 'rules.md')); writeFile(rulesFile, path.join(targetRoot, 'AGENTS.md')); }
+    if (selected.includes('devin'))       { console.log(`${s.blue} Configuring Devin / Windsurf rules...${s.reset}`); writeFile(rulesFile, path.join(targetRoot, '.devin', 'rules', 'rules.md')); }
+    if (selected.includes('codex'))       { console.log(`${s.blue} Configuring Codex AGENTS.md...${s.reset}`);      writeFile(rulesFile,   path.join(targetRoot, 'AGENTS.md')); }
     if (selected.includes('cursor'))      { console.log(`${s.blue} Configuring Cursor rules...${s.reset}`);        writeFile(rulesFile,   path.join(targetRoot, '.cursorrules')); }
     if (selected.includes('claude'))      { console.log(`${s.blue} Configuring Claude CLAUDE.md...${s.reset}`);    writeFile(claudeFile,  path.join(targetRoot, 'CLAUDE.md')); }
-    if (selected.includes('codex'))       { console.log(`${s.blue} Configuring Codex/Copilot rules...${s.reset}`); writeFile(copilotFile, path.join(targetRoot, '.github', 'copilot-instructions.md')); }
+    if (selected.includes('copilot'))     { console.log(`${s.blue} Configuring GitHub Copilot rules...${s.reset}`); writeFile(copilotFile, path.join(targetRoot, '.github', 'copilot-instructions.md')); }
   }
 
   if (selected.includes('design')) {
@@ -747,33 +785,12 @@ function runSimpleInstallation() {
 
 // ─── Help ─────────────────────────────────────────────────────────────────────
 if (args.includes('--help') || args.includes('-h') || args.includes('help')) {
-  console.log(`
-aayushus-skills — Setup Wizard & CLI Installer
-
-Usage:
-  npx aayushus-skills               Interactive setup wizard (default)
-  npx aayushus-skills --simple      Flat checklist menu (no wizard)
-  npx aayushus-skills all           Install everything directly
-  npx aayushus-skills design        Install Prism Design System only
-  npx aayushus-skills guidelines    Install Engineering Guidelines only
-  npx aayushus-skills pm            Install Product Management Skill only
-  npx aayushus-skills cursor        Install Cursor rules only
-  npx aayushus-skills antigravity   Install Antigravity rules only
-  npx aayushus-skills devin         Install Devin / Windsurf rules only
-  npx aayushus-skills claude        Install Claude rules only
-  npx aayushus-skills codex         Install Codex/Copilot rules only
-  npx aayushus-skills copilot       Alias for codex
-
-Flags:
-  -d, --dry-run    Preview what would be installed without writing files
-  -f, --force      Overwrite files that already exist
-      --simple     Skip the wizard and use the flat checklist menu
-  `);
+  printUsage();
   process.exit(0);
 }
 
 // ─── Direct subcommands ───────────────────────────────────────────────────────
-const argMap = { antigravity: 'antigravity', devin: 'devin', cursor: 'cursor', claude: 'claude', codex: 'codex', copilot: 'codex', design: 'design', guidelines: 'guidelines', pm: 'pm' };
+const argMap = { antigravity: 'antigravity', devin: 'devin', windsurf: 'devin', cursor: 'cursor', claude: 'claude', codex: 'codex', copilot: 'copilot', design: 'design', guidelines: 'guidelines', pm: 'pm' };
 const directArgs = args.filter(a => a !== '--dry-run' && a !== '-d' && a !== '--force' && a !== '-f' && a !== '--simple');
 const hasDirectCmd = directArgs.some(a => argMap[a] || a === 'all');
 
@@ -786,10 +803,10 @@ if (hasDirectCmd) {
 
 // ─── Non-interactive (CI/pipe) ────────────────────────────────────────────────
 if (!process.stdin.isTTY) {
-  console.log('Non-interactive environment detected. Installing all components...');
-  simpleOptions.forEach(o => o.checked = true);
-  runSimpleInstallation();
-  process.exit(0);
+  console.error(`${s.red}Non-interactive environment detected, but no direct install command was provided.${s.reset}`);
+  console.error(`${s.dim}Use a subcommand such as "all", "design", "guidelines", "pm", "claude", "codex", or "copilot".${s.reset}`);
+  printUsage();
+  process.exit(1);
 }
 
 // ─── Simple menu (--simple flag) ──────────────────────────────────────────────
@@ -806,16 +823,16 @@ if (isSimple) {
     if (key.name === 'return' || key.name === 'enter') { process.stdin.setRawMode(false); runSimpleInstallation(); }
   });
   // event listener keeps process alive — no process.exit here
+} else {
+  // ─── Wizard (default) ─────────────────────────────────────────────────────────
+  readline.emitKeypressEvents(process.stdin);
+  process.stdin.setRawMode(true);
+
+  detectProject();
+  renderStep1();
+
+  process.stdin.on('keypress', (str, key) => {
+    if (key.ctrl && key.name === 'c') { console.log('\n  Cancelled.\n'); process.exit(0); }
+    handleKey(key);
+  });
 }
-
-// ─── Wizard (default) ─────────────────────────────────────────────────────────
-readline.emitKeypressEvents(process.stdin);
-process.stdin.setRawMode(true);
-
-detectProject();
-renderStep1();
-
-process.stdin.on('keypress', (str, key) => {
-  if (key.ctrl && key.name === 'c') { console.log('\n  Cancelled.\n'); process.exit(0); }
-  handleKey(key);
-});

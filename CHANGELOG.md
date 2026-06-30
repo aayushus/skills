@@ -7,6 +7,11 @@
 - Wizard now fills 6 of the 8 "Decisions already made" entries in CLAUDE.md
 - Rename "Devin" → "Devin / Windsurf" throughout (shared rule format)
 - Fix component count in wizard: 25 → 11 (accurate spec file count)
+- Split Codex (`AGENTS.md`) and GitHub Copilot (`.github/copilot-instructions.md`) into independent install options
+- Make generated rule files safe when design, guidelines, or PM docs are not installed
+- Reframe bundled guidelines as reference playbooks that defer to each project's actual stack
+- Fix dry-run overwrite wording for existing files when `--force` is not set
+- Fail closed in non-interactive mode unless a direct install command is provided
 - Remove `DECISION-Modular-Monolith.md` — `TEMPLATE-Decision.md` covers ADR templates
 - Remove internal source-only docs from repo (`agent-config/howto.md`, `agent-config/README.md`)
 - Remove "Recommended for solo" tags from queue and tenancy wizard options

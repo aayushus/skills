@@ -2,9 +2,9 @@
 
 **Version 1.0** · Last updated 16 April 2026
 
-This document is the contract. Every service, API, schema, and async pattern in the app must follow the rules here. If you need to deviate, record an ADR (see [§13 Decision log](#13-decision-log)) — don't drift silently. Architecture drift is harder to unwind than design drift because it lives in data, and data is expensive to migrate.
+This document is a reference architecture playbook. Local project rules, installed agent configs, and the project's actual stack take precedence over examples here. If you adopt one of these patterns and later need to deviate, record an ADR (see [§13 Decision log](#13-decision-log)) — don't drift silently.
 
-**Stack baseline** (these are the known givens, not decisions this doc is making):
+**Example stack baseline** (translate these examples to the project's actual stack):
 
 ```
 backend/          Node.js 20 + Express + TypeScript + Prisma
@@ -18,7 +18,7 @@ containers/           containerfiles per service
 
 Orchestration: `container orchestration` now. Future: the exit strategy is documented in [§2.4](#24-orchestration-exit-strategy).
 
-Target scale for the next 12 months: **10k+ users, multi-tenant B2B, hygiene matters**.
+Example target scale: **10k+ users, multi-tenant B2B, hygiene matters**. Adjust scale, tenancy, and compliance expectations to the installed project's context.
 
 > **See also:** [Security Guidelines](Security.md) — authorization, tenant isolation enforcement, secrets management | [Performance Guidelines](Performance.md) — SLOs, caching strategy, query budgets | [Code Quality Guidelines](Code-Quality.md) — testing, error handling, naming | [Documentation Guidelines](Documentation.md) — ADRs, system diagrams, runbooks
 

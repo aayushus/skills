@@ -3,10 +3,10 @@
 > [!IMPORTANT]
 > **CUSTOMIZATION NOTICE**: This file contains generic best-practice rules. Update the Stack, Hard Rules, and Decisions sections to reflect your project's actual technology choices before committing.
 
-## Skills to load
-<!-- CUSTOMIZE: Update skill names and paths to match your project's skill setup -->
-- **Design system**: `@prism-design` — load when building any UI, component, screen, or styling
-- **Architecture + guidelines**: read the relevant file from `docs/guidelines/` when making architectural decisions, writing security-sensitive code, or optimising performance
+## Optional installed materials
+<!-- CUSTOMIZE: Update paths to match the components installed in this project -->
+- **Design system**: If `src/design/SKILL.md` or `design/SKILL.md` exists, load it before building UI. If neither exists, follow the project's existing UI conventions.
+- **Engineering guidelines**: If `docs/guidelines/` exists, read the relevant file before architectural, security-sensitive, performance, testing, or documentation work. If it is absent, rely on the local stack and rules in this file.
 
 ## Stack
 <!-- CUSTOMIZE: Replace with your project's actual stack -->
@@ -15,7 +15,7 @@
 - **Primary Database**: [e.g., PostgreSQL, SQLite, MySQL]
 - **Async Queue**: [e.g., BullMQ, Celery, None/Direct Background Streaming]
 - **Session Store**: [e.g., Redis, database-backed sessions, JWTs]
-- **Design System**: Prism (tokens.css + components.tsx)
+- **Design System**: [e.g., existing component library / Prism if installed / project CSS system]
 
 ---
 
@@ -61,16 +61,16 @@
 
 ---
 
-## When to read full guidelines
+## When to read optional full guidelines
 
 | Task | File to read |
 |---|---|
-| New service, module extraction, DB schema | `docs/guidelines/Architecture.md` |
-| Auth, file upload, AI integration, external API | `docs/guidelines/Security.md` |
-| Tests, refactoring, PR review | `docs/guidelines/Code-Quality.md` |
-| Performance, caching, queries | `docs/guidelines/Performance.md` |
-| ADRs, READMEs, API docs | `docs/guidelines/Documentation.md` |
-| Any UI work | Load `@prism-design` skill (or `docs/guidelines/` equivalent) |
+| New service, module extraction, DB schema | If installed: `docs/guidelines/Architecture.md` |
+| Auth, file upload, AI integration, external API | If installed: `docs/guidelines/Security.md` |
+| Tests, refactoring, PR review | If installed: `docs/guidelines/Code-Quality.md` |
+| Performance, caching, queries | If installed: `docs/guidelines/Performance.md` |
+| ADRs, READMEs, API docs | If installed: `docs/guidelines/Documentation.md` |
+| Any UI work | If installed: `src/design/SKILL.md` or `design/SKILL.md`; otherwise use the existing project UI system |
 
 ---
 

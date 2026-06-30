@@ -2,7 +2,7 @@
 
 **Version 1.0** · Last updated 2 May 2026
 
-This document is the contract for how we build and consume APIs. It ensures that the Backend (Express), the AI Service (FastAPI), and the Frontend (React) speak the same language. Consistent APIs reduce integration bugs and make the system easier for third-party developers to use.
+This document is a reference contract for how a project can build and consume APIs. Local project rules and the actual installed stack take precedence; examples using Express, FastAPI, or React should be translated to the project's API framework. Consistent APIs reduce integration bugs and make the system easier for third-party developers to use.
 
 ---
 

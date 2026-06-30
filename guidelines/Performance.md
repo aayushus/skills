@@ -4,7 +4,7 @@
 
 > **See also:** [Architecture Guidelines](Architecture.md) — caching strategy, database design, scaling timeline | [Security Guidelines](Security.md) — rate limiting, DDoS protection | [Code Quality Guidelines](Code-Quality.md) — profiling, N+1 query prevention | [Documentation Guidelines](Documentation.md) — SLO documentation, incident runbooks
 
-This document is the contract for performance — how fast every part of a product has to be, and what to do when it isn't. Performance is a feature. Slow software loses users, burns money on infrastructure, and invites scale problems that compound. Treating speed as an afterthought is how systems end up needing expensive rewrites.
+This document is a reference contract for performance — how fast every part of a product has to be, and what to do when it isn't. Local project rules, installed agent configs, and the actual product scale take precedence over example budgets here. Performance is a feature. Slow software loses users, burns money on infrastructure, and invites scale problems that compound. Treating speed as an afterthought is how systems end up needing expensive rewrites.
 
 This is a **companion** to `Architecture.md` (system shape), `Security.md` (defences), and `Code-Quality.md` (craft). Performance overlaps all three — when the four conflict, treat each doc's specifics as canonical in its own domain.
 

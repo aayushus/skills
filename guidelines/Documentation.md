@@ -2,7 +2,7 @@
 
 **Version 1.0** · Last updated 17 April 2026
 
-This document is the contract for how we write the docs that code alone can't carry. It covers four artefacts: **ADRs** (why we decided things), **API documentation** (how the system's contract is expressed), **READMEs** (how you start a project), and **changelogs** (what changed and why).
+This document is a reference contract for how to write the docs that code alone can't carry. Local project rules, installed agent configs, and the actual documentation structure take precedence over examples here. It covers four artefacts: **ADRs** (why we decided things), **API documentation** (how the system's contract is expressed), **READMEs** (how you start a project), and **changelogs** (what changed and why).
 
 This is a **companion** to `Architecture.md`, `Security.md`, `Code-Quality.md`, and `Performance.md`. Those docs tell you *how* to build. This one tells you how to *record* what you built so future-you and future-teammates can understand the choices without spelunking through git history.
 
@@ -803,7 +803,7 @@ Breaking changes are non-negotiable changelog entries — users **will** miss th
 
 ### ⚠️ Breaking changes
 - **API v1 removed.** `/api/v1/*` endpoints now return 410 Gone. Migrate to v2.
-  See [migration guide](MIGRATION-v1-to-v2.md).
+  See the migration guide for the relevant version pair, for example `MIGRATION-v1-to-v2.md`.
 - **Minimum Node version now 20.** Support for Node 18 dropped. Update your
   Dockerfile and CI config.
 - **`record.contactEmail` field removed**, replaced by `record.contacts[]`
@@ -1106,7 +1106,7 @@ const record = await db.record.findUnique({ where: { id: recordId } });
 ### 11.5 Links
 
 - **Link the first mention** of an external concept. Subsequent mentions don't need a link.
-- **Use descriptive link text.** "See the [tenant isolation ADR](DECISION-Tenant-Isolation.md)" not "see [here](DECISION-Tenant-Isolation.md)".
+- **Use descriptive link text.** "See the tenant isolation ADR (`DECISION-Tenant-Isolation.md`)" not "see here".
 - **Link to specific sections**, not whole pages, when pointing at a single idea (`#section-id`).
 - **Avoid "click here".**
 

@@ -2,7 +2,7 @@
 
 **Version 1.0** · Last updated 2 May 2026
 
-This document defines our testing strategy. We don't just "write tests"; we write the *right* tests to ensure that the system is stable, the AI service remains accurate, and the UI never regresses.
+This document defines a reference testing strategy. Local project rules, installed test tools, and the actual stack take precedence over tool-specific examples here. We don't just "write tests"; we write the *right* tests to ensure that the system is stable, AI features remain accurate, and the UI never regresses.
 
 ---
 
@@ -18,12 +18,12 @@ We adhere to a 70/20/10 split:
 
 ## 2. Contract Testing (Pact)
 
-To prevent the "I changed the Backend and broke the AI Service" problem, we use **Consumer-Driven Contract Testing**.
+To prevent the "I changed one service and broke another" problem, use **Consumer-Driven Contract Testing** when the project has multiple independently deployed or separately owned services.
 
-*   **Tool:** Pact.io
+*   **Default example tool:** Pact.io, or the project's existing contract-testing tool
 *   **When to use:** 
     *   Between the Frontend and Backend.
-    *   Between the Backend (Express) and AI Service (FastAPI).
+    *   Between backend services, workers, AI services, or other separately deployed providers.
 *   **Workflow:**
     1.  The Consumer (e.g., Frontend) writes a test defining the expected response.
     2.  Pact generates a "contract" JSON file.
@@ -33,7 +33,7 @@ To prevent the "I changed the Backend and broke the AI Service" problem, we use 
 
 ## 3. End-to-End (E2E) Testing
 
-We use **Playwright** for E2E testing. These tests run against a staging-like environment.
+Use the project's existing E2E tool. If none is installed, **Playwright** is the default recommendation. These tests run against a staging-like environment.
 
 *   **Priority:** Test the "Happy Path" for core business value (e.g., Signup, Creating an Evaluation, Uploading a Document).
 *   **Stability:** Avoid testing minor UI details in E2E; focus on data flow and state transitions.

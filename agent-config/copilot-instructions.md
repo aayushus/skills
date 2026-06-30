@@ -1,36 +1,42 @@
 # GitHub Copilot workspace instructions
 
-This codebase uses an opinionated stack with hard rules that must never be broken.
-Always follow these. When in doubt, check the full guidelines in the Skills folder.
+This codebase uses project-specific conventions with hard rules that must never be broken.
+Always follow these. When in doubt, check installed project docs such as `docs/guidelines/` if they exist.
 
 ## Stack
-TypeScript strict + Node.js + Express + Prisma + PostgreSQL + Redis + BullMQ.
-AI service: Python 3.12 + FastAPI. Frontend: Next.js + React + Prism design system.
+<!-- CUSTOMIZE: Replace this section with your project's actual stack -->
+- **Frontend/Backend**: [e.g., Next.js 14 App Router, React + Vite, Express, FastAPI]
+- **ORM / Query layer**: [e.g., Drizzle ORM, Prisma, SQLAlchemy, raw SQL]
+- **Primary Database**: [e.g., PostgreSQL, SQLite, MySQL]
+- **Async Queue**: [e.g., BullMQ, Celery, None/Direct Background Streaming]
+- **Session Store**: [e.g., Redis, database-backed sessions, JWTs]
+- **API style**: [e.g., REST + JSON / GraphQL / tRPC]
 
 ## Critical rules (catastrophic if missed)
 
-1. **Every Prisma query on tenant data filters by `tenantId`** — the middleware enforces it, but always include it explicitly
-2. **No raw SQL concatenation** — parameterised Prisma queries only; `$queryRaw` requires explicit review
-3. **`tenantId` comes from the session** — never from URL params or request body
+<!-- CUSTOMIZE: Adjust tenancy rules to match your data model (multi-tenant vs single-tenant) -->
+1. **Tenancy boundaries** — if multi-tenant, every query on tenant data filters by `tenantId`; if single-tenant, ignore tenant constraints
+2. **No raw SQL concatenation** — use parameterized ORM/query-builder calls; raw SQL requires explicit review
+3. **Tenant identity comes from auth context** — never from URL params or request body
 4. **Unauthorized reads return 404** — never 403 (prevents existence leak)
-5. **Soft deletes only** — `deletedAt` timestamp, never hard DELETE on tenant data
-6. **ULIDs for all primary keys** — not auto-increment, not UUID
+5. **Soft deletes for recoverable business data** — avoid hard deletes unless the domain explicitly requires them
+6. **Consistent primary keys** — use the project's chosen ID strategy everywhere
 7. **Cursor pagination only** — never offset/limit
-8. **Async anything > 1 second** — use BullMQ, never block an HTTP handler
-9. **Argon2id for passwords** (`time=3, memory=64MB, parallelism=4`) — never bcrypt
-10. **Opaque session tokens in Redis** — not JWTs for user sessions
-11. **Zod validation on every input boundary** — with `.strict()`, including max lengths
-12. **Structured JSON logs only** — with `correlationId` + `tenantId` on every line
-13. **Secrets in Doppler/KMS** — never in code, never logged
-14. **No `any` in TypeScript** — use `unknown` with narrowing
-15. **No N+1 queries** — use Prisma `include/select`
+8. **Async anything > 1 second** — use the project's background queue/worker strategy, never block an HTTP handler
+9. **Modern password hashing** — use Argon2id, bcrypt cost ≥ 12, or the platform-approved equivalent
+10. **Revocable user sessions** — prefer server-side session storage where revocation matters
+11. **Schema validation on every input boundary** — strict/no-extra-keys mode, including max lengths
+12. **Structured logs only** — include request/correlation IDs and tenant IDs where applicable
+13. **Secrets in a secrets manager or environment** — never in code, never logged
+14. **No unsafe dynamic typing** — use `unknown` with narrowing in TypeScript instead of `any`
+15. **No N+1 queries** — batch, join, preload, or select related data intentionally
 
 ## Design system rules
-- Use CSS tokens (`var(--token-name)`) — never hardcode colours, radii, or font names
-- Use components from `components.tsx` — never import Tailwind or shadcn
-- Sparkle star is the only AI glyph — no robots, brains, or lightbulbs
+- If `src/design/SKILL.md` or `design/SKILL.md` exists, load it before UI work
+- If no design skill exists, follow the project's existing component library and styles
+- Do not introduce Tailwind, shadcn, Material UI, or another visual system unless the project already uses it or the user explicitly asks
+- Prefer project tokens for colours, radii, spacing, and font names when tokens exist
 - Touch targets: 44×44px minimum on mobile
-- Spacing: multiples of 4px only (4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 48, 56, 64)
 
 ## Error handling
 - Throw exceptions for programming errors (bugs)
@@ -40,7 +46,7 @@ AI service: Python 3.12 + FastAPI. Frontend: Next.js + React + Prism design syst
 ## Code style
 - TypeScript `strict: true` + `noUncheckedIndexedAccess`
 - Functions ≤ 80 lines, files ≤ 500 lines
-- No `console.log` — use the structured logger
+- No ad-hoc `console.log` debugging — use the project logger
 - No commented-out code — delete it
 - Boolean variables: `is/has/can/should` prefix
 - No TypeScript `enum` — use string literal unions

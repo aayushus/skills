@@ -9,7 +9,7 @@
 - **Database/ORM**: [e.g., Drizzle ORM, Prisma, SQLAlchemy]
 - **Primary Database**: [e.g., PostgreSQL, SQLite, MySQL]
 - **Async Queue**: [e.g., BullMQ, Celery, None/Direct Background Streaming]
-- **Design System**: Prism (tokens.css + components.tsx)
+- **Design System**: [e.g., existing component library / Prism if installed / project CSS system]
 
 ---
 
@@ -63,24 +63,25 @@
 
 ---
 
-## PRISM DESIGN SYSTEM RULES
+## DESIGN SYSTEM RULES
 
-- **Tokens**: Never hardcode colors, radii, or fonts — always use CSS design tokens (`var(--token-name)`).
-- **Themes**: Implement dark/light mode switches via data attributes (e.g. `[data-theme="dark"]`) rather than media queries where theme switching is required.
-- **Consistency**: Keep spacing aligned to the project grid system (e.g., multiples of 4px).
-- **AI Glyphs**: Use only the Prism Sparkle/Prism icon as the visual representation for AI-generated assets.
+- **Use what is installed**: If `src/design/SKILL.md` or `design/SKILL.md` exists, load it before UI work. If not, follow the project's existing design system and component library.
+- **No surprise libraries**: Do not introduce Tailwind, shadcn, Material UI, or any new visual system unless the project already uses it or the user explicitly asks.
+- **Tokens**: Prefer project design tokens for colors, radii, spacing, and typography. Avoid hardcoded visual values when a local token exists.
+- **Themes**: Follow the project's existing theme strategy. If Prism is installed, use data attributes such as `[data-theme="dark"]`.
+- **Consistency**: Keep spacing, density, and iconography aligned with the installed project system.
 
 ---
 
 ## WHEN TO CHECK FULL DOCS
 
-Detailed guidelines live in the Docs/Guidelines folder. Refer to them when working on core modules:
+Detailed guidelines are optional. If `docs/guidelines/` is installed, refer to the relevant file when working on core modules. If it is absent, follow the local project rules and stack decisions.
 
 | Topic | Reference Document |
 |---|---|
-| Building any UI component or screen | `design/SKILL.md` (or `src/design/SKILL.md`) |
-| Adding auth, tenant logic, or architecture choices | `docs/guidelines/Architecture.md` |
-| Adding security controls, file uploads, API endpoints | `docs/guidelines/Security.md` |
-| Writing tests or performing large refactoring | `docs/guidelines/Code-Quality.md` |
-| Performance optimizations, database indexing | `docs/guidelines/Performance.md` |
-| Writing an ADR, design documentation, or README | `docs/guidelines/Documentation.md` |
+| Building any UI component or screen | If installed: `src/design/SKILL.md` or `design/SKILL.md` |
+| Adding auth, tenant logic, or architecture choices | If installed: `docs/guidelines/Architecture.md` |
+| Adding security controls, file uploads, API endpoints | If installed: `docs/guidelines/Security.md` |
+| Writing tests or performing large refactoring | If installed: `docs/guidelines/Code-Quality.md` |
+| Performance optimizations, database indexing | If installed: `docs/guidelines/Performance.md` |
+| Writing an ADR, design documentation, or README | If installed: `docs/guidelines/Documentation.md` |

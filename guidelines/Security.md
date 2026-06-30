@@ -2,11 +2,11 @@
 
 **Version 1.0** · Last updated 16 April 2026
 
-This document is the security contract. Every service, endpoint, and integration in the app must meet the rules here. Security isn't something you bolt on before launch — it's the part of the system that can take down the whole company if you get it wrong, so it lives at every layer.
+This document is a reference security playbook. Local project rules, installed agent configs, and the project's actual threat model take precedence over stack-specific examples here. Security isn't something you bolt on before launch — it's the part of the system that can take down the whole company if you get it wrong, so it lives at every layer.
 
-This doc is a **companion** to `Architecture.md` (§10 of that doc is the high-level overview; this is the deep reference). When the two overlap, this doc wins for security specifics; the architecture doc wins for system structure.
+This doc is a **companion** to `Architecture.md` (§10 of that doc is the high-level overview; this is the deep reference). When examples overlap with the installed project's actual stack, translate the control to the local stack rather than forcing Prisma, Redis, Express, or multi-tenancy.
 
-**Scope:** 10k-user multi-tenant B2B SaaS, handling multi-tenant B2B user data, with AI integrations. Not yet SOC 2 / ISO 27001 certified, but nothing in this doc blocks getting there.
+**Example scope:** 10k-user multi-tenant B2B SaaS, handling multi-tenant B2B user data, with AI integrations. Adjust scope, tenancy, scale, and compliance targets to the project using this playbook.
 
 **Threat model this doc defends against:**
 - Cross-tenant data leakage (highest stakes)

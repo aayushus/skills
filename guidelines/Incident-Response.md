@@ -111,10 +111,10 @@ Special rules for security (see `Security.md` §15.4):
 
 ## 8. Runbooks (Quick links)
 
-*   [Database Recovery](RUNBOOK-db-recovery.md)
-*   [Rollback Procedure](RUNBOOK-deploy-rollback.md)
-*   [DDoS Mitigation](RUNBOOK-ddos-mitigation.md)
-*   [Secret Rotation](RUNBOOK-secret-rotation.md)
+*   Database recovery runbook — add one if this project owns persistent data.
+*   Rollback procedure — add one if this project has deployable services.
+*   DDoS mitigation runbook — add one if this project exposes public endpoints.
+*   Secret rotation runbook — add one if this project stores credentials or API keys.
 
 ---
 
