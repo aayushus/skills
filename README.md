@@ -150,6 +150,12 @@ npx --yes aayushus-skills
 
 ---
 
+## Part of the AI-First SDLC
+
+This tool is the bootstrap step for the [AI-First SDLC Playbook](https://aayushus.github.io/) — a seven-chapter operating model with named AI agents running across Jira, GitHub, Teams, and Confluence. Run `npx aayushus-skills` when setting up a new project to scaffold the agent configs, conventions, and quality gates the playbook assumes are in place.
+
+---
+
 ## Attribution
 
 The design elements, guidelines, and templates included in this package have been collected, adapted, and refined from various open resources, design frameworks, and community best practices — then customized for AI agent workflows. They are not entirely original works.

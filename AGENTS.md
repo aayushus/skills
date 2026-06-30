@@ -2,6 +2,10 @@
 
 This package is a zero-dependency CLI that installs independent agent configs, design assets, guideline docs, and product-management docs into other projects.
 
+## Context
+
+This package is the bootstrap step for the [AI-First SDLC Playbook](https://aayushus.github.io/). The playbook defines the operating model (agents, governance, traceability); this CLI scaffolds the agent configs and conventions each project needs to participate in that model.
+
 ## Core Rules
 
 - Keep every install option independent. Users must be able to install any agent config, design system, guidelines, or PM skill without hidden dependencies on the others.
