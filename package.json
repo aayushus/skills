@@ -1,7 +1,7 @@
 {
   "name": "aayushus-skills",
   "version": "1.2.6",
-  "description": "Interactive CLI tool to install developer agent configurations, design system tokens, guidelines, and SOPs.",
+  "description": "Interactive setup wizard to scaffold AI agent configs, Prism design system, and engineering guidelines into any project.",
   "main": "cli.js",
   "bin": {
     "aayushus-skills": "cli.js"
@@ -9,10 +9,11 @@
   "type": "commonjs",
   "files": [
     "cli.js",
-    "agent-config",
+    "agent-config/CLAUDE.md",
+    "agent-config/rules.md",
+    "agent-config/copilot-instructions.md",
     "design",
     "guidelines",
-    "Solo Developer AI SOP.md",
     "README.md"
   ],
   "keywords": [

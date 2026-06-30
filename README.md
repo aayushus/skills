@@ -1,6 +1,6 @@
 # aayushus-skills
 
-**One command to scaffold AI agent configs, a design system, engineering guidelines, and a developer SOP into any project.**
+**One command to scaffold AI agent configs, a design system, and engineering guidelines into any project.**
 
 Zero dependencies. Works with any stack. Safe by default — never overwrites existing files unless you say so.
 
@@ -20,8 +20,7 @@ npx aayushus-skills
 | **Claude Rules** | `CLAUDE.md` | project root |
 | **Codex / Copilot Rules** | `.github/copilot-instructions.md` | project root |
 | **Prism Design System** | tokens, components CSS/TSX, design spec docs | `src/design/` or `design/` |
-| **Development Guidelines** | API Design, Architecture, Code Quality, Security, Performance, Testing, and more | `docs/guidelines/` |
-| **Solo Developer AI SOP** | `Solo-Developer-AI-SOP.md` | project root |
+| **Engineering Guidelines** | Architecture, Security, Performance, API Design, Testing, Code Quality, AI Workflow, and more | `docs/guidelines/` |
 
 All rule files are **stack-agnostic** with `<!-- CUSTOMIZE -->` markers where your project-specific tech choices belong (ORM, queue, session strategy, etc.).
 
@@ -37,7 +36,7 @@ Run in your project root. Use `↑ ↓` to navigate, `space` to toggle, `enter` 
 npx aayushus-skills
 ```
 
-Agent configs are pre-selected. Design system, guidelines, and SOP are opt-in.
+Agent configs are pre-selected. Design system and guidelines are opt-in.
 
 ### Direct subcommands
 
@@ -51,8 +50,7 @@ npx aayushus-skills devin         # Devin rules only
 npx aayushus-skills antigravity   # Antigravity rules only
 npx aayushus-skills codex         # Codex/Copilot rules only
 npx aayushus-skills design        # Prism Design System only
-npx aayushus-skills guidelines    # Development Guidelines only
-npx aayushus-skills sop           # Solo Developer AI SOP only
+npx aayushus-skills guidelines    # Engineering Guidelines only
 ```
 
 ### Flags
@@ -87,7 +85,7 @@ The **Prism Design System** is a zero-decision B2B/SaaS design language. It inst
 
 ## Guidelines detail
 
-The **Development Guidelines** are a stack-agnostic engineering playbook:
+The **Engineering Guidelines** are a stack-agnostic engineering playbook:
 
 - `Architecture.md` — service structure, DB schema, module boundaries
 - `Security.md` — auth, file uploads, API security, secrets management
@@ -96,6 +94,7 @@ The **Development Guidelines** are a stack-agnostic engineering playbook:
 - `API-Design.md` — REST conventions, versioning, error shapes
 - `Testing.md` — unit, integration, and E2E test strategy
 - `Documentation.md` — ADR templates, README standards
+- `AI-Workflow.md` — model escalation strategy, context window discipline, parallel agent patterns
 - And more — see `docs/guidelines/` after install
 
 ---

@@ -1,8 +1,8 @@
 # Modular Monolith Architecture
 
 *   **Status:** Accepted
-*   **Decider(s):** Aayush Mediratta
-*   **Date:** 2026-04-16
+*   **Decider(s):** [your name]
+*   **Date:** [date]
 
 ## Context
 We are building a B2B SaaS platform targeting 10k users. While the long-term goal may require microservices, the initial complexity of distributed systems (deployment overhead, eventual consistency, network latency) is a risk to velocity. We need a system that is easy to develop but allows for clear boundaries that can be split later.
