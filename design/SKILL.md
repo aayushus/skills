@@ -25,6 +25,7 @@ Load and follow **`PRISM_MANIFESTO.md`** for every task. It contains:
 
 ## Files in this skill
 
+### Core
 | File | Load when |
 |---|---|
 | `PRISM_MANIFESTO.md` | **Always.** The master guideline for all decisions. |
@@ -33,6 +34,28 @@ Load and follow **`PRISM_MANIFESTO.md`** for every task. It contains:
 | `components.css` | Stylesheet backing the component library. |
 | `mobile.css` | Mobile overrides for the component library. |
 | `Icons.tsx` | Core icon set (Sparkle is the only AI glyph). |
+
+### Patterns & Component Specs
+| File | Load when |
+|---|---|
+| `patterns-desktop.md` | Building any desktop UI: layout, sidebar, forms, buttons, cards, tables, dropdowns, modals, tooltips, empty states, skeletons. |
+| `patterns-mobile.md` | Building or adapting any mobile/responsive view. |
+| `ai-surfaces.md` | Adding any AI-powered feature: command bar, provenance markers, activity feed, AI review panel. |
+| `accordion.md` | Building collapsible content sections. |
+| `alerts.md` | Showing inline feedback: info, success, warning, or danger states. |
+| `avatars.md` | Showing user or entity avatars, stacked groups, or status dots. |
+| `badge.md` | Showing status labels, notification dots, or dismissible chips. |
+| `button-group.md` | Grouping related buttons or building segmented controls / mode switchers. |
+| `form-controls.md` | Building radios, checkboxes, or toggle switches. |
+| `pagination.md` | Paginating data tables or lists. |
+| `tabs.md` | Building tab bars, pill selectors, or joined-border view switchers. |
+
+### Reference
+| File | Load when |
+|---|---|
+| `tokens.md` | Looking up a specific token value or WCAG contrast ratio. |
+| `implementation-guide.md` | Implementing dark mode, adding tokens, or checking spacing/radius rules. |
+| `checklist.md` | Before shipping — run the full pre-ship audit. |
 
 ## Autonomous Workflow
 

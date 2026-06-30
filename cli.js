@@ -23,15 +23,16 @@ const options = [
   { name: 'Cursor Rules (.cursorrules)', value: 'cursor', checked: true },
   { name: 'Claude Rules (CLAUDE.md)', value: 'claude', checked: true },
   { name: 'Codex/Copilot Rules (.github/copilot-instructions.md)', value: 'codex', checked: true },
-  { name: 'Prism Design System (tokens, components CSS/TSX)', value: 'design', checked: true },
-  { name: 'Development Guidelines (Architecture, Quality, Security)', value: 'guidelines', checked: true },
-  { name: 'Solo Developer AI SOP (Standard Operating Procedure)', value: 'sop', checked: true }
+  { name: 'Prism Design System (tokens, components CSS/TSX)', value: 'design', checked: false },
+  { name: 'Development Guidelines (Architecture, Quality, Security)', value: 'guidelines', checked: false },
+  { name: 'Solo Developer AI SOP (Standard Operating Procedure)', value: 'sop', checked: false }
 ];
 
 let cursorIndex = 0;
 
 const args = process.argv.slice(2);
 const isDryRun = args.includes('--dry-run') || args.includes('-d');
+const isForce = args.includes('--force') || args.includes('-f');
 
 function printMenu() {
   readline.cursorTo(process.stdout, 0, 0);
@@ -58,21 +59,48 @@ function printMenu() {
   console.log('\n');
 }
 
+function listFilesRecursively(dir) {
+  const results = [];
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      results.push(...listFilesRecursively(fullPath));
+    } else {
+      results.push(fullPath);
+    }
+  }
+  return results;
+}
+
 function copyFileSync(src, dest) {
   if (isDryRun) {
-    console.log(`${styles.yellow}[Dry Run] Would copy: ${path.basename(src)} -> ${path.relative(process.cwd(), dest)}${styles.reset}`);
+    const exists = fs.existsSync(dest);
+    const overwriteNote = exists ? ` ${styles.red}(would overwrite existing)${styles.reset}` : '';
+    console.log(`${styles.yellow}[Dry Run] Would copy: ${path.basename(src)} -> ${path.relative(process.cwd(), dest)}${overwriteNote}${styles.reset}`);
     return;
   }
   const destDir = path.dirname(dest);
   if (!fs.existsSync(destDir)) {
     fs.mkdirSync(destDir, { recursive: true });
   }
+  if (fs.existsSync(dest) && !isForce) {
+    console.log(`${styles.yellow}  ⚠ Skipped (already exists): ${path.relative(process.cwd(), dest)} — use --force to overwrite${styles.reset}`);
+    return;
+  }
   fs.copyFileSync(src, dest);
 }
 
 function copyFolderSync(src, dest) {
   if (isDryRun) {
-    console.log(`${styles.yellow}[Dry Run] Would copy folder: ${path.basename(src)}/ -> ${path.relative(process.cwd(), dest)}/${styles.reset}`);
+    const files = listFilesRecursively(src);
+    files.forEach(file => {
+      const relFile = path.relative(src, file);
+      const destFile = path.join(dest, relFile);
+      const exists = fs.existsSync(destFile);
+      const overwriteNote = exists ? ` ${styles.red}(would overwrite existing)${styles.reset}` : '';
+      console.log(`${styles.yellow}[Dry Run] Would copy: ${relFile} -> ${path.relative(process.cwd(), destFile)}${overwriteNote}${styles.reset}`);
+    });
     return;
   }
   if (!fs.existsSync(dest)) {
@@ -87,7 +115,7 @@ function copyFolderSync(src, dest) {
     if (entry.isDirectory()) {
       copyFolderSync(srcPath, destPath);
     } else {
-      fs.copyFileSync(srcPath, destPath);
+      copyFileSync(srcPath, destPath);
     }
   }
 }
@@ -108,61 +136,62 @@ function runInstallation() {
 
   const srcAgentDir = path.join(packageRoot, 'agent-config');
   const hasAgentConfigs = fs.existsSync(srcAgentDir);
+  const agentOptions = ['antigravity', 'devin', 'cursor', 'claude', 'codex'];
+  const wantsAgentConfig = agentOptions.some(v => selected.includes(v));
+
+  if (wantsAgentConfig && !hasAgentConfigs) {
+    console.log(`${styles.red}  ✗ agent-config directory not found in package. Agent config options will be skipped.${styles.reset}`);
+  }
 
   if (hasAgentConfigs) {
     const genericRulesFile = path.join(srcAgentDir, 'rules.md');
     const claudeFile = path.join(srcAgentDir, 'CLAUDE.md');
     const copilotFile = path.join(srcAgentDir, 'copilot-instructions.md');
 
-    // 1. Antigravity
     if (selected.includes('antigravity')) {
       console.log(`${styles.blue} Configuring Antigravity rules...${styles.reset}`);
       copyFileSync(genericRulesFile, path.join(targetRoot, '.antigravityrules'));
     }
 
-    // 2. Devin
     if (selected.includes('devin')) {
       console.log(`${styles.blue} Configuring Devin rules...${styles.reset}`);
       copyFileSync(genericRulesFile, path.join(targetRoot, '.devin', 'rules', 'rules.md'));
       copyFileSync(genericRulesFile, path.join(targetRoot, 'AGENTS.md'));
     }
 
-    // 3. Cursor
     if (selected.includes('cursor')) {
       console.log(`${styles.blue} Configuring Cursor rules...${styles.reset}`);
       copyFileSync(genericRulesFile, path.join(targetRoot, '.cursorrules'));
     }
 
-    // 4. Claude
     if (selected.includes('claude')) {
       console.log(`${styles.blue} Configuring Claude CLAUDE.md...${styles.reset}`);
       copyFileSync(claudeFile, path.join(targetRoot, 'CLAUDE.md'));
     }
 
-    // 5. Codex/Copilot
     if (selected.includes('codex')) {
       console.log(`${styles.blue} Configuring Codex/Copilot rules...${styles.reset}`);
       copyFileSync(copilotFile, path.join(targetRoot, '.github', 'copilot-instructions.md'));
     }
   }
 
-  // 6. Design System
   if (selected.includes('design')) {
     console.log(`${styles.blue} Installing Prism Design System...${styles.reset}`);
     const srcDesignDir = path.join(packageRoot, 'design');
-    const destDesignDir = fs.existsSync(path.join(targetRoot, 'src')) 
-      ? path.join(targetRoot, 'src', 'design') 
+    const destDesignDir = fs.existsSync(path.join(targetRoot, 'src'))
+      ? path.join(targetRoot, 'src', 'design')
       : path.join(targetRoot, 'design');
 
     if (fs.existsSync(srcDesignDir)) {
       copyFolderSync(srcDesignDir, destDesignDir);
-      console.log(`${styles.green}  ✓ Copied Prism Design System to ${path.relative(targetRoot, destDesignDir)}${styles.reset}`);
+      if (!isDryRun) {
+        console.log(`${styles.green}  ✓ Copied Prism Design System to ${path.relative(targetRoot, destDesignDir)}${styles.reset}`);
+      }
     } else {
       console.log(`${styles.red}  ✗ Source design directory not found.${styles.reset}`);
     }
   }
 
-  // 7. Development Guidelines
   if (selected.includes('guidelines')) {
     console.log(`${styles.blue} Installing Development Guidelines...${styles.reset}`);
     const srcGuidelinesDir = path.join(packageRoot, 'guidelines');
@@ -170,26 +199,29 @@ function runInstallation() {
 
     if (fs.existsSync(srcGuidelinesDir)) {
       copyFolderSync(srcGuidelinesDir, destGuidelinesDir);
-      console.log(`${styles.green}  ✓ Copied Development Guidelines to ${path.relative(targetRoot, destGuidelinesDir)}${styles.reset}`);
+      if (!isDryRun) {
+        console.log(`${styles.green}  ✓ Copied Development Guidelines to ${path.relative(targetRoot, destGuidelinesDir)}${styles.reset}`);
+      }
     } else {
       console.log(`${styles.red}  ✗ Source guidelines directory not found.${styles.reset}`);
     }
   }
 
-  // 8. SOP
   if (selected.includes('sop')) {
     console.log(`${styles.blue} Installing Solo Developer AI SOP...${styles.reset}`);
     const srcSopFile = path.join(packageRoot, 'Solo Developer AI SOP.md');
 
     if (fs.existsSync(srcSopFile)) {
       copyFileSync(srcSopFile, path.join(targetRoot, 'Solo-Developer-AI-SOP.md'));
-      console.log(`${styles.green}  ✓ Copied Solo-Developer-AI-SOP.md to project root${styles.reset}`);
+      if (!isDryRun) {
+        console.log(`${styles.green}  ✓ Copied Solo-Developer-AI-SOP.md to project root${styles.reset}`);
+      }
     } else {
       console.log(`${styles.red}  ✗ Source Solo Developer AI SOP.md file not found.${styles.reset}`);
     }
   }
 
-  const completeMsg = isDryRun 
+  const completeMsg = isDryRun
     ? '✓ Dry run completed successfully! No files were modified.'
     : '✓ Installation completed successfully!';
   console.log(`\n${styles.green}${styles.bold}${completeMsg}${styles.reset}\n`);
@@ -212,9 +244,11 @@ Usage:
   npx aayushus-skills devin         Install Devin rules only
   npx aayushus-skills claude        Install Claude rules only
   npx aayushus-skills codex         Install Codex/Copilot rules only
+  npx aayushus-skills copilot       Alias for codex
 
 Flags:
   -d, --dry-run                     Preview installation without making actual changes
+  -f, --force                       Overwrite existing files (default is to skip them)
   `);
   process.exit(0);
 }
@@ -232,7 +266,7 @@ const argMap = {
   'sop': 'sop'
 };
 
-const directArgs = args.filter(arg => arg !== '--dry-run' && arg !== '-d');
+const directArgs = args.filter(arg => arg !== '--dry-run' && arg !== '-d' && arg !== '--force' && arg !== '-f');
 const hasDirectCommand = directArgs.some(arg => argMap[arg] || arg === 'all');
 
 if (hasDirectCommand) {

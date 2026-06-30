@@ -30,6 +30,13 @@ npx aayushus-skills --dry-run
 npx aayushus-skills design --dry-run
 ```
 
+### Overwriting existing files
+By default, the installer **skips** any file that already exists at the destination and prints a warning. To overwrite, pass `-f` or `--force`:
+```bash
+npx aayushus-skills --force
+npx aayushus-skills claude --force
+```
+
 ## Included Components
 
 - **AI Agent Configurations**: Custom-tailored rule files matching your selected editor:
