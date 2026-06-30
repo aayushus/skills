@@ -106,4 +106,4 @@ The design elements, guidelines, and templates included in this package have bee
 
 ---
 
-*Made by [Aayush Mediratta](https://github.com/aayushus)*
+*Made by [Aayush Mediratta](https://mercpl.us/) · [GitHub](https://github.com/aayushus)*
