@@ -5,7 +5,7 @@
 Zero dependencies. Works with any stack. Safe by default — never overwrites existing files unless you say so.
 
 ```bash
-npx aayushus-skills
+npx --yes aayushus-skills
 ```
 
 ---
@@ -35,7 +35,7 @@ All rule files are **stack-agnostic** with `<!-- CUSTOMIZE -->` markers where yo
 Run in your project root. The wizard walks you through agent selection, stack configuration, and optional components — then writes everything in one shot.
 
 ```bash
-npx aayushus-skills
+npx --yes aayushus-skills
 ```
 
 Claude and Cursor configs are pre-selected; every other agent/config component can be picked independently. Stack answers are injected directly into selected rule files. Design system, guidelines, and PM skill are opt-in.
@@ -45,7 +45,7 @@ Claude and Cursor configs are pre-selected; every other agent/config component c
 Skip the wizard and use the original checklist menu:
 
 ```bash
-npx aayushus-skills --simple
+npx --yes aayushus-skills --simple
 ```
 
 ### Direct subcommands
@@ -53,16 +53,16 @@ npx aayushus-skills --simple
 Skip all menus and install specific components:
 
 ```bash
-npx aayushus-skills all           # everything
-npx aayushus-skills claude        # CLAUDE.md only
-npx aayushus-skills cursor        # .cursorrules only
-npx aayushus-skills devin         # Devin / Windsurf rules only
-npx aayushus-skills antigravity   # Antigravity rules only
-npx aayushus-skills codex         # AGENTS.md only
-npx aayushus-skills copilot       # GitHub Copilot rules only
-npx aayushus-skills design        # Prism Design System only
-npx aayushus-skills guidelines    # Engineering Guidelines only
-npx aayushus-skills pm            # Product Management Skill only
+npx --yes aayushus-skills all           # everything
+npx --yes aayushus-skills claude        # CLAUDE.md only
+npx --yes aayushus-skills cursor        # .cursorrules only
+npx --yes aayushus-skills devin         # Devin / Windsurf rules only
+npx --yes aayushus-skills antigravity   # Antigravity rules only
+npx --yes aayushus-skills codex         # AGENTS.md only
+npx --yes aayushus-skills copilot       # GitHub Copilot rules only
+npx --yes aayushus-skills design        # Prism Design System only
+npx --yes aayushus-skills guidelines    # Engineering Guidelines only
+npx --yes aayushus-skills pm            # Product Management Skill only
 ```
 
 ### Flags
@@ -75,12 +75,12 @@ npx aayushus-skills pm            # Product Management Skill only
 
 ```bash
 # Preview before committing
-npx aayushus-skills --dry-run
-npx aayushus-skills design --dry-run
+npx --yes aayushus-skills --dry-run
+npx --yes aayushus-skills design --dry-run
 
 # Re-install over an existing setup
-npx aayushus-skills claude --force
-npx aayushus-skills all --force
+npx --yes aayushus-skills claude --force
+npx --yes aayushus-skills all --force
 ```
 
 ---
@@ -120,6 +120,20 @@ The **Product Management Skill** (`docs/pm/SKILL.md`) is a Claude Code-compatibl
 - User story standard — As a / I want / So that format with binary acceptance criteria
 - Issue readiness checklist — gates for pulling work into development
 - Escalation rules — when to push back on vague or poorly scoped requests
+
+---
+
+## Troubleshooting
+
+### `npm error canceled` after pressing `n`
+
+When `npx` needs to download this package for the first time, npm asks whether it can install it. If you answer `n`, npm exits before `aayushus-skills` runs, so the CLI cannot intercept or customize that message.
+
+Use the documented command to skip npm's install prompt:
+
+```bash
+npx --yes aayushus-skills
+```
 
 ---
 

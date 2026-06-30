@@ -161,18 +161,18 @@ function printUsage() {
 aayushus-skills — Setup Wizard & CLI Installer
 
 Usage:
-  npx aayushus-skills               Interactive setup wizard (default)
-  npx aayushus-skills --simple      Flat checklist menu (no wizard)
-  npx aayushus-skills all           Install everything directly
-  npx aayushus-skills design        Install Prism Design System only
-  npx aayushus-skills guidelines    Install Engineering Guidelines only
-  npx aayushus-skills pm            Install Product Management Skill only
-  npx aayushus-skills cursor        Install Cursor rules only
-  npx aayushus-skills antigravity   Install Antigravity rules only
-  npx aayushus-skills devin         Install Devin / Windsurf rules only
-  npx aayushus-skills claude        Install Claude rules only
-  npx aayushus-skills codex         Install Codex rules only
-  npx aayushus-skills copilot       Install GitHub Copilot rules only
+  npx --yes aayushus-skills               Interactive setup wizard (default)
+  npx --yes aayushus-skills --simple      Flat checklist menu (no wizard)
+  npx --yes aayushus-skills all           Install everything directly
+  npx --yes aayushus-skills design        Install Prism Design System only
+  npx --yes aayushus-skills guidelines    Install Engineering Guidelines only
+  npx --yes aayushus-skills pm            Install Product Management Skill only
+  npx --yes aayushus-skills cursor        Install Cursor rules only
+  npx --yes aayushus-skills antigravity   Install Antigravity rules only
+  npx --yes aayushus-skills devin         Install Devin / Windsurf rules only
+  npx --yes aayushus-skills claude        Install Claude rules only
+  npx --yes aayushus-skills codex         Install Codex rules only
+  npx --yes aayushus-skills copilot       Install GitHub Copilot rules only
 
 Flags:
   -d, --dry-run    Preview what would be installed without writing files

@@ -2,7 +2,10 @@
 
 ## 1.3.x
 
-### 1.3.1 *(next)*
+### 1.3.2 *(next)*
+- Document `npx --yes` usage to avoid npm's first-run install prompt and explain npm's pre-CLI cancellation behavior
+
+### 1.3.1
 - Add API style and auth/session strategy to wizard stack questions
 - Wizard now fills 6 of the 8 "Decisions already made" entries in CLAUDE.md
 - Rename "Devin" → "Devin / Windsurf" throughout (shared rule format)
