@@ -1,14 +1,35 @@
+---
+name: documentation-standards
+description: The binding standards for documentation — what to document and what not to, ADRs, system diagrams, API documentation, READMEs, changelogs, semantic versioning, release notes, internal docs, writing style, maintenance, and per-project / per-PR checklists. Undocumented decisions become re-debated decisions; this doc is the process for recording what code alone can't carry.
+---
+
 # Documentation Standards
 
-**Version 1.0** · Last updated 17 April 2026
+**Version 2.0** · Last updated 1 July 2026
 
-This document is a reference contract for how to write the docs that code alone can't carry. Local project rules, installed agent configs, and the actual documentation structure take precedence over examples here. It covers four artefacts: **ADRs** (why we decided things), **API documentation** (how the system's contract is expressed), **READMEs** (how you start a project), and **changelogs** (what changed and why).
+This is the binding standard for how the docs that code alone can't carry get written. Deviations require an ADR ([README.md](README.md) §3 and §17 below).
 
-This is a **companion** to `Architecture.md`, `Security.md`, `Code-Quality.md`, and `Performance.md`. Those docs tell you *how* to build. This one tells you how to *record* what you built so future-you and future-teammates can understand the choices without spelunking through git history.
-
-> **See also:** [Architecture Guidelines](Architecture.md) — ADR process (§4 here cross-references §12 there), disaster recovery runbooks | [Security Guidelines](Security.md) — incident response docs, audit trail requirements | [Performance Guidelines](Performance.md) — SLO documentation, load test reports | [Code Quality Guidelines](Code-Quality.md) — inline code documentation standards
+This is a **companion** to [Architecture.md](Architecture.md), [Security.md](Security.md), [Code-Quality.md](Code-Quality.md), and [Performance.md](Performance.md). Those docs tell you *how* to build. This one tells you how to *record* what you built so future-you and future-teammates can understand the choices without spelunking through git history.
 
 **Core stance:** undocumented decisions become re-debated decisions. Undocumented APIs become guessed-at APIs. Undocumented setup becomes a three-day onboarding. The cost of writing the doc once is always less than the accumulated cost of not writing it.
+
+> **See also:** [TEMPLATE-Decision.md](TEMPLATE-Decision.md) — the canonical ADR template this doc's §4 references | [Code-Review-Playbook.md](Code-Review-Playbook.md) §4.7 — reviewer checklist for documentation | [README.md](README.md) — pack stance, deviation process, pack navigation | [Architecture.md](Architecture.md) §15 — when architectural decisions require an ADR
+
+---
+
+## Changelog
+
+**v2.0 (1 July 2026):**
+
+* **Renamed formally to "Documentation Standards"** (was already this — kept, but added the pack-wide pattern: frontmatter, changelog, version, cross-links).
+* **§4.3 ADR template no longer embedded here.** The previous version embedded a full ADR template inline. That template diverged from the canonical [TEMPLATE-Decision.md](TEMPLATE-Decision.md) in the pack — two homes, guaranteed to drift. §4.3 now describes the ADR structure and points to the template file; the template itself lives in one place.
+* **§4.8 numbering conflict fixed.** The previous version had TWO subsections numbered §4.8 ("Verification" and "ADRs vs RFCs vs Design Docs"). "Verification" had no content and has been removed; the RFC-vs-ADR-vs-design-doc distinction stays as §4.8.
+* **System diagrams (C4 model) promoted to §5.** Previously an unnumbered section between §4 and §5, invisible in the ToC. This shifted the numbers of every subsequent section by +1. Mapping: old §5 API documentation → new §6; old §6 README → §7; old §7 Changelogs → §8; old §8 Semver → §9; old §9 Release notes → §10; old §10 Internal docs → §11; old §11 Writing style → §12; old §12 Maintenance → §13; old §13 Anti-patterns → §14; old §14 Per-project checklist → §15; old §15 Per-PR checklist → §16.
+* **Stack-specific examples moved to Appendix A.** OpenAPI TypeScript imports, Prisma-specific fragments, and other tool-tied examples pushed to Appendix A. The body describes the intent; the appendix shows how it maps to specific tools.
+* **§4.4 ADR worked example kept.** The ULID worked example is genuinely instructive; a shorter version stays in the body.
+* **§17 (new) "Deviating from this standard"** — pack-wide ADR clause.
+* **YAML frontmatter added.**
+* **Cross-references updated** to reflect Architecture.md v2.0 and Security.md v2.0 renumbering.
 
 ---
 
@@ -18,35 +39,36 @@ This is a **companion** to `Architecture.md`, `Security.md`, `Code-Quality.md`, 
 2. [What to document, what not to](#2-what-to-document-what-not-to)
 3. [Documentation structure per project](#3-documentation-structure-per-project)
 4. [ADRs — Architecture Decision Records](#4-adrs--architecture-decision-records)
-5. [API documentation](#5-api-documentation)
-6. [README standards](#6-readme-standards)
-7. [Changelogs](#7-changelogs)
-8. [Semantic versioning](#8-semantic-versioning)
-9. [Release notes](#9-release-notes)
-10. [Internal documentation](#10-internal-documentation)
-11. [Writing style](#11-writing-style)
-12. [Maintenance](#12-maintenance)
-13. [Anti-patterns](#13-anti-patterns)
-14. [Per-project checklist](#14-per-project-checklist)
-15. [Per-PR checklist](#15-per-pr-checklist)
+5. [System diagrams — C4 model](#5-system-diagrams--c4-model)
+6. [API documentation](#6-api-documentation)
+7. [README standards](#7-readme-standards)
+8. [Changelogs](#8-changelogs)
+9. [Semantic versioning](#9-semantic-versioning)
+10. [Release notes](#10-release-notes)
+11. [Internal documentation](#11-internal-documentation)
+12. [Writing style](#12-writing-style)
+13. [Maintenance](#13-maintenance)
+14. [Anti-patterns](#14-anti-patterns)
+15. [Per-project checklist](#15-per-project-checklist)
+16. [Per-PR checklist](#16-per-pr-checklist)
+17. [Deviating from this standard](#17-deviating-from-this-standard)
+18. [Appendix A — Stack-specific illustrations](#appendix-a--stack-specific-illustrations)
 
 ---
 
 ## 1. Principles
 
-Six principles, in priority order.
+Five principles.
 
-**1.1 Write for future strangers.** The reader is someone who knows nothing about your project, joining next month. They're competent. They're impatient. They don't have context. Every doc should make sense to them on first read. This also happens to be you in six months, having forgotten everything.
+**1.1 Documents that go stale are worse than no documents.** A doc that once described how something worked, but now doesn't, actively lies to the reader. Every document has an owner and a review cadence; unmaintained docs are deleted, not left to rot.
 
-**1.2 Document decisions, not details.** The code shows *what*. Documentation shows *why*. "We chose Postgres over MongoDB because…" survives a decade; "we call `findById`" is obvious from reading the code and rots the moment the code changes.
+**1.2 Write for the reader you don't know.** Docs are for the engineer who joins next month, the security auditor, the future-you with no context, the AI agent trying to help. Assume none of them share your recent memory.
 
-**1.3 Keep it close to the thing.** README in the repo, not in internal wiki. API docs generated from the code, not maintained separately. ADRs (prefix `DECISION-`) at the project root, committed with the code change. Documentation that lives elsewhere drifts out of sync instantly.
+**1.3 Record decisions, not opinions.** Docs capture what we decided and why. Opinions belong in the discussion that led to the decision, not in the doc that records it.
 
-**1.4 Make it easy to write.** Templates, checklists, generators. The lowest-friction path is the path that gets used. Nobody writes a doc they have to invent the structure of.
+**1.4 Live with the code where possible.** Docs that live in the codebase (README, ADRs, module docstrings) get updated with PRs. Docs that live in a separate system (wiki, Notion) drift. Prefer in-repo unless the doc is genuinely cross-project.
 
-**1.5 Prefer less, better.** One well-maintained doc beats five stale ones. When in doubt, delete. Old docs that disagree with the code are worse than no docs — they actively mislead.
-
-**1.6 Nothing is true unless it's in writing.** Verbal agreements get re-litigated. team chat threads scroll away. Meeting notes die. If a decision matters, it goes in a doc. If the doc doesn't exist, the decision didn't happen.
+**1.5 The doc is done when a stranger can act on it.** Not when the author is happy with it. The test is: can someone new to this thing read the doc and do the thing without asking questions?
 
 ---
 
@@ -54,187 +76,140 @@ Six principles, in priority order.
 
 ### 2.1 Document
 
-- **Non-obvious decisions** — anything someone would reasonably ask "why did we do it this way?"
-- **External contracts** — APIs, CLI interfaces, file formats, webhooks, queue messages
-- **Setup and deployment** — how to run it locally, how to deploy, what env vars are needed
-- **Domain concepts that aren't self-evident** — the vocabulary specific to your product, the business rules
-- **Failure modes and recovery** — what can break, how to know it broke, how to fix it
-- **Trade-offs taken** — what was considered, what was rejected, what the consequences are
-- **The unobvious** — "this looks weird, here's why"
+* **Decisions** — why we chose this over the alternatives (ADRs).
+* **Contracts** — API shapes, event shapes, module public surfaces.
+* **Non-obvious constraints** — "this runs single-threaded because", "this needs to complete under 5s because".
+* **Operational procedures** — how to run, restart, roll back, debug in production.
+* **Domain terminology** — what "tenant", "verification", "release" mean in this system specifically.
+* **Onboarding path** — the first hour, first day, first week of a new engineer.
 
 ### 2.2 Don't document
 
-- **Obvious code** — `// increment counter` above `counter++` is noise
-- **Tutorials for the language or framework** — that's what the language's docs are for; link to them
-- **Implementation details that should be read from code** — function signatures, class members
-- **Things the code enforces** — types in TypeScript, Pydantic models in Python, database constraints
-- **Meeting notes and team chat transcripts** — distil them into an ADR if they produced a decision; otherwise leave them
-- **Anything you're likely to forget to update** — if it's not load-bearing, it'll rot and mislead
+* **What the code already says clearly.** A function called `sendVerificationEmail` doesn't need a comment saying "sends the verification email".
+* **Every method in every class.** Doc comments on obvious accessors are noise.
+* **Meeting notes as documentation.** Meetings produce decisions; the decisions become ADRs. The notes themselves are throwaway.
+* **Historic implementation details.** How the old thing worked is git history, not documentation.
+* **Tribal knowledge that changes weekly.** Rapid-change knowledge belongs in team chat, not docs.
 
 ### 2.3 The staleness test
 
-Before writing a doc, ask: "if this becomes wrong, will anyone notice?"
+For any doc, ask:
 
-- If yes → write it carefully, own it, keep it fresh.
-- If no → don't write it. Stale docs are worse than missing docs.
+* When was this last updated?
+* Would the current maintainer confirm this is still accurate?
+* Would a new engineer be misled by this?
 
-Signs a doc will go stale:
-- It duplicates information from code or config
-- It's "nice to have" rather than load-bearing
-- No single person is responsible for it
-- It describes current-state (not history / decisions)
+If the answer to the second is "no" or the third is "yes", the doc is doing harm. Fix or delete.
 
 ---
 
 ## 3. Documentation structure per project
 
-Every project has this top-level structure:
+Every project has these locations, whatever the exact filesystem layout:
 
-```
-project/
-├── README.md                    # Entry point, see §6
-├── Architecture.md              # Foundation, standards
-├── Security.md                  # Isolation, auth, encryption
-├── DECISION-Modular-Monolith.md # Example ADR
-├── Engineering-Workflow.md           # Process
-└── ...
-```
+| Location | Contains |
+| --- | --- |
+| `README.md` (root) | Quick start, overview, links to deeper docs. See §7. |
+| `CHANGELOG.md` (root) | User-visible change history. See §8. |
+| `docs/adr/` | ADRs (see §4). One markdown file per decision. |
+| `docs/architecture/` | System diagrams and architecture overview (see §5, §11.1). |
+| `docs/runbooks/` | Operational procedures (see §11.2). |
+| `docs/guides/` | Longer how-to guides (see §11.3). |
+| `openapi.yaml` or `docs/api/` | API specification (see §6). |
+| `CONTRIBUTING.md` (root) | How to contribute — setup, tests, PR expectations. |
 
-**Rules:**
-- All documentation lives at the project root for maximum visibility to LLM agents and developers.
-- No duplicate docs in internal wiki, internal wiki, or shared drive. Link to the repo from those tools if you need presence there.
-- Every subdirectory in `` has a `README.md` explaining what it contains and linking to key files.
-- Docs are markdown (`.md`), committed to the repo, reviewed via PR like code.
+Everything else in the codebase is either code, code-adjacent comments, or configuration.
 
 ---
 
 ## 4. ADRs — Architecture Decision Records
 
-An ADR is a short document that captures a single architectural decision: what was decided, why, what was considered, and what the consequences are.
+ADRs record decisions that outlive the code that implements them. They are the answer to "why does the system look this way" that new engineers, auditors, and future-you will keep asking.
 
 ### 4.1 When to write an ADR
 
-Write one when a decision:
+Write an ADR when:
 
-- **Is irreversible or expensive to reverse** — database choice, tenant model, auth strategy, primary language
-- **Has ongoing consequences** — a pattern that code will be written against for years
-- **Affects multiple teams or services** — cross-cutting conventions
-- **Was genuinely contested** — two or more sensible options and you picked one
-- **Will surprise someone later** — "why is it like this?" is likely
+* Introducing a new framework, language, database, or third-party service
+* Changing a foundational shape: tenant model, ID format, timestamp format, money representation
+* Adding a new service to the topology (see [Architecture.md](Architecture.md) §2.3)
+* Changing versioning, error, or authentication schemes
+* **Deviating from any standard in this pack** — mandatory per [README.md](README.md) §3
+* Making any decision future-you will ask "why did we do it this way?" about
 
-Don't write one for:
+Do NOT write an ADR for:
 
-- Routine code choices — "we used a for loop" isn't an ADR
-- Framework defaults — "we use the standard router" isn't an ADR
-- Reversible experiments — try it, revert if bad, document only if it sticks
+* Bug fixes
+* Refactors that preserve intent
+* Stack-specific micro-choices (which HTTP client library, which lint rule set) where the standards are silent
 
 ### 4.2 When to write it
 
-**Before merging the code that implements the decision.** The ADR is part of the change, not after-the-fact narration. Write it as you're working through the choice; it becomes your own thinking aid and the team's permanent record.
+**Before merging the code that implements the decision.** The ADR is part of the change, not after-the-fact narration. Write it as you're working through the choice; it becomes both your own thinking aid and the team's permanent record.
 
 If an ADR is discovered later (the decision predates the practice), write a retrospective one — mark it clearly as retrospective and date it both: when the decision was made and when it was documented.
 
 ### 4.3 ADR template
 
-Every ADR follows this exact template. Copy and fill in.
+The canonical template is **[TEMPLATE-Decision.md](TEMPLATE-Decision.md)**. Copy it, rename to `DECISION-Kebab-Case-Title.md`, fill it in.
 
-```markdown
-# [Short Title]: <Short title in active voice>
+The template has these sections (in order):
 
-**Date**: YYYY-MM-DD
-**Status**: Proposed | Accepted | Deprecated | Superseded by DECISION-New-Title
-**Deciders**: <names or roles>
-**Tags**: <domain, area, e.g. "database, multi-tenancy">
+* **Status** — Proposed / Accepted / Superseded by DECISION-XXXX / Deprecated
+* **Decider(s)** — the people who agreed to this
+* **Date** — YYYY-MM-DD
+* **Supersedes / Superseded by** — filled in over the ADR's lifetime
+* **Context** — the problem, constraints, and forces in play. 2–4 paragraphs.
+* **Decision** — what we're doing. One paragraph or a short bullet list. No hedging.
+* **Alternatives considered** — options considered and rejected, one per subsection. Include "do nothing" as an explicit option where applicable.
+* **Consequences** — trade-offs. Split into Positive, Negative, Neutral / to watch.
+* **Implementation notes** — optional; pointers to code, configuration, migrations. For deviations from a pack standard, this section MUST reference the specific standard and describe the compensating control.
+* **References** — related ADRs, external sources, tickets.
 
-## Context
-
-What problem are we solving? What constraints apply? What forces are in play?
-2-4 paragraphs. Describe the situation someone walking in cold would need
-to understand to make sense of the decision.
-
-## Decision
-
-What we are doing. One or two paragraphs. Active voice. Decisive.
-
-## Alternatives considered
-
-### Option A: <name>
-Short description. Pros. Cons. Why not.
-
-### Option B: <name>
-Short description. Pros. Cons. Why not.
-
-(Usually 2-4 alternatives. One-option ADRs are suspicious — you didn't think hard enough.)
-
-## Consequences
-
-### Positive
-- What becomes easier / better / possible
-
-### Negative
-- What becomes harder / worse / constrained
-
-### Neutral / to watch
-- Things we'll need to revisit
-- Conditions that would invalidate this decision
-
-## Implementation notes
-
-Optional. Pointers to the code, configuration, migrations that embody this decision.
-
-## References
-
-- Links to related ADRs
-- Links to external resources that informed the decision
-- Links to the ticket / issue that prompted it
-```
+Do not add sections to the template. Do not remove sections. If a section is not applicable, write "N/A" — that itself is signal.
 
 ### 4.4 ADR worked example
+
+A shortened but real example (full form of a real decision):
 
 ```markdown
 # DECISION-Use-ULIDs: Use ULIDs for primary keys
 
-**Date**: 2026-04-10
-**Status**: Accepted
-**Deciders**: Engineering
-**Tags**: database, ids, conventions
+**Status:** Accepted
+**Decider(s):** Engineering (2026-04-10)
+**Date:** 2026-04-10
 
 ## Context
 
-We need a primary key strategy for every application table. The product is
-multi-tenant B2B SaaS targeting 10k+ users. IDs appear in URLs, API responses,
-logs, and debugging output. They need to be:
-
-- Globally unique across tables (to support cross-module references without collision)
-- Safe to expose in URLs (no sensitive information leaked)
-- Efficient as a DB index (good locality, fixed size)
-- Sortable by creation time (useful for pagination and debugging)
+We need a primary key strategy for every application table. IDs appear
+in URLs, API responses, logs, and debugging output. They need to be:
+globally unique across tables, safe to expose in URLs (no scale leakage),
+efficient as a DB index (good locality, fixed size), and sortable by
+creation time (useful for pagination and debugging).
 
 ## Decision
 
-All primary keys are ULIDs (26-character Crockford base32, 128 bits of entropy,
-timestamp-prefix for sort order). Generated at the application layer.
+All primary keys are ULIDs (26-character Crockford base32, 128 bits of
+entropy, timestamp-prefix for sort order). Generated at the application
+layer.
 
 ## Alternatives considered
 
 ### Option A: Auto-increment integers
-Pros: compact, fast, native to most databases.
-Cons: leak row count and growth rate to anyone reading URLs; enable enumeration
-attacks; don't work across sharded systems.
+Compact, fast, native to databases. Rejected: leaks row count / growth
+rate through URLs; enables enumeration; doesn't work across shards.
 
 ### Option B: UUIDs v4
-Pros: globally unique, non-sequential, universally supported.
-Cons: not sortable by creation time; poor index locality in B-tree indexes;
-36 characters with hyphens (ugly in URLs).
+Globally unique, non-sequential, universally supported. Rejected: not
+sortable; poor B-tree index locality; 36 characters with hyphens.
 
-### Option C: UUIDs v7 (time-ordered UUIDs)
-Pros: combines UUID uniqueness with time ordering.
-Cons: only draft-standardised at decision time; library support inconsistent;
-36 characters still.
+### Option C: UUIDs v7 (time-ordered)
+Combines UUID uniqueness with time ordering. Rejected at decision time:
+only draft-standardised; library support inconsistent; still 36 chars.
 
-### Option D: ULIDs
-Pros: time-ordered, 128-bit unique, 26 chars in URL-safe base32.
-Cons: less universally recognised than UUID; requires a library (trivial).
+### Option D: Do nothing (keep whatever the ORM defaults to)
+Rejected: the default varies by ORM and by database; we'd end up with a
+mix.
 
 ## Consequences
 
@@ -242,460 +217,642 @@ Cons: less universally recognised than UUID; requires a library (trivial).
 - Cursor pagination is straightforward (ULIDs sort naturally)
 - Logs are chronologically readable
 - No row-count leakage through IDs
-- Cross-table FK references are unambiguous
 
 ### Negative
 - Small overhead vs integers in index size (26 chars vs 8 bytes)
 - Team has to know what a ULID is
 
 ### Neutral / to watch
-- If we ever shard, ULIDs still work but time-ordered locality reduces
+- If we ever shard, time-ordered locality reduces
 - Revisit if UUIDv7 gains broad ecosystem support
 
 ## Implementation notes
 
-- Prisma generator: `@default(ulid())` via `ulid` generator plugin
-- TypeScript type alias in `shared/types/ids.ts`
-- Validation regex: `/^[0-9A-HJKMNP-TV-Z]{26}$/`
+Illustrative implementation patterns (ORM generator, type alias,
+validation regex) live in Appendix A of Code-Quality.md.
 
 ## References
-
-- DECISION-Tenant-Isolation: Tenant isolation model
+- DECISION-Tenant-Isolation
 - https://github.com/ulid/spec
 ```
 
 ### 4.5 ADR lifecycle
 
-ADRs are immutable history. Once an ADR is marked as **Accepted**, you don't edit its content — you write a new one if you change your mind.
+ADRs are immutable history. Once an ADR is marked as **Accepted**, its content is not edited. If the decision changes, write a new ADR with `Supersedes DECISION-Old-Title` in its status, and update the old ADR's status to `Superseded by DECISION-New-Title`.
 
-Never delete an ADR. If you change your mind later, write a new ADR with `Supersedes DECISION-Old-Title` in its status, and update the old ADR's status to `Superseded by DECISION-New-Title`.
+Never delete an ADR. Superseded ADRs stay in the repo — the history matters.
 
-Filenames: `DECISION-Kebab-Case-Title.md`.
+Filenames: `DECISION-Kebab-Case-Title.md`. Numbering (`DECISION-014-...`) is optional; if used, do not renumber.
 
 ### 4.6 ADR status values
 
-- **Proposed** — draft, under discussion
-- **Accepted** — decided, in effect
-- **Deprecated** — no longer recommended, but still in use somewhere
-- **Superseded by DECISION-XXXX** — replaced by a newer decision
+* **Proposed** — draft, under discussion
+* **Accepted** — decided, in effect
+* **Deprecated** — no longer recommended, but still in use somewhere
+* **Superseded by DECISION-XXXX** — replaced by a newer decision
 
-An ADR's status changes over its life. When you supersede one, update the old ADR's status line; don't delete it. ADRs are immutable in content but mutable in status.
+Status changes over the ADR's life. When you supersede one, update the old ADR's status line; don't delete it. ADRs are immutable in content but mutable in status.
 
 ### 4.7 ADR index
-The root directory acts as the index for LLM agents. For humans, keep a summary in the project README or a dedicated `DECISION-Index.md` (optional).
 
-### 4.8 Verification
+The `docs/adr/` directory acts as the index. For humans, keep a summary in the project README or a dedicated `docs/adr/README.md` that lists ADRs with a one-line summary and status. Update the index when adding or superseding an ADR.
 
-### 4.8 ADRs vs RFCs vs Design Docs
+### 4.8 ADRs vs RFCs vs Design docs
 
-Sometimes these get confused. The distinctions:
+These sometimes get confused. The distinctions:
 
-- **ADR** — records a decision that has been made (or is being made). Past-to-present tense. Short (1-3 pages).
-- **RFC** (Request for Comments) — proposes a change for discussion. Future tense. Longer, with more detail on implementation.
-- **Design doc** — detailed plan for building something substantial. Often living, updated as the work progresses.
+* **ADR** — records a decision that has been made (or is being made). Past-to-present tense. Short (1–3 pages).
+* **RFC** (Request for Comments) — proposes a change for discussion. Future tense. Longer, with more detail on implementation.
+* **Design doc** — detailed plan for building something substantial. Often living, updated as the work progresses.
 
-For most projects, ADRs alone are enough. Large projects add RFCs for major changes; design docs for significant features. Don't adopt three processes when one will do.
+For most projects, ADRs alone are enough. Large projects add RFCs for major changes; design docs for significant features. Do not adopt three processes when one will do.
 
 ---
 
-## System diagrams — C4 model
+## 5. System diagrams — C4 model
 
 All architecture diagrams follow the **C4 model** (Context → Containers → Components → Code). This gives everyone a shared vocabulary and prevents diagrams that are either too abstract to be useful or too detailed to be understood.
 
-### The four levels
+### 5.1 The four levels
 
-**Level 1 — System Context (required for every project)**
-Who uses the system and what external systems does it integrate with? This is the "30,000 ft view". Audience: anyone, including non-technical stakeholders.
+| Level | What it shows | Audience |
+| --- | --- | --- |
+| **Level 1 — System Context** | The system as a single box + the users and external systems it interacts with | Non-technical stakeholders, executives, new joiners |
+| **Level 2 — Containers** | Deployable units (services, databases, queues) and how they communicate | Engineers, architects, on-call |
+| **Level 3 — Components** | Major building blocks inside a container (modules, services within a monolith) | Engineers working in that container |
+| **Level 4 — Code** | Class or function-level structure. Rarely worth maintaining by hand — generate from code if needed | Engineers modifying a component |
 
-```
-┌─────────────────────────────────────────────────────┐
-│                    System Context                   │
-│                                                     │
-│  [User: Admin] ──→ ┌──────────────┐ ──→ [Stripe]   │
-│  [User: Member] ──→│  Your App    │ ──→ [Email API] │
-│                    └──────────────┘ ──→ [AI API]    │
-└─────────────────────────────────────────────────────┘
-```
+Rule of thumb: **maintain Level 1 and Level 2 always. Maintain Level 3 for the components an on-call engineer needs to understand. Skip Level 4** unless a specific component is unusually complex.
 
-**Level 2 — Container diagram (required)**
-What are the deployable units? Web app, API, database, job queue, CDN. This is the diagram engineers use day-to-day.
+### 5.2 What to maintain
 
-```
-┌────────────────── Your App ─────────────────────────┐
-│                                                     │
-│  [Browser] → [Next.js Frontend]                     │
-│                      ↓                              │
-│             [Node.js API Server]                    │
-│              ↙          ↘                           │
-│    [Postgres DB]    [Redis / BullMQ]                │
-│                          ↓                          │
-│                  [Worker Service]                   │
-└─────────────────────────────────────────────────────┘
-```
+Every project has at least these two diagrams, kept current:
 
-**Level 3 — Component diagram (required for complex modules only)**
-What are the major components inside a single container? Use for: the API server's internal modules, the worker service's job types. Skip for simple containers.
+1. **`docs/architecture/context.md`** — the Level 1 System Context diagram. Shows the system, its users, and the external systems it depends on.
+2. **`docs/architecture/containers.md`** — the Level 2 Container diagram. Shows the deployable units, the data stores, the queues, and how they communicate.
 
-**Level 4 — Code diagram (almost never needed)**
-Class/function relationships. Git and IDE navigation handle this better than a diagram.
+More detailed diagrams (Level 3) are added per subsystem as they earn their keep.
 
-### What to maintain
+### 5.3 Diagram format
 
-| Diagram | Level | Update trigger | Tool |
-|---|---|---|---|
-| System context | L1 | New external integration | Mermaid or draw.io |
-| Container diagram | L2 | New service or database | Mermaid or draw.io |
-| Module component map | L3 | Major refactor of a core module | Mermaid or draw.io |
+Diagrams live as Mermaid, PlantUML, or Structurizr source in the repository. Source-controlled diagrams update with code. Image-only diagrams (PNGs pasted into wikis) rot.
 
-**Recommended tool: Mermaid** — diagrams live as code in the repository, diff with git, render automatically in GitHub and most wikis. No diagramming tool account required.
+### 5.4 Staleness rule
 
-### Mermaid template — container diagram
+Diagrams are re-checked at every quarterly documentation review (§13.2). A diagram that no longer matches the system is deleted, not left. A wrong diagram is worse than no diagram.
 
-```mermaid
-graph TD
-  Browser["Browser\n[Web App: Next.js]"]
-  API["API Server\n[Node.js / Express]"]
-  DB["Primary Database\n[PostgreSQL 16]"]
-  Redis["Cache + Queue\n[Redis 7]"]
-  Worker["Worker Service\n[Node.js]"]
-  Stripe["Stripe\n[External: Payments]"]
-  Email["Email Provider\n[External: Resend]"]
+### 5.5 Where diagrams live
 
-  Browser -->|"HTTPS"| API
-  API -->|"SQL / Prisma"| DB
-  API -->|"BullMQ jobs"| Redis
-  Redis -->|"Job dequeue"| Worker
-  Worker -->|"SQL / Prisma"| DB
-  API -->|"REST API"| Stripe
-  Worker -->|"REST API"| Email
-```
-
-### Staleness rule
-
-A diagram is stale if it does not match the current container topology. The staleness test (§2.3 of this document) applies to diagrams too: can a new engineer follow this diagram and deploy a working local environment? If not, update the diagram before merging.
-
-### Where diagrams live
-
-- `ARCHITECTURE-context.md` — Level 1 context diagram
-- `ARCHITECTURE-containers.md` — Level 2 container diagram + deployment notes
-- `ARCHITECTURE-modules/` — Level 3 component diagrams, one per complex module
-- Each ADR may include a before/after diagram if the decision changes the architecture
+* Container / Context diagrams: `docs/architecture/`
+* Sequence / interaction diagrams for specific features: in the ADR or design doc for that feature
+* Deployment topology: `docs/architecture/deployment.md`
 
 ---
 
-## 5. API documentation
+## 6. API documentation
 
-Every API (HTTP, GraphQL, CLI, SDK) needs documentation. If external clients (internal teams, customers, partners) will call it, doc quality is a first-class product feature — bad API docs drive people to competitors.
+### 6.1 Source of truth: the spec file
 
-### 5.1 Source of truth: the spec file
+The OpenAPI (or equivalent) specification is the source of truth for the API. Two directions:
 
-For HTTP APIs: **OpenAPI 3.1** (formerly Swagger). Generated from the code where possible; hand-maintained where not. Stored in the repo at `API-openapi.yaml` or `API-openapi.json`.
+* **Spec-first** — you write the OpenAPI YAML/JSON, then the server implements it. Types and client SDKs are generated from the spec.
+* **Code-first** — you annotate the server code, and the spec is generated. Types and clients are generated from the extracted spec.
 
-For GraphQL: the schema file itself is the spec. Add descriptions to every type and field via schema comments.
+Both are acceptable; pick one per project via ADR. What's not acceptable is having neither — an API without a machine-readable spec is an API nobody can safely integrate with.
 
-For CLIs: `--help` output, plus a `API-cli.md` reference.
+### 6.2 What every endpoint documents
 
-For SDKs: inline doc comments in the source, generating to typed stubs that users' IDEs pick up automatically.
+For every endpoint, the spec records:
 
-### 5.2 OpenAPI generation approaches
+* **Path, method, tags.**
+* **Summary** — one-line human-readable purpose.
+* **Description** — longer explanation of what the endpoint does, when to use it, edge cases.
+* **Request parameters** — path, query, headers, body — each with type, required/optional, description, and an example.
+* **Response schemas** — one per status code, with an example.
+* **Error responses** — every `code` the endpoint can return, per the error envelope in [API-Design.md](API-Design.md) §3.1.
+* **Auth requirements** — which scheme, which scopes.
+* **Rate limits** — if different from the default.
+* **Deprecation status** — if applicable, with sunset date.
 
-Pick one approach per project and commit:
+### 6.3 Error documentation
 
-**Code-first** — decorators / types on the routes generate the spec.
-- Node: `zod-to-openapi`, `express-openapi`, `fastify`'s schema, NestJS's `@nestjs/swagger`
-- Python: FastAPI generates spec automatically from type hints
-- Pro: spec is always in sync with code
-- Con: decorator noise, limited expressiveness
+Every registered `error.code` from [API-Design.md](API-Design.md) §3.1 has a short description in the API documentation: what triggers it, what the client should do about it, and any related `details` fields.
 
-**Spec-first** — write OpenAPI YAML by hand, generate server stubs and client SDKs from it.
-- Tools: `openapi-generator`, `orval`
-- Pro: spec is the contract, code implements it
-- Con: more ceremony, requires discipline to keep in sync
+### 6.4 Deprecation and sunsetting
 
-**Hybrid** — schemas from code, spec metadata from YAML.
-- Works well with Zod + `zod-to-openapi`
-- Best of both for most projects
+* Mark endpoints `deprecated: true` in the spec.
+* Add `Deprecation: true` and `Sunset: <RFC 1123 date>` response headers to the deprecated endpoints.
+* Log every request to a deprecated endpoint with the client ID / API key so integrators can be notified.
+* Sunset date must give at least the pack-wide minimum (12 months; 18 for enterprise clients) — see [Architecture.md](Architecture.md) §5.11.
 
-Pick code-first as the default unless you have multiple consumers needing strong contracts up front.
+### 6.5 API reference site
 
-### 5.3 What every endpoint documents
+The rendered spec is published to a documentation portal, refreshed on every deploy. Options: Redoc, Stoplight, Scalar, Swagger UI — any of them works; pick one and stick with it.
 
-- **Path and method** — obvious, but documented
-- **Summary** — one line, verb phrase: "List records", "Verify a record"
-- **Description** — 1-3 sentences of context. When would you call this? What happens?
-- **Parameters** — every query, path, header parameter: name, type, required, description, example
-- **Request body** — schema with every field typed and described
-- **Responses** — every status code the endpoint can return, with response schema per code
-- **Errors** — what `code` values in the error envelope this endpoint can emit
-- **Authentication** — which scheme applies (session, API key, OAuth, public)
-- **Rate limits** — per-second / per-hour caps if non-default
-- **Idempotency** — whether the endpoint is idempotent, supports `Idempotency-Key`
-- **Examples** — at least one successful request/response, one error
+### 6.6 SDK and client generation
 
-### 5.4 OpenAPI example
+For public APIs, publish typed client SDKs generated from the spec. Regenerate on every version bump. Do not hand-write clients — they will drift from the spec.
 
-```yaml
-paths:
-  /api/v1/records/{recordId}:
-    get:
-      operationId: getRecord
-      summary: Get a record
-      description: |
-        Retrieves a record by its ULID. The record must belong to the
-        authenticated tenant; otherwise the endpoint returns 404 (never 403,
-        to prevent existence-leak).
-      tags: [records]
-      security:
-        - sessionAuth: []
-        - apiKeyAuth: [record.read]
-      parameters:
-        - name: recordId
-          in: path
-          required: true
-          description: The ULID of the record
-          schema:
-            type: string
-            pattern: '^[0-9A-HJKMNP-TV-Z]{26}$'
-          example: '01HXYZABCDEFGHJKMNPQRSTVWX'
-      responses:
-        '200':
-          description: The record was found and returned
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Record'
-              examples:
-                verified:
-                  value:
-                    id: '01HXYZABCDEFGHJKMNPQRSTVWX'
-                    name: 'Acme Project'
-                    status: 'verified'
-                    createdAt: '2026-01-15T10:30:00.000Z'
-        '404':
-          description: Not found (or not accessible to this caller)
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-              examples:
-                notFound:
-                  value:
-                    error:
-                      code: 'NOT_FOUND'
-                      message: 'Record 01HXYZ... not found'
-                      correlationId: '01HQKR0E7C8K3TD9S2FP6NB4VA'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '429':
-          $ref: '#/components/responses/RateLimited'
-```
+Illustrative OpenAPI configuration and generation examples are in Appendix A.
 
-### 5.5 Error documentation
+### 6.7 Webhook documentation
 
-The error envelope is standard (see architecture §5.5). The list of possible `code` values per endpoint is not — document them explicitly.
+Webhooks the API sends outward are documented as thoroughly as inbound endpoints:
 
-```markdown
-## Error codes for /api/v1/records
+* Event names and when each fires
+* Payload schema
+* Retry behaviour and dead-letter behaviour ([API-Design.md](API-Design.md) §4.2)
+* Signature verification steps ([Security.md](Security.md) §5.7)
+* Idempotency key semantics ([API-Design.md](API-Design.md) §4.1)
 
-| Code | Status | Meaning | Endpoint |
-|---|---|---|---|
-| `RECORD_NOT_FOUND` | 404 | Record doesn't exist or caller has no access | GET, PATCH, DELETE |
-| `RECORD_INVALID_STATUS_TRANSITION` | 409 | Can't change status from current to requested | PATCH /status |
-| `RECORD_REFERENCE_DUPLICATE` | 409 | A record already exists with this reference number | POST |
-| `RECORD_VALIDATION_FAILED` | 400 | Request body failed validation | POST, PATCH |
-```
+### 6.8 Changelog for the API
 
-### 5.6 Deprecation and sunsetting
+The API has its own changelog separate from the application changelog. It records:
 
-When deprecating an endpoint or version:
+* Breaking changes (with the version bump)
+* New endpoints and fields
+* Deprecated endpoints and their sunset dates
+* Behavioural changes that clients might notice even without a version bump
 
-1. Mark it in OpenAPI: `deprecated: true` with a `description` explaining the migration path
-2. Return HTTP headers: `Deprecation: true`, `Sunset: <RFC 1123 date>`, `Link: <migration guide>; rel="successor-version"`
-3. Note in the changelog with "Deprecated" heading
-4. Communicate to known consumers
-
-See architecture §5.11 for the full breaking-change protocol.
-
-### 5.7 API reference site
-
-Render the OpenAPI spec to a browsable reference:
-
-- **Scalar** — modern, fast, minimal, open-source
-- **Redoc** — mature, customisable
-- **Stoplight Elements** — feature-rich
-- **Swagger UI** — classic, interactive "try it out"
-
-Host at a stable URL (`https://api.example.com/docs` or `https://docs.example.com/api`). Regenerate on every deploy so the docs match production.
-
-### 5.8 SDK and client generation
-
-If you publish client SDKs, generate them from the OpenAPI spec — don't hand-write them, they drift immediately.
-
-Tools:
-- **OpenAPI Generator** — many languages, opinionated output
-- **Orval** (TypeScript) — generates React Query hooks directly
-- **Heyapi** — newer, actively maintained TypeScript generator
-
-Publish SDKs versioned alongside the API. SDK v2 pairs with API v2.
-
-### 5.9 Webhook documentation
-
-Webhooks are APIs that you call (outbound). Document them with equal rigour:
-
-- Event name and version
-- Payload schema
-- Signing mechanism (see security §5.7)
-- Retry behaviour (how often, max attempts)
-- Example payload
-- How to verify signature (with code in common languages)
-
-### 5.10 Changelog for the API
-
-API changes get their own section in the main changelog OR a separate `API-CHANGELOG.md`. Mark every change as:
-
-- **Breaking** — requires a new API version
-- **Additive** — new endpoint, new optional field, new status code
-- **Deprecation** — still works, but going away by date X
+The API changelog is what integrators consume; keep it current.
 
 ---
 
-## 6. README standards
+## 7. README standards
 
-The README is the front door. If it's bad, people bounce. Most open-source projects live or die on README quality; internal projects have the same truth, just with captive users.
+Every project — every repository, every module inside a monorepo — has a README. If you have to explain what a project is verbally, you're missing a README.
 
-### 6.1 The README template
+### 7.1 The README covers
 
-Every project has a README with these sections, in this order:
+In order:
 
-```markdown
-# Project Name
+1. **Name and one-line description** — what this is, in one sentence.
+2. **Quick start** — the shortest path from clone to running. Ideally under 5 minutes and 5 commands.
+3. **What it is** — a paragraph or two on what the project does and why it exists.
+4. **How it works** — high-level architecture with a Level 2 C4 diagram or equivalent.
+5. **Requirements** — languages, runtimes, external services, credentials required.
+6. **Setup** — full setup steps, more detailed than Quick Start; expected to work first time.
+7. **Usage** — how to run tests, dev server, deploy.
+8. **Project structure** — annotated view of the top-level directories.
+9. **Configuration** — environment variables and their meaning; the value of `.env.example` is what's in the README, not what's in the file.
+10. **Contributing** — pointer to `CONTRIBUTING.md`, or inline if trivial.
+11. **License** — one line, pointing at LICENSE.
 
-One-sentence description. What does this project do, for whom.
+### 7.2 README rules
 
-[![CI status]] [![Coverage]] [![Latest release]]  <!-- optional badges -->
+* **First words matter.** The reader knows nothing; open with what this is, not with the badges.
+* **Copy-paste-able commands.** Every shell command is in a fenced block so it's clearly a command.
+* **No dead links.** Every link is checked at PR review.
+* **No pictures where words work.** Screenshots rot faster than diagrams; use them for genuine UI reference, not as decoration.
+* **No inspirational quotes, no acronyms without definition, no "TL;DR" (write the DR shorter instead).**
 
-## Quick start
+### 7.3 Quick Start test
 
-The 3-5 commands to go from `git clone` to running locally. If someone can't
-run your project in 5 minutes, this section is broken.
+Regularly (every quarter, at minimum) run the Quick Start on a fresh machine. If it doesn't work, that's a P1 — the README is lying.
 
-## What it is
+### 7.4 Screenshots and diagrams
 
-2-4 paragraphs. The pitch. Who uses it, what problem it solves, what it is
-not. Include a screenshot or demo gif if the project has a UI.
+* Include a Level 2 architecture diagram for anything more complex than a single service.
+* If the product has a UI, include one representative screenshot near the top so readers see what they're getting.
+* Diagrams live in `docs/architecture/`, referenced from the README.
 
-## How it works
+### 7.5 Badges
 
-High-level architecture. 1-2 paragraphs plus maybe a diagram. Pointers to
-more detailed docs in `architecture.md`.
+Optional. If used: only badges that reflect current, meaningful status (build passing, test coverage, latest release). Badges that stay green because nobody's noticed the check is broken are worse than no badges.
 
-## Requirements
+### 7.6 When the project is part of a larger repo
 
-- Node 20+ / Python 3.12+ / whatever
-- Postgres 16
-- Redis 7
-- any external accounts / API keys needed
-
-## Setup
-
-Step-by-step setup for local development. Include:
-- Cloning
-- Installing dependencies
-- Setting up environment variables (with pointer to `.env.example`)
-- Running the database / services
-- Running the app
-
-## Usage
-
-The most common things a user / developer does:
-- How to call the API (or use the CLI, or open the UI)
-- How to run tests
-- How to run linter
-- How to build for production
-
-## Project structure
-
-High-level directory overview. Key files and what they do.
-
-## Configuration
-
-Environment variables reference. What each one does, what values it accepts,
-whether it's required.
-
-## Contributing
-
-Link to CONTRIBUTING.md, or inline for small projects:
-- Branch naming
-- Commit message format
-- How to open a PR
-- Code of conduct
-
-## License
-
-SPDX identifier and link to LICENSE file.
-```
-
-### 6.2 README rules
-
-- **Keep it under 500 lines.** Longer READMEs aren't read. Link to deeper docs in ``.
-- **Start with the pitch, not the history.** Nobody cares how you got here on first read.
-- **Code blocks with copy-paste-ready commands.** Never pseudocode.
-- **Assume the reader is competent.** Don't explain git. Do explain project-specific conventions.
-- **Keep it current.** README rot is the loudest signal of project rot. Update when things change; CI can check that commands in the Quick Start section actually work.
-
-### 6.3 Quick Start test
-
-The single most important part of a README. Test it regularly.
-
-Process: have someone unfamiliar with the project follow the Quick Start from scratch on a clean machine. Time them. Note where they get stuck. Fix those steps. Repeat every 6 months.
-
-If the process takes more than 10 minutes, the Quick Start is broken.
-
-### 6.4 Screenshots and diagrams
-
-For UI projects: include 1-3 screenshots in the README. Current, not aspirational.
-
-For system projects: one simple architecture diagram. Use:
-- **Mermaid** — renders on GitHub, diagrams-as-code
-- **PlantUML** — similar
-- **Excalidraw** — export as SVG, commit the file
-
-Don't commit PNG screenshots produced by a tool no one on the team has. Keep diagrams editable.
-
-### 6.5 Badges
-
-Useful if used sparingly (≤ 5): CI status, latest release, coverage, license. Badges above this become decoration and noise.
-
-```markdown
-![Build](https://github.com/org/repo/actions/workflows/ci.yml/badge.svg)
-![Coverage](https://img.shields.io/badge/coverage-87%25-green)
-![Version](https://img.shields.io/github/v/release/org/repo)
-![License](https://img.shields.io/badge/license-MIT-blue)
-```
-
-### 6.6 When the project is part of a larger repo
-
-Monorepos have a root README *and* per-package READMEs. The root README:
-- Describes the whole repo
-- Lists packages with one-line descriptions
-- Quick Start for the common case (run everything locally)
-
-Each package's README:
-- Describes just that package
-- Quick Start for that package alone
-- Package-specific configuration
-
-Don't duplicate content. Link.
+Monorepo modules each have their own README. The root README explains the monorepo shape and points at the module READMEs. Do not duplicate module content in the root.
 
 ---
 
-## 7. Changelogs
+## 8. Changelogs
 
-A changelog is the record of what changed in each release, written for humans. It's not the git log, it's not the commit history, it's not the release tag. It's a curated, human-readable summary.
+### 8.1 Format
 
-### 7.1 Keep a Changelog format
+Follow the **Keep a Changelog** format (keepachangelog.com). Every project's `CHANGELOG.md` opens with a link to that spec so contributors know what format to write in.
 
-Use the `keepachangelog.com` format. It's the de facto standard, parsers exist for it, humans read it naturally.
+### 8.2 Section headings
+
+Standardised categories, in this order:
+
+* **Added** — new features
+* **Changed** — changes in existing functionality
+* **Deprecated** — soon-to-be removed features
+* **Removed** — removed features
+* **Fixed** — bug fixes
+* **Security** — security-relevant fixes
+
+Only include categories that have entries. Empty categories are noise.
+
+### 8.3 Entry format
+
+Each entry is one line, past tense, action-first. Include a ticket / PR reference where applicable.
+
+Good:
+
+> * Added tenant-scoped API key permissions (SEAL-123)
+> * Fixed duplicate emails on password reset (#4218)
+
+Bad:
+
+> * We added a new feature to help users manage things
+> * Some fixes and improvements
+
+### 8.4 What gets a changelog entry
+
+* Anything a user, customer, integrator, or downstream service will notice.
+
+What does NOT get a changelog entry:
+
+* Refactors that don't change behaviour
+* Internal test-only changes
+* Documentation-only changes (unless they're user-facing docs)
+* Version bumps of dependencies with no behavioural impact
+
+### 8.5 Breaking changes
+
+Breaking changes are called out under a `### ⚠️ Breaking changes` heading at the top of the release entry, before Added / Changed / etc. They also require a corresponding major version bump per §9.
+
+Every breaking change entry includes: what changed, what to do about it, and a link to the migration guide.
+
+### 8.6 When to update the changelog
+
+**In the same PR that makes the change.** Not "batched at release time" — that guarantees the changelog is incomplete because someone forgets.
+
+If a PR's changes are entirely internal (no user-visible effect), the PR description explicitly says "no changelog entry" so a reviewer can confirm.
+
+### 8.7 Release process
+
+At release time:
+
+1. Move everything under `## [Unreleased]` to a new versioned heading with the release date.
+2. Create a new empty `## [Unreleased]` at the top.
+3. Tag the release commit with the version number.
+
+Illustrative changelog format is in Appendix A.
+
+### 8.8 Machine-readable changelog
+
+For public APIs and SDKs, a machine-readable changelog (JSON alongside the markdown) allows integrators to programmatically detect changes affecting them. Publish it if you have downstream consumers who would use it.
+
+---
+
+## 9. Semantic versioning
+
+### 9.1 The semver contract
+
+**MAJOR.MINOR.PATCH.**
+
+* **MAJOR** — incompatible / breaking changes to the public API
+* **MINOR** — new functionality in a backwards-compatible manner
+* **PATCH** — backwards-compatible bug fixes
+
+The contract is with the consumer of the "public API". Whatever the version says, the change must match.
+
+### 9.2 Pre-release and build metadata
+
+* `1.2.3-rc.1` — pre-release
+* `1.2.3+20260410.abc123` — build metadata
+
+Pre-releases are for testing candidates; do not use them for internal deployment tracking. Build metadata is fine for CI tags.
+
+### 9.3 Versioning apps vs libraries
+
+* **Libraries and SDKs** — strict semver. Consumers depend on the contract.
+* **Applications** (deployed as services) — semver still helps, but "breaking change" is defined against the API you expose, not against internal changes.
+
+### 9.4 What counts as "public API"
+
+The public API of a library is the set of exported symbols and their documented behaviour. Adding a new optional parameter is a MINOR change. Renaming a function is MAJOR. Changing the return type is MAJOR. Fixing a documented bug (i.e., changing behaviour that consumers may have depended on) is a judgment call — err on MAJOR when in doubt.
+
+For a service, the public API is the HTTP surface (see [Architecture.md](Architecture.md) §5.3), event schemas, webhook payloads, and SDK signatures.
+
+### 9.5 Zero-version (`0.x.y`)
+
+`0.x.y` versions signal instability: the public API may change at any minor version. Move to `1.0.0` when you're willing to commit to semver from that point onward — not before.
+
+---
+
+## 10. Release notes
+
+Release notes are the human-readable companion to the changelog. The changelog is dense and complete; release notes are narrative and selective.
+
+### 10.1 When you need them
+
+* Every MAJOR release (always)
+* Every MINOR release that includes features users would want to try
+* PATCH releases only if the fix is notable (a security fix, a widely-reported bug)
+
+Not every release needs release notes; every release needs a changelog entry.
+
+### 10.2 Structure
+
+* **Highlights** — 2–3 short paragraphs on what's most important in this release
+* **What's new** — the features, with screenshots where relevant
+* **Improvements** — meaningful changes that aren't features
+* **Bug fixes** — notable fixes; a general "and many others" for the long tail
+* **Breaking changes** — always, if any. What changed, why, how to migrate.
+* **Deprecated** — announcements of things to be removed in the next major
+
+### 10.3 Tone
+
+* Active voice, plain language.
+* Address the reader directly ("you can now …").
+* Show, don't tell — screenshots, short code snippets, links to guides.
+* Avoid marketing puffery. Users can tell the difference.
+
+### 10.4 Where they live
+
+* In-repo: `docs/releases/` as markdown, one file per release.
+* Rendered: on the product's public docs site, indexed by version.
+* Communicated: linked in the release announcement (email, in-app, blog).
+
+---
+
+## 11. Internal documentation
+
+### 11.1 Architecture overview (`docs/architecture/overview.md`)
+
+Every project has an architecture overview that supplements the C4 diagrams (§5) with prose:
+
+* What each container does at a high level
+* Where the trust boundaries are
+* Where the data flows
+* Which decisions in `docs/adr/` are most relevant to understanding the system
+
+Kept current at every quarterly review.
+
+### 11.2 Runbooks (`docs/runbooks/RUNBOOK-*.md`)
+
+A runbook is the answer to "we're on-call, something has gone wrong, what do we do?". Every runbook has this structure:
+
+* **When to use this** — the specific symptom or alert that triggers this runbook
+* **Prerequisites** — access, credentials, tools needed
+* **Steps** — the exact commands to run, in order, with expected output
+* **Verification** — how you know the fix worked
+* **Rollback** — what to do if the fix made it worse
+* **Escalation** — who to page if this runbook doesn't resolve it
+
+Runbooks are exercised (tabletop or actual) at least once per quarter. A runbook that hasn't been run in a year is a runbook that no longer works.
+
+Common runbooks (see [Incident-Response.md](Incident-Response.md) §8):
+
+* Database restore
+* Rollback procedure
+* DDoS mitigation
+* Secret rotation
+
+### 11.3 Guides (`docs/guides/`)
+
+Longer how-to documents for things that don't fit in the README, aren't ADRs, and aren't runbooks. Examples:
+
+* How to onboard a new tenant
+* How to add a new type of AI evaluation
+* How to migrate from one integration to another
+
+Guides are versioned alongside the code. Delete guides that no longer describe the current state.
+
+---
+
+## 12. Writing style
+
+### 12.1 Voice and tense
+
+* Active voice. "The user submits the form", not "the form is submitted by the user".
+* Present tense for describing what code does. "Returns 404 when the resource does not exist" — not "will return".
+* Past tense in ADRs for the context ("we needed a primary key strategy").
+
+### 12.2 Tone
+
+* Direct. Do not soften ("perhaps this might be a good idea") when you mean "do this".
+* Do not be cute. Documentation is not the place for jokes or pop-culture references — they age badly and confuse non-native speakers.
+* Do not be condescending. Assume the reader is competent but unfamiliar.
+
+### 12.3 Structure
+
+* Lead with the action. "To restart the service, run …" — not "The way to restart the service is by running …".
+* One idea per paragraph.
+* Use lists for enumeration, tables for comparison, prose for narrative.
+* Short sentences. If a sentence has more than one comma, it's probably two sentences.
+
+### 12.4 Code examples
+
+* Every code block is annotated with its language for syntax highlighting.
+* Examples run. Copy-paste-able. Not "// ...".
+* Show the whole minimum working example, not a fragment that assumes context.
+* Prefer real code from the codebase over invented examples — real code catches drift.
+
+### 12.5 Links
+
+* Link the first substantive reference to a term; don't over-link.
+* Prefer stable links (in-repo, semver'd public docs) over volatile ones (Slack, wiki pages that might move).
+* Broken links are a review blocker.
+
+### 12.6 Common words and phrases to cut
+
+* "Simply" — if it were simple, we wouldn't need docs. Remove.
+* "Just" — same. Remove.
+* "Basically", "essentially" — filler. Remove.
+* "Please" in imperative instructions — unnecessary. Remove.
+* "Note that" — if it's worth saying, just say it. Remove the preamble.
+
+### 12.7 Callouts
+
+Use sparingly. Callouts (info / warning / note boxes) are for genuine emphasis, not decoration. If every third paragraph is a callout, nothing stands out.
+
+### 12.8 Diagrams
+
+* Diagrams complement text; they do not replace it.
+* Every diagram has a caption explaining what it shows.
+* Diagrams are source-controlled (see §5.3).
+
+---
+
+## 13. Maintenance
+
+### 13.1 Ownership
+
+Every document has a named owner — the person accountable for its accuracy. Ownership is:
+
+* Written into the doc (typically as a footer or frontmatter field).
+* Transferred explicitly when the owner leaves the team.
+* Reviewed at the quarterly cadence (§13.2).
+
+Docs without owners are docs that will rot.
+
+### 13.2 Review cadence
+
+* **Quarterly** — every doc in `docs/` is either re-affirmed (date-stamp updated) or revised.
+* **On release** — the changelog and release notes are always current.
+* **On incident** — runbooks are updated after every incident that used them ([Incident-Response.md](Incident-Response.md) §7).
+* **On architectural change** — ADRs are written before merge; C4 diagrams are updated within the same PR.
+
+### 13.3 Deletion
+
+**A doc that is wrong is worse than no doc.** When a doc no longer describes the system:
+
+1. First choice: fix it.
+2. Second choice: delete it. A note on the previous location's index says "this used to describe X; removed on <date> because it no longer matched the system. See <replacement>".
+
+Never leave a wrong doc in place because "someone might need it eventually".
+
+### 13.4 CI enforcement
+
+Automated checks catch some staleness:
+
+* Broken markdown links fail CI.
+* README code blocks that claim to be executable are tested (dry-run or full execution).
+* OpenAPI spec is validated on every PR.
+* Docs referring to files that no longer exist fail CI.
+
+These are cheap; add them early in the project.
+
+### 13.5 Docs-as-code
+
+Docs live in the same repo as the code, get reviewed in the same PRs, get merged with the same discipline. Do not maintain docs in a separate wiki that engineers forget to update — parallel systems drift.
+
+Exception: docs that legitimately span multiple repos (org-wide standards like this pack) live in a dedicated docs repo. Even then: source-controlled, reviewed, versioned.
+
+---
+
+## 14. Anti-patterns
+
+### 14.1 The wiki graveyard
+
+Symptom: three years of Confluence pages, half of which describe systems that no longer exist. Nobody knows what's current.
+
+Reality: docs need ownership and a review cadence (§13). Wiki systems that lack this are graveyards. Fix or migrate to a docs-as-code system.
+
+### 14.2 The "we'll document it later" release
+
+Symptom: release ships without a changelog entry or updated docs. "We'll write it up next week."
+
+Reality: docs written after the fact are hallucinated docs. They describe what the author remembers, not what actually shipped. Write the docs in the same PR.
+
+### 14.3 The 47-page README
+
+Symptom: the README is 5,000 lines and covers everything from git setup to deployment to team lore.
+
+Reality: the README is the entry point, not the manual. Split into `README.md` (entry), `docs/` (specifics). See §7.1.
+
+### 14.4 The meeting-notes-as-documentation pipeline
+
+Symptom: decisions get recorded as meeting notes in a wiki. Nobody can find the current decision because there are five overlapping meeting notes on the same topic.
+
+Reality: meetings produce decisions; decisions become ADRs. The notes themselves are throwaway. See §4.
+
+### 14.5 The "let's just use the code comments" stance
+
+Symptom: no external docs. All context lives in inline comments and commit messages.
+
+Reality: some things (why, alternatives considered, cross-service invariants) don't fit in code comments. ADRs, READMEs, and API docs exist because code cannot carry that information alone.
+
+### 14.6 The stale runbook
+
+Symptom: the DDoS runbook was written in 2023. It references a monitoring tool nobody uses anymore.
+
+Reality: runbooks are exercised quarterly (§11.2). Ones that haven't been run are deleted, not preserved.
+
+### 14.7 Documentation as performance
+
+Symptom: 100-page design doc that took two weeks to write and gets read once.
+
+Reality: documentation exists to be read multiple times by different readers. Write for the reader you don't know, not for the reviewer at the design meeting. Shorter, sharper, more findable.
+
+### 14.8 The ADR log nobody reads
+
+Symptom: `docs/adr/` has 47 entries, but nobody remembers what any of them decided.
+
+Reality: an index (§4.7) with one-line summaries makes ADRs discoverable. Referencing ADRs from PRs and code comments makes them living, not archived.
+
+### 14.9 The API doc that says what the code says
+
+Symptom: `POST /entities — creates an entity`. Nothing else.
+
+Reality: docs restate what the code already tells you, without adding intent, constraints, or examples. Every endpoint needs at minimum: what it does, when to use it, edge cases, error behaviour (§6.2).
+
+### 14.10 The heroic CHANGELOG entry on release day
+
+Symptom: one person spends the afternoon before release trying to reconstruct what changed by reading git log.
+
+Reality: changelog entries land in the PR that made the change (§8.6). Release day is a merge of the `## [Unreleased]` section into a versioned heading, nothing more.
+
+---
+
+## 15. Per-project checklist
+
+For any project entering production, verify:
+
+### 15.1 Structure
+
+* [ ] `README.md` at root, current, passes Quick Start test
+* [ ] `CHANGELOG.md` at root, `## [Unreleased]` section present
+* [ ] `docs/adr/` exists with at least the initial ADRs
+* [ ] `docs/architecture/context.md` and `containers.md` exist and are current
+* [ ] `docs/runbooks/` exists with rollback, secret rotation, and any project-specific runbooks
+* [ ] `openapi.yaml` (or equivalent) exists if the project exposes an API
+
+### 15.2 Ownership
+
+* [ ] Every doc has a named owner
+* [ ] Quarterly review cadence is on someone's calendar
+
+### 15.3 Automation
+
+* [ ] Broken links fail CI
+* [ ] OpenAPI validation runs on every PR
+* [ ] Changelog entry is enforced by PR template
+
+### 15.4 Substantive
+
+* [ ] ADRs exist for the foundational decisions (tenant model, ID format, API design)
+* [ ] The Quick Start actually works on a fresh machine
+* [ ] The API docs are rendered on a public / internal doc site
+* [ ] Runbooks have been tabletop-exercised
+
+---
+
+## 16. Per-PR checklist
+
+For every PR, the reviewer confirms (see also [Code-Review-Playbook.md](Code-Review-Playbook.md) §4.7):
+
+### 16.1 Documentation changes
+
+* [ ] Changelog updated for anything user-visible
+* [ ] README updated if setup, entry point, dependencies, or configuration changed
+* [ ] API docs updated if the API surface changed
+* [ ] Guide or runbook updated if operational behaviour changed
+
+### 16.2 ADR
+
+* [ ] ADR written for any architecturally significant decision
+* [ ] ADR follows the canonical template ([TEMPLATE-Decision.md](TEMPLATE-Decision.md))
+* [ ] ADR references any standards being deviated from
+* [ ] ADR is in the PR, not "in a follow-up"
+
+### 16.3 Quality
+
+* [ ] Code examples in docs are copy-paste-able and tested
+* [ ] Links resolve
+* [ ] Diagrams (if updated) reflect the code changes
+* [ ] Prose is direct — no "simply", "just", "basically"
+
+---
+
+## 17. Deviating from this standard
+
+Standards in this pack are binding ([README.md](README.md) §3). If a project has good reason to deviate from a documentation rule — for example, an existing repo with a wiki-based documentation system that can't be migrated in this quarter, or a legacy service that doesn't have OpenAPI — write an ADR using [TEMPLATE-Decision.md](TEMPLATE-Decision.md). State which section you're deviating from, why, what alternatives you considered, and the trade-offs. Deviations without an ADR are review blockers.
+
+For documentation deviations specifically, the ADR must include a **plan back to compliance** — documentation deviations tend to become permanent unless the ADR explicitly names the trigger and timeline for closing the gap.
+
+---
+
+## Appendix A — Stack-specific illustrations
+
+The main body of this doc is stack-agnostic. This appendix contains concrete illustrations of how the rules apply to specific stacks.
+
+### A.1 Illustrative changelog format (Keep a Changelog)
 
 ```markdown
 # Changelog
@@ -708,623 +865,153 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Record attachment verification endpoint
-- Admin comparison card showing summary averages
 
 ### Changed
-- Record scoring algorithm now uses weighted criteria (DECISION-Scoring-Algorithm)
 
 ### Deprecated
-- `/api/v1/records/search` — use `/api/v1/records?q=` instead
 
 ### Removed
-- Legacy CSV export (replaced by the export API in v2.3)
 
 ### Fixed
-- Fixed session cookie not respecting `SameSite` in Safari 16
-- Fixed N+1 query in record list endpoint
 
 ### Security
-- Upgraded bcrypt to argon2id for new password hashes (DECISION-Argon2id)
-- Patched dependency CVE-2026-12345 in `example-lib`
 
 ## [2.4.0] — 2026-04-10
 
 ### Added
-- ...
-```
-
-### 7.2 Section headings
-
-Exactly these six, in this order, when they apply. Omit empty sections.
-
-- **Added** — new features
-- **Changed** — changes to existing functionality
-- **Deprecated** — soon-to-be-removed features
-- **Removed** — features removed in this release
-- **Fixed** — bug fixes
-- **Security** — vulnerabilities patched, security improvements
-
-Don't invent new sections. Consistency makes the changelog scannable.
-
-### 7.3 Entry format
-
-One line per change, imperative mood, ending in a reference if applicable.
-
-```markdown
-### Added
-- Bulk verification endpoint `POST /api/v1/records/bulk-verify` (#142)
-- Support for additional attachment types alongside existing formats (#156)
+- Tenant-scoped API key permissions (SEAL-123)
+- ULID validation on all path parameters (SEAL-145)
 
 ### Fixed
-- Fixed rate-limit counter drift under high concurrency (#178, DECISION-Rate-Limit-Fix)
-- Fixed soft-delete cascade missing on nested task invitations
+- Duplicate emails on password reset (#4218)
+- Correlation ID missing from AI service traces (#4231)
 ```
 
-**Rules:**
-- Start with a verb: "Added", "Fixed", "Changed" — but in the entries, continue imperative: "Add X", "Fix Y", "Support Z"
-- Reference the issue / PR / ADR in parens at the end
-- Link to ADRs by identifier, not URL — the reader clicks through to the ADR index
-- Group related entries; don't interleave unrelated changes
-
-### 7.4 What gets a changelog entry
-
-Every user-visible change. If a user (end user, API consumer, operator, fellow developer) would care, it's an entry.
-
-**Yes:**
-- New features
-- Changes to behaviour of existing features
-- Bug fixes visible to users
-- API changes (any)
-- Configuration changes (new env vars, changed defaults)
-- Performance improvements users would notice
-- Security patches
-- Breaking changes (always, and always at the top)
-
-**No:**
-- Internal refactors with no behaviour change
-- Code style changes
-- Test-only changes
-- CI / tooling changes that don't affect developers
-- Dependency bumps with no user-visible effect
-
-The heuristic: if a user would ask "why does this behave differently now?", it goes in the changelog.
-
-### 7.5 Breaking changes
-
-Breaking changes are non-negotiable changelog entries — users **will** miss them if buried. Rules:
-
-- Call them out with a `### ⚠️ Breaking changes` heading first in the section
-- Describe exactly what broke and the migration path
-- Link to a migration guide if non-trivial
-
-```markdown
-## [3.0.0] — 2026-05-01
-
-### ⚠️ Breaking changes
-- **API v1 removed.** `/api/v1/*` endpoints now return 410 Gone. Migrate to v2.
-  See the migration guide for the relevant version pair, for example `MIGRATION-v1-to-v2.md`.
-- **Minimum Node version now 20.** Support for Node 18 dropped. Update your
-  Dockerfile and CI config.
-- **`record.contactEmail` field removed**, replaced by `record.contacts[]`
-  array. Existing single-email usage migrates automatically on read; writes
-  require new format.
-
-### Added
-- Multi-contact support per record
-- ...
-```
-
-### 7.6 When to update the changelog
-
-**In the PR that introduces the change.** Not "at release time, someone will write it". By release time, nobody remembers what they shipped 6 weeks ago.
-
-PR template includes a checklist item: "Changelog updated (Unreleased section)". CI can verify that `CHANGELOG.md` has been touched for non-trivial PRs — but human judgment calls what's notable.
-
-### 7.7 Release process
-
-On release:
-
-1. Move everything under `[Unreleased]` into a new section `[X.Y.Z] — YYYY-MM-DD`
-2. Keep `[Unreleased]` as an empty heading for future work
-3. Create a git tag matching the version (`vX.Y.Z`)
-4. Optionally: create a GitHub / GitLab release with the changelog section as the release notes
-
-### 7.8 Machine-readable changelog
-
-For projects that want automation, use `conventional-commits` to auto-generate changelog entries from commit messages. Tools:
-
-- `standard-version`
-- `semantic-release`
-- `changesets` (monorepo-aware)
-
-Tradeoff: less curation, more automation. For small fast-moving projects, automation wins. For products with external communication (SaaS, SDKs), hand-curate — commits aren't written for changelog consumers.
-
----
-
-## 8. Semantic versioning
-
-Every release gets a version number. The number is structured, not arbitrary.
-
-### 8.1 The semver contract
-
-Format: `MAJOR.MINOR.PATCH` — e.g. `2.4.1`.
-
-- **MAJOR** — incompatible API changes. Anything that breaks existing clients.
-- **MINOR** — new functionality, backwards-compatible. Existing clients keep working.
-- **PATCH** — backwards-compatible bug fixes. No new functionality.
-
-Examples:
-- Add a new optional field to a response → MINOR
-- Add a new endpoint → MINOR
-- Fix a bug in an existing endpoint → PATCH
-- Remove a field from a response → MAJOR
-- Change a field's type → MAJOR
-- Internal refactor, no behaviour change → no version bump (or PATCH if you must release)
-
-### 8.2 Pre-release and build metadata
-
-For pre-release versions:
-
-- `2.4.0-alpha.1` — early, unstable
-- `2.4.0-beta.2` — feature-complete, testing
-- `2.4.0-rc.1` — release candidate
-- `2.4.0` — released
-
-Build metadata after `+`: `2.4.0+20260417`. Not usually needed for application versioning.
-
-### 8.3 Versioning apps vs libraries
-
-**Libraries** — strict semver. Breaking changes are expensive for consumers; communicate them through the version number.
-
-**Applications** — semver is a weaker contract, but still useful. MAJOR for database migrations that require downtime, MINOR for notable feature releases, PATCH for bug fixes.
-
-**Monorepos** — independent versioning per package (Changesets-style) or single version for everything (Lerna's fixed mode). Pick one per repo; mixing confuses.
-
-### 8.4 What counts as "public API"
-
-For semver purposes, the public API is:
-
-- **HTTP/GraphQL endpoints** — URL, method, parameters, response shape, status codes, error codes
-- **SDK exports** — public functions, types, classes
-- **CLI** — commands, flags, output formats
-- **Webhooks** — event names, payload shapes, signing
-- **Config** — env vars, config file formats, defaults
-
-Not the public API:
-- Internal modules not exported from the SDK
-- Database schema (has its own migration discipline)
-- Log formats (unless you've committed to them)
-- Implementation details
-
-Document what is and isn't public API in the README. Semver only means something if "what breaks" is shared knowledge.
-
-### 8.5 Zero-version (`0.x.y`)
-
-Pre-1.0 versions have relaxed semver: anything can change at any time. In practice:
-
-- Use `0.x.y` for early projects where the API isn't settled
-- Treat `MINOR` bumps as potentially breaking
-- Graduate to `1.0.0` when you commit to a stable API
-
-Don't live in 0.x forever. Projects at 0.47 are signalling they don't want to commit — which signals "don't depend on us". Pick a version the API is stable at and graduate.
-
----
-
-## 9. Release notes
-
-Release notes are the public-facing, user-oriented version of a changelog entry. Where the changelog is technical and exhaustive, release notes are curated and narrative.
-
-### 9.1 When you need them
-
-- Product with end users → always (for each user-facing release)
-- Public SDK / API → always
-- Internal library → changelog alone is enough
-
-### 9.2 Structure
+### A.2 Illustrative release notes header
 
 ```markdown
 # Release 2.4.0 — 10 April 2026
 
 ## Highlights
 
-What's the headline? 1-3 bullet points of the most impactful changes. Users
-read this and nothing else; make it count.
+Tenant-scoped API key permissions are now generally available.
+See the [migration guide](https://docs.example.com/migrate/api-keys-v2).
 
 ## What's new
-
-- **Big feature name** — one paragraph explaining what it is, who it's for,
-  why it matters. Screenshot if applicable. Link to docs for more.
-- **Smaller feature** — one sentence to one paragraph.
+- Tenant-scoped API keys — see the guide above.
+- Ability to restrict API keys to specific resources.
 
 ## Improvements
-
-- Faster record list load (30% faster at p95)
-- Cleaner error messages when reference number is invalid
-- ...
+- 30% faster search on tenants with more than 10k entities.
 
 ## Bug fixes
-
-Reference the changelog's Fixed section; don't duplicate extensively.
+- Fixed duplicate emails on password reset (#4218).
 
 ## Breaking changes
-
-If any. Be loud. Link to migration guide.
+None.
 
 ## Deprecated
-
-If any.
+- The legacy `X-API-Key` header is deprecated. Migrate to `Authorization: Bearer`.
 ```
 
-### 9.3 Tone
+### A.3 Illustrative OpenAPI spec organisation
 
-Release notes are marketing-adjacent. Write them in product voice:
+```yaml
+# openapi.yaml (root)
+openapi: 3.1.0
+info:
+  title: App API
+  version: 2.4.0
+  description: |
+    Public API for App. See https://docs.example.com/api.
 
-- Users are the subject, not the system: "You can now…" not "The system now supports…"
-- Describe outcomes, not implementation: "Faster onboarding" not "Refactored registration flow"
-- Link generously: to docs, to the upgraded feature's UI, to the migration guide
-- Keep it readable — most users scan, few read fully
+servers:
+  - url: https://api.example.com/api/v1
+    description: Production
+  - url: https://api-staging.example.com/api/v1
+    description: Staging
 
-### 9.4 Where they live
+paths:
+  /entities:
+    $ref: './paths/entities.yaml'
+  /entities/{id}:
+    $ref: './paths/entities-by-id.yaml'
+  # ...
 
-- In the repo: `RELEASE-X.Y.Z.md`
-- On the website / in-app: product blog, changelog page, in-app "What's new" banner
-- Email: release-notes email to subscribers
+components:
+  schemas:
+    $ref: './schemas/index.yaml'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+```
 
-One source, many destinations. Don't hand-write the same content in multiple places.
+Paths in separate files keep the root spec navigable.
 
----
+### A.4 Illustrative OpenAPI TypeScript client generation
 
-## 10. Internal documentation
+```bash
+# One-shot generation
+npx openapi-typescript ./openapi.yaml -o ./src/generated/api.ts
 
-Covering the rest of ``: runbooks, guides, architecture overview.
+# In CI
+- name: Verify API types are in sync
+  run: |
+    npx openapi-typescript ./openapi.yaml -o /tmp/api.ts
+    diff /tmp/api.ts ./src/generated/api.ts
+```
 
-### 10.1 Architecture overview (`architecture.md`)
-
-A 1-2 page snapshot of the system. Not a replacement for ADRs — a snapshot of current state that ADRs produced.
-
-Contents:
-- High-level diagram (services, data flow)
-- Core abstractions (tenants, users, key domain entities)
-- Key ADRs (links)
-- Where to find more: code paths, runbooks, ADRs
-
-Update when structure changes significantly. Review quarterly.
-
-### 10.2 Runbooks (`RUNBOOK-`)
-
-Step-by-step instructions for operational tasks. Written for someone at 3am who may not know the system deeply.
-
-One runbook per task:
-- `database-restore.md` — how to restore from backup
-- `rotating-secrets.md` — how to rotate API keys / tokens
-- `handling-incident.md` — general incident response
-- `cert-renewal.md` — TLS certificate renewal process
-- `tenant-offboarding.md` — how to fully offboard a customer
-
-Runbook template:
+### A.5 Illustrative runbook
 
 ```markdown
-# Runbook: <task name>
-
-**Owner**: <team or role>
-**Last tested**: YYYY-MM-DD
-**Severity**: Low | Medium | High | Critical
+# Runbook: Database restore
 
 ## When to use this
-
-Conditions or alerts that trigger this runbook.
+The primary application database is unavailable and the on-call engineer
+has determined that a restore is required (see docs/adr/DECISION-DR-Strategy.md).
 
 ## Prerequisites
-
-- Access you need (credentials, VPN, etc.)
-- Tools required
-- Notifications to send before starting
+- Access to the cloud provider console (IAM role: db-admin)
+- Access to the secrets manager (permission: db-credentials.read)
+- The tenant list from the last 7 days for post-restore comms
 
 ## Steps
-
-1. **Step 1** — precise command or action
-   ```bash
-   # exact command
-   ```
-   Expected output / confirmation.
-
-2. **Step 2** — ...
+1. In the cloud console, identify the target restore point ...
+2. Restore to a staging instance first ...
+3. Verify data integrity with the smoke-query set ...
+4. Promote to primary via environment variable swap ...
 
 ## Verification
-
-How to confirm the task completed successfully.
+- Application health endpoint returns 200
+- Error rate in observability is at or below baseline
+- Sample writes succeed
 
 ## Rollback
-
-If the task goes wrong, how to undo it.
+- Re-point to the previous primary if healthy
+- Otherwise, restore to an earlier point
 
 ## Escalation
-
-Who to page / call if you're stuck.
+- Page the CTO if the restore doesn't complete in 4 hours (RTO breach)
+- Notify Legal if data loss is suspected
 ```
 
-**Rules:**
-- Test runbooks quarterly. Untested runbooks are fiction.
-- Update them after any real incident that exercised them — the lived experience always reveals gaps.
-- Every step has a concrete command or action, no "figure out".
+### A.6 Illustrative broken-links CI check
 
-### 10.3 Guides (`guides/`)
-
-Task-focused how-tos for developers:
-- `local-setup.md` — deeper than README Quick Start
-- `adding-a-feature.md` — from idea to merged PR
-- `debugging-tenant-issues.md` — how to diagnose a reported bug
-- `running-migrations.md` — the migration process, expanded
-
-Guides are longer than runbooks but less formal. Narrative, not just steps.
-
----
-
-## 11. Writing style
-
-Documentation is writing. Apply writing craft.
-
-### 11.1 Voice and tense
-
-- **Active voice.** "The worker processes the job" not "The job is processed by the worker".
-- **Present tense for current state.** "The system validates the request." not "The system will validate…"
-- **Imperative for instructions.** "Run `npm install`." not "You should run npm install."
-- **Past tense for history and ADRs.** "We chose Postgres because…"
-
-### 11.2 Tone
-
-- **Direct.** Say the thing. "This is broken" beats "It appears there may be an issue".
-- **Professional, not corporate.** Plain English. Assume the reader is competent.
-- **No hype.** "This feature is powerful" — if it's powerful, the description will show that. Adjectives are a tell.
-
-### 11.3 Structure
-
-- **One idea per paragraph.** 2-5 sentences. Break long paragraphs.
-- **Headings describe content.** "Installation" not "How to install". Be scannable.
-- **Lists for things that are actually lists.** 3+ items that are parallel. Not "I want to use a list here because it looks cleaner".
-- **Tables for comparisons.** When items have parallel attributes, table them. Prose gets cluttered.
-
-### 11.4 Code examples
-
-Every code example should:
-- **Be copy-paste runnable** (or clearly marked as pseudo-code)
-- **Have language highlighting** (`typescript`, `python`, `bash`)
-- **Be minimal.** Show the thing you're demonstrating; cut everything else.
-- **Use realistic names.** `recordId` not `someId`. Avoids the "what's this represent?" pause.
-
-Bad:
-```ts
-const x = await foo(y);
+```yaml
+# .github/workflows/docs.yml
+name: Docs
+on: [pull_request]
+jobs:
+  linkcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: lycheeverse/lychee-action@v2
+        with:
+          args: '--verbose --no-progress ./**/*.md'
 ```
 
-Good:
-```ts
-const record = await db.record.findUnique({ where: { id: recordId } });
-```
-
-### 11.5 Links
-
-- **Link the first mention** of an external concept. Subsequent mentions don't need a link.
-- **Use descriptive link text.** "See the tenant isolation ADR (`DECISION-Tenant-Isolation.md`)" not "see here".
-- **Link to specific sections**, not whole pages, when pointing at a single idea (`#section-id`).
-- **Avoid "click here".**
-
-### 11.6 Common words and phrases to cut
-
-- **"Simply"** — if it were simple, you wouldn't be explaining it
-- **"Just"** — usually minimises what the reader faces
-- **"Obviously"** — if it were obvious, the doc wouldn't exist
-- **"Easy"** — claim earned, not declared
-- **"Note that"** — usually removable; if the note is important, put it in a callout
-- **"Please"** — in instructions, reads as pleading
-
-### 11.7 Callouts
-
-Use these to surface important info without hiding it in prose:
-
-```markdown
-> **Note**: This behaviour differs from v1. See the migration guide.
-
-> **Warning**: This operation cannot be undone.
-
-> **Security**: This endpoint requires admin role. See §3.
-```
-
-Don't overuse. If everything is a callout, nothing is.
-
-### 11.8 Diagrams
-
-Preferred tools:
-- **Mermaid** — text-based, renders on GitHub and most docs platforms
-- **PlantUML** — similar, more features
-- **Excalidraw** — for looser sketches; commit the `.excalidraw` source alongside the PNG export
-- **Miro / design tool** — for rich diagrams, but export and commit the image
-
-Diagrams go out of date faster than code. Only create them when they add genuine clarity. A small, current diagram beats an elaborate, stale one.
-
 ---
 
-## 12. Maintenance
-
-Docs rot. Without maintenance, the whole system loses trust — once one doc is wrong, readers stop trusting any doc.
-
-### 12.1 Ownership
-
-Every doc has an owner (a team, a role, a person). The owner is responsible for keeping it current. Encode it in the doc's frontmatter:
-
-```markdown
----
-owner: platform-team
-last-reviewed: 2026-04-01
----
-```
-
-### 12.2 Review cadence
-
-| Doc type | Review cadence |
-|---|---|
-| README | Quarterly + when Quick Start changes |
-| Architecture overview | Quarterly |
-| ADRs | Never (immutable) — but status changes anytime |
-| API reference | Automated from code; manual review of quality quarterly |
-| Runbooks | Quarterly + after every real use |
-| Guides | Bi-annually |
-| Changelog | Per-release |
-
-Put the review in a calendar. Unscheduled reviews never happen.
-
-### 12.3 Deletion
-
-Delete aggressively. A wrong doc is worse than no doc.
-
-- If it's not useful, delete.
-- If it's outdated and no one will fix it, delete.
-- If it duplicates another doc, delete the duplicate.
-
-Git remembers. If you need it back, `git log` finds it.
-
-### 12.4 CI enforcement
-
-- Links checked (`lychee` or `markdown-link-check`) on CI
-- Spelling checked (`cspell`) if you're picky
-- Code blocks in docs compile / run (`doctest`-style for Python, markdown snippet tests for TS)
-- Quick Start commands tested (e.g., `make doc-test`)
-
-Don't build an elaborate pipeline upfront. Add one check at a time, each triggered by a real incident of drift.
-
-### 12.5 Docs-as-code
-
-Documentation follows the same process as code:
-
-- Written in markdown
-- Committed to the repo
-- Reviewed via PR
-- Merged through standard workflow
-- Deployed / rendered automatically
-
-"Docs as code" isn't a fancy stack — it's treating docs with the same seriousness as code.
-
----
-
-## 13. Anti-patterns
-
-Doc practices that look responsible and aren't.
-
-### 13.1 The wiki graveyard
-
-Symptom: a company internal wiki / internal wiki with hundreds of pages, 80% outdated, 10% wrong, 10% useful. Nobody knows which is which.
-
-Reality: centralised wikis encourage quantity over quality. Prefer docs in the repo, owned by the team that owns the code.
-
-### 13.2 The "we'll document it later" release
-
-Symptom: feature ships, docs come in a follow-up PR "next week". Next week never comes.
-
-Reality: docs ship with the code or not at all. PRs require the changelog entry, the ADR (if applicable), and the updated README / API doc as part of the same merge.
-
-### 13.3 The 47-page README
-
-Symptom: README that tries to be everything — pitch, docs, contribution guide, tutorials, API reference.
-
-Reality: READMEs are front doors, not entire houses. Keep under 500 lines. Link to deeper docs.
-
-### 13.4 The meeting-notes-as-documentation pipeline
-
-Symptom: "I wrote it up in the design review doc." Decisions buried in 30-page meeting transcripts nobody reads.
-
-Reality: distil decisions into an ADR. The meeting notes can die; the ADR survives.
-
-### 13.5 The "let's just use the code comments" stance
-
-Symptom: pushing back on doc writing because "good code doesn't need docs".
-
-Reality: code shows what. Docs explain why. They don't replace each other. Neither is sufficient alone.
-
-### 13.6 The stale runbook
-
-Symptom: runbook written in 2023, never tested, paged on at 3am, doesn't work.
-
-Reality: untested runbooks are fiction. Test quarterly. Rotate who tests so knowledge spreads.
-
-### 13.7 Documentation as performance
-
-Symptom: lavish docs for features nobody uses. Zero docs for the features everyone uses.
-
-Reality: docs follow usage, not author vanity. Document what matters to users.
-
-### 13.8 The ADR log nobody reads
-
-Symptom: hundreds of ADRs, indexed, filed, never referenced.
-
-Reality: ADRs are for future questions ("why is it like this?"). If they're not being linked to from PR reviews, runbooks, and onboarding docs, they're not doing their job. Link them; cite them.
-
-### 13.9 The API doc that says what the code says
-
-Symptom: API docs autogenerated with zero descriptions. Every endpoint is "Get record" with no explanation of when to call it, what it returns in edge cases, what the error codes mean.
-
-Reality: autogeneration gives you shape. Humans fill in the *why*. Descriptions, examples, error docs, usage notes — those are the doc.
-
-### 13.10 The heroic CHANGELOG entry on release day
-
-Symptom: "Let's write the changelog for this release" → someone reads all 87 PRs merged since last release → takes half a day → shipped changelog is bland and misses context.
-
-Reality: update as you go. Every PR touches `CHANGELOG.md`. Release is a matter of moving `[Unreleased]` to a versioned heading.
-
----
-
-## 14. Per-project checklist
-
-For every new project:
-
-### Structure
-- [ ] `README.md` exists and passes Quick Start test
-- [ ] `LICENSE` file present
-- [ ] `CHANGELOG.md` exists (even if just `[Unreleased]` section)
-- [ ] `` directory structured as §3
-- [ ] `.github/PULL_REQUEST_TEMPLATE.md` exists with checklist references
-
-### Ownership
-- [ ] Every doc has an owner (frontmatter or index)
-- [ ] Review cadence set in the team's calendar
-
-### Automation
-- [ ] Link checking in CI
-- [ ] README Quick Start tested in CI where feasible
-- [ ] API docs generate on every merge to main
-- [ ] Changelog entry required in PR template
-
-### Substantive
-- [ ] Architecture overview written
-- [ ] First ADRs for foundational decisions written
-- [ ] At least one runbook for the most common operational task
-- [ ] API documentation published (if API exposed)
-- [ ] Release process documented
-
----
-
-## 15. Per-PR checklist
-
-For every non-trivial PR:
-
-### Documentation changes
-- [ ] `CHANGELOG.md` updated under `[Unreleased]`
-- [ ] README updated if setup / usage / config changed
-- [ ] API docs updated if endpoints changed (or verified auto-gen is correct)
-- [ ] Runbook updated if operational behaviour changed
-
-### ADR
-- [ ] ADR written if this PR implements a significant architectural decision
-- [ ] ADR status updated if this PR supersedes a previous decision
-
-### Quality
-- [ ] Links in new/changed docs resolve
-- [ ] Code examples are current and runnable
-- [ ] New docs follow the writing style (§11)
-- [ ] No stale information introduced
-
-If every box is ticked: ready to merge. If any are unticked: fix before requesting review.
-
----
-
-*End of document. Changes require a version bump in the header. Documentation standards are reviewed annually — the doc evolves with the team's practice.*
+*Owner: Gaurav Bhatnagar · Next review: 1 October 2026*
