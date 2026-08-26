@@ -1,12 +1,15 @@
 {
   "name": "aayushus-skills",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "description": "Interactive setup wizard to scaffold independent AI agent configs, Prism design system, engineering guidelines, and PM skill into any project.",
   "main": "cli.js",
   "bin": {
     "aayushus-skills": "cli.js"
   },
   "type": "commonjs",
+  "scripts": {
+    "test": "node --check cli.js && npm pack --dry-run"
+  },
   "files": [
     "cli.js",
     "agent-config/CLAUDE.md",

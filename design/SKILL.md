@@ -33,7 +33,7 @@ Load and follow **`PRISM_MANIFESTO.md`** for every task. It contains:
 | `components.tsx` | Use as the primary React component library. |
 | `components.css` | Stylesheet backing the component library. |
 | `mobile.css` | Mobile overrides for the component library. |
-| `Icons.tsx` | Core icon set (Sparkle is the only AI glyph). |
+| `Icons.tsx` | Core icon set (Prism is the single AI glyph). |
 
 ### Patterns & Component Specs
 | File | Load when |
@@ -56,6 +56,8 @@ Load and follow **`PRISM_MANIFESTO.md`** for every task. It contains:
 | `tokens.md` | Looking up a specific token value or WCAG contrast ratio. |
 | `implementation-guide.md` | Implementing dark mode, adding tokens, or checking spacing/radius rules. |
 | `checklist.md` | Before shipping — run the full pre-ship audit. |
+| `docs/guidelines/quality-performance/performance-budgets.md` | Checking JS/CSS bundle size budgets (≤170KB/≤30KB) and Core Web Vitals. |
+| `docs/guidelines/security/ai-security.md` | Enforcing AI provenance security and output sanitization rules. |
 
 ## Autonomous Workflow
 

@@ -40,9 +40,10 @@
 - **Secrets**: Store in a secrets manager (e.g., environment variables, Doppler, AWS Secrets Manager) — never in code, never logged.
 - **Session rotation**: Rotate session tokens on login, logout, MFA events, and role changes.
 
-### Input validation
+### Input validation & AI security
 - Validate 100% of inputs at all system boundaries (HTTP, queue, file upload) using a schema validator (e.g., Zod, Pydantic) with strict/no-extra-keys mode.
 - All strings must have a max length — prevents DoS.
+- Never execute raw LLM-generated code or SQL directly without strict validation; scrub PII before calling external model providers.
 
 ### Async & queuing
 <!-- CUSTOMIZE: Replace BullMQ with your project's queue technology -->
@@ -74,11 +75,25 @@
 
 | Task | File to read |
 |---|---|
-| New service, module extraction, DB schema | If installed: `docs/guidelines/Architecture.md` |
-| Auth, file upload, AI integration, external API | If installed: `docs/guidelines/Security.md` |
-| Tests, refactoring, PR review | If installed: `docs/guidelines/Code-Quality.md` |
-| Performance, caching, queries | If installed: `docs/guidelines/Performance.md` |
-| ADRs, READMEs, API docs | If installed: `docs/guidelines/Documentation.md` |
+| Service boundaries, domain modules, topology | If installed: `docs/guidelines/architecture/service-topology.md` |
+| Database schema, migrations, tenancy isolation | If installed: `docs/guidelines/architecture/database-and-tenancy.md` |
+| Background jobs, queue reliability, retries | If installed: `docs/guidelines/architecture/async-and-queues.md` |
+| Auth, session lifecycle, RBAC permissions | If installed: `docs/guidelines/security/auth-and-sessions.md` |
+| Input validation, sanitization, injection defense | If installed: `docs/guidelines/security/input-validation.md` |
+| Secrets management, crypto, token generation | If installed: `docs/guidelines/security/secrets-and-crypto.md` |
+| AI security, prompt injection, PII scrubbing | If installed: `docs/guidelines/security/ai-security.md` |
+| REST API endpoints, JSON envelopes, rate limiting | If installed: `docs/guidelines/api/api-contracts.md` |
+| Webhook delivery, signing, idempotency keys | If installed: `docs/guidelines/api/webhooks-and-events.md` |
+| Unit & integration test strategy, mocking, DB isolation | If installed: `docs/guidelines/testing/testing-strategy.md` |
+| E2E browser flows, AI evaluation sets | If installed: `docs/guidelines/testing/e2e-and-ai-testing.md` |
+| TypeScript conventions, Result error types, limits | If installed: `docs/guidelines/quality-performance/code-standards.md` |
+| Latency budgets, caching layers, bundle limits | If installed: `docs/guidelines/quality-performance/performance-budgets.md` |
+| Structured JSON logging, correlation IDs, tracing | If installed: `docs/guidelines/quality-performance/observability.md` |
+| Production incidents, severity levels, post-mortems | If installed: `docs/guidelines/operations/incident-response.md` |
+| Git workflow, PR sizing (<300 lines), feature flags | If installed: `docs/guidelines/operations/git-and-release.md` |
+| ADRs, READMEs, changelog standards | If installed: `docs/guidelines/operations/documentation-and-adrs.md` |
+| Docker Compose, container standards | If installed: `docs/guidelines/operations/container-standards.md` |
+| AI workflow, model escalation tiers, context discipline | If installed: `docs/guidelines/operations/ai-workflow.md` |
 | Any UI work | If installed: `src/design/SKILL.md` or `design/SKILL.md`; otherwise use the existing project UI system |
 
 ---

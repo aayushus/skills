@@ -6,9 +6,9 @@ import React from 'react';
  * Core icon set. Every icon here is a thin SVG stroke at currentColor
  * so it inherits text colour automatically.
  *
- * The Sparkle is the single AI glyph for the Prism design system.
- * Never use robots, lightbulbs,
- * wands, or brains for AI — only this star.
+ * The Prism is the single AI glyph for the Prism design system.
+ * Never use robots, lightbulbs, sparkles,
+ * wands, or brains for AI — only this glyph.
  */
 
 type IconProps = {

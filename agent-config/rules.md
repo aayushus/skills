@@ -33,10 +33,11 @@
 - **Timeouts**: Every external network call must have a timeout configured (e.g., 10s for internal services, 5s for fast APIs, 30s-60s for slow/AI APIs).
 - **Retries**: Retry only on 5xx server errors and network dropouts. Never retry client-side 4xx errors.
 
-### Auth & Security
+### Auth, Security & AI Guardrails
 - **Passwords & Hashing**: Use secure modern hashing algorithms (e.g., Argon2id or equivalent standard platform hashing library) for passwords and API keys.
 - **Sessions**: Prefer secure session storage (e.g., server-side session stores) over JWTs for user sessions where revocability is needed.
 - **Input Validation**: Validate 100% of inputs at all system boundaries using schema validators (e.g., Zod, Pydantic) with strict checks.
+- **AI Safety**: Never evaluate raw LLM code or SQL without validation; scrub PII before calling external model providers.
 
 ### Observability & Logging
 - **Structured Logs**: Use structured JSON logging output containing standard metadata (`timestamp`, `level`, `correlationId`, `message`).
@@ -85,9 +86,23 @@ Detailed guidelines are optional. If `docs/guidelines/` is installed, refer to t
 
 | Topic | Reference Document |
 |---|---|
+| Service boundaries, domain modules, topology | If installed: `docs/guidelines/architecture/service-topology.md` |
+| Database schema, migrations, tenancy | If installed: `docs/guidelines/architecture/database-and-tenancy.md` |
+| Background jobs, queue reliability, retries | If installed: `docs/guidelines/architecture/async-and-queues.md` |
+| Auth, session lifecycle, RBAC permissions | If installed: `docs/guidelines/security/auth-and-sessions.md` |
+| Input validation, sanitization, injection defense | If installed: `docs/guidelines/security/input-validation.md` |
+| Secrets management, crypto, token generation | If installed: `docs/guidelines/security/secrets-and-crypto.md` |
+| AI security, prompt injection, PII privacy | If installed: `docs/guidelines/security/ai-security.md` |
+| REST API endpoints, JSON envelopes, rate limiting | If installed: `docs/guidelines/api/api-contracts.md` |
+| Webhook delivery, signing, idempotency keys | If installed: `docs/guidelines/api/webhooks-and-events.md` |
+| Unit & integration test strategy, mocking | If installed: `docs/guidelines/testing/testing-strategy.md` |
+| E2E browser flows, AI evaluation sets | If installed: `docs/guidelines/testing/e2e-and-ai-testing.md` |
+| TypeScript conventions, Result error types | If installed: `docs/guidelines/quality-performance/code-standards.md` |
+| Latency budgets, caching, bundle limits | If installed: `docs/guidelines/quality-performance/performance-budgets.md` |
+| Structured JSON logging, correlation IDs | If installed: `docs/guidelines/quality-performance/observability.md` |
+| Production incidents, severity levels, post-mortems | If installed: `docs/guidelines/operations/incident-response.md` |
+| Git workflow, PR sizing (<300 lines), feature flags | If installed: `docs/guidelines/operations/git-and-release.md` |
+| ADRs, READMEs, changelog standards | If installed: `docs/guidelines/operations/documentation-and-adrs.md` |
+| Docker Compose, container standards | If installed: `docs/guidelines/operations/container-standards.md` |
+| AI workflow, model escalation tiers | If installed: `docs/guidelines/operations/ai-workflow.md` |
 | Building any UI component or screen | If installed: `src/design/SKILL.md` or `design/SKILL.md` |
-| Adding auth, tenant logic, or architecture choices | If installed: `docs/guidelines/Architecture.md` |
-| Adding security controls, file uploads, API endpoints | If installed: `docs/guidelines/Security.md` |
-| Writing tests or performing large refactoring | If installed: `docs/guidelines/Code-Quality.md` |
-| Performance optimizations, database indexing | If installed: `docs/guidelines/Performance.md` |
-| Writing an ADR, design documentation, or README | If installed: `docs/guidelines/Documentation.md` |

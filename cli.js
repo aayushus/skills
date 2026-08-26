@@ -146,18 +146,60 @@ const extraOpts = [
     dest:  'src/design/  or  design/',
   },
   {
-    value: 'guidelines',
-    label: 'Engineering Guidelines',
-    desc1: 'Reference playbook — Architecture, Security, Performance, API Design,',
-    desc2: 'Testing, Code Quality, AI Workflow, and more (12 docs total).',
-    dest:  'docs/guidelines/',
-  },
-  {
     value: 'pm',
     label: 'Product Management Skill',
     desc1: 'AI skill for PRDs, user stories, acceptance criteria, and roadmap structure.',
     desc2: 'Load into your agent when doing product planning or scoping work.',
     dest:  'docs/pm/',
+  },
+  {
+    value: 'guidelines',
+    label: 'All Engineering Guidelines (Complete Playbook)',
+    desc1: 'Complete 6-domain playbook — Architecture, Security, API, Testing, Performance, Ops',
+    desc2: '18 atomic docs + master engineering-guidelines skill and index.',
+    dest:  'docs/guidelines/',
+  },
+  {
+    value: 'guidelines:arch',
+    label: 'Architecture & Data Guidelines',
+    desc1: 'Service topology, database schema & tenancy, zero-downtime migrations, async queues.',
+    desc2: 'Defines service boundaries, primary keys, and background worker reliability.',
+    dest:  'docs/guidelines/architecture/',
+  },
+  {
+    value: 'guidelines:sec',
+    label: 'Security & AI Guardrails Guidelines',
+    desc1: 'AuthN/AuthZ, session revocation, input validation, secrets management,',
+    desc2: 'OWASP Top 10 for LLMs, prompt injection defense, and PII scrubbing.',
+    dest:  'docs/guidelines/security/',
+  },
+  {
+    value: 'guidelines:api',
+    label: 'API & Webhook Contracts Guidelines',
+    desc1: 'REST conventions, standard JSON envelopes, cursor pagination, rate limits,',
+    desc2: 'Inbound/outbound webhook signing (HMAC-SHA256), idempotency, and DLQs.',
+    dest:  'docs/guidelines/api/',
+  },
+  {
+    value: 'guidelines:test',
+    label: 'Testing & AI Evaluation Guidelines',
+    desc1: '70/20/10 test pyramid, DB test isolation, mock boundaries, CI quality gates,',
+    desc2: 'Playwright E2E flows, golden evaluation sets, and LLM-as-a-judge scoring.',
+    dest:  'docs/guidelines/testing/',
+  },
+  {
+    value: 'guidelines:quality',
+    label: 'Code Quality & Performance Guidelines',
+    desc1: 'Strict TypeScript rules, Result/Either error types, file/function size limits,',
+    desc2: 'p95 latency budgets, caching strategy, bundle caps, and structured JSON logs.',
+    dest:  'docs/guidelines/quality-performance/',
+  },
+  {
+    value: 'guidelines:ops',
+    label: 'Operations & SDLC Guidelines',
+    desc1: 'SEV 1–4 incident response, PR size caps (<300 lines), feature flags,',
+    desc2: 'Architecture Decision Records (ADRs), Compose standards, AI workflow tiers.',
+    dest:  'docs/guidelines/operations/',
   },
 ];
 
@@ -187,8 +229,14 @@ Usage:
   npx --yes aayushus-skills --simple      Flat checklist menu (no wizard)
   npx --yes aayushus-skills all           Install everything directly
   npx --yes aayushus-skills design        Install Prism Design System only
-  npx --yes aayushus-skills guidelines    Install Engineering Guidelines only
   npx --yes aayushus-skills pm            Install Product Management Skill only
+  npx --yes aayushus-skills guidelines    Install All Engineering Guidelines
+  npx --yes aayushus-skills architecture  Install Architecture Guidelines only
+  npx --yes aayushus-skills security      Install Security & AI Guardrails only
+  npx --yes aayushus-skills api           Install API & Webhook Contracts only
+  npx --yes aayushus-skills testing       Install Testing & AI Evaluation only
+  npx --yes aayushus-skills quality       Install Code Quality & Performance only
+  npx --yes aayushus-skills operations    Install Operations & SDLC only
   npx --yes aayushus-skills cursor        Install Cursor rules only
   npx --yes aayushus-skills antigravity   Install Antigravity rules only
   npx --yes aayushus-skills devin         Install Devin / Windsurf rules only
@@ -523,11 +571,31 @@ function buildFileList() {
       ? path.join(targetRoot, 'src', 'design') : path.join(targetRoot, 'design');
     files.push({ label: `${path.relative(targetRoot, destDir)}/`, dest: destDir, isFolder: true });
   }
-  if (state.extras.has('guidelines')) {
-    files.push({ label: 'docs/guidelines/', dest: path.join(targetRoot, 'docs', 'guidelines'), isFolder: true });
-  }
   if (state.extras.has('pm')) {
     files.push({ label: 'docs/pm/SKILL.md', dest: path.join(targetRoot, 'docs', 'pm', 'SKILL.md') });
+  }
+
+  const wantsAllGuidelines = state.extras.has('guidelines');
+  const guidelinePacks = [
+    { key: 'guidelines:arch', folder: 'architecture' },
+    { key: 'guidelines:sec', folder: 'security' },
+    { key: 'guidelines:api', folder: 'api' },
+    { key: 'guidelines:test', folder: 'testing' },
+    { key: 'guidelines:quality', folder: 'quality-performance' },
+    { key: 'guidelines:ops', folder: 'operations' },
+  ];
+  const hasSubpack = guidelinePacks.some(p => state.extras.has(p.key));
+
+  if (wantsAllGuidelines) {
+    files.push({ label: 'docs/guidelines/', dest: path.join(targetRoot, 'docs', 'guidelines'), isFolder: true });
+  } else if (hasSubpack) {
+    files.push({ label: 'docs/guidelines/SKILL.md', dest: path.join(targetRoot, 'docs', 'guidelines', 'SKILL.md') });
+    files.push({ label: 'docs/guidelines/README.md', dest: path.join(targetRoot, 'docs', 'guidelines', 'README.md') });
+    for (const p of guidelinePacks) {
+      if (state.extras.has(p.key)) {
+        files.push({ label: `docs/guidelines/${p.folder}/`, dest: path.join(targetRoot, 'docs', 'guidelines', p.folder), isFolder: true });
+      }
+    }
   }
   return files;
 }
@@ -674,15 +742,42 @@ function runWizardInstallation() {
     }
   }
 
-  if (state.extras.has('guidelines')) {
+  const wantsAllGuidelines = state.extras.has('guidelines');
+  const guidelinePacks = [
+    { key: 'guidelines:arch', folder: 'architecture', name: 'Architecture Guidelines' },
+    { key: 'guidelines:sec', folder: 'security', name: 'Security & AI Guardrails' },
+    { key: 'guidelines:api', folder: 'api', name: 'API & Webhook Contracts' },
+    { key: 'guidelines:test', folder: 'testing', name: 'Testing & AI Evaluation' },
+    { key: 'guidelines:quality', folder: 'quality-performance', name: 'Quality & Performance Guidelines' },
+    { key: 'guidelines:ops', folder: 'operations', name: 'Operations & SDLC Guidelines' },
+  ];
+  const hasSubpack = guidelinePacks.some(p => state.extras.has(p.key));
+
+  if (wantsAllGuidelines) {
     const srcDir  = path.join(pkgRoot, 'guidelines');
     const destDir = path.join(targetRoot, 'docs', 'guidelines');
-    console.log(`${s.blue}  Installing Engineering Guidelines...${s.reset}`);
+    console.log(`${s.blue}  Installing All Engineering Guidelines...${s.reset}`);
     if (fs.existsSync(srcDir)) {
       writeFolder(srcDir, destDir);
       if (!isDryRun) console.log(`${s.green}  ✓ Installed to docs/guidelines/${s.reset}`);
     } else {
       console.log(`${s.red}  ✗ Source guidelines directory not found.${s.reset}`);
+    }
+  } else if (hasSubpack) {
+    const srcBase = path.join(pkgRoot, 'guidelines');
+    const destBase = path.join(targetRoot, 'docs', 'guidelines');
+    if (fs.existsSync(path.join(srcBase, 'SKILL.md'))) writeFile(path.join(srcBase, 'SKILL.md'), path.join(destBase, 'SKILL.md'));
+    if (fs.existsSync(path.join(srcBase, 'README.md'))) writeFile(path.join(srcBase, 'README.md'), path.join(destBase, 'README.md'));
+    for (const p of guidelinePacks) {
+      if (state.extras.has(p.key)) {
+        console.log(`${s.blue}  Installing ${p.name}...${s.reset}`);
+        const sp = path.join(srcBase, p.folder);
+        const dp = path.join(destBase, p.folder);
+        if (fs.existsSync(sp)) {
+          writeFolder(sp, dp);
+          if (!isDryRun) console.log(`${s.green}  ✓ Installed to docs/guidelines/${p.folder}/${s.reset}`);
+        }
+      }
     }
   }
 
@@ -716,15 +811,21 @@ function handleKey(key) {
 
 // ─── Legacy simple menu (--simple flag) ───────────────────────────────────────
 const simpleOptions = [
-  { name: 'Antigravity Rules (.antigravityrules)',               value: 'antigravity', checked: true  },
-  { name: 'Devin / Windsurf Rules (.devin/rules/rules.md)',      value: 'devin',       checked: true  },
-  { name: 'Codex Rules (AGENTS.md)',                             value: 'codex',       checked: true  },
-  { name: 'Cursor Rules (.cursorrules)',                          value: 'cursor',      checked: true  },
-  { name: 'Claude Rules (CLAUDE.md)',                            value: 'claude',      checked: true  },
-  { name: 'GitHub Copilot Rules (.github/copilot-instructions.md)', value: 'copilot', checked: true  },
-  { name: 'Prism Design System (tokens, components CSS/TSX)',                  value: 'design',      checked: false },
-  { name: 'Engineering Guidelines (Architecture, Security, AI Workflow...)',  value: 'guidelines',  checked: false },
-  { name: 'Product Management Skill (PRDs, user stories, AC templates)',       value: 'pm',          checked: false },
+  { name: 'Antigravity Rules (.antigravityrules)',                 value: 'antigravity',        checked: true  },
+  { name: 'Devin / Windsurf Rules (.devin/rules/rules.md)',        value: 'devin',              checked: true  },
+  { name: 'Codex Rules (AGENTS.md)',                               value: 'codex',              checked: true  },
+  { name: 'Cursor Rules (.cursorrules)',                            value: 'cursor',             checked: true  },
+  { name: 'Claude Rules (CLAUDE.md)',                              value: 'claude',             checked: true  },
+  { name: 'GitHub Copilot Rules (.github/copilot-instructions.md)',   value: 'copilot',            checked: true  },
+  { name: 'Prism Design System (tokens, components CSS/TSX)',      value: 'design',             checked: false },
+  { name: 'Product Management Skill (PRDs, user stories, ACs)',     value: 'pm',                 checked: false },
+  { name: 'All Engineering Guidelines (6 domains, 18 docs)',       value: 'guidelines',         checked: false },
+  { name: 'Architecture Guidelines (topology, DB, tenancy, async)', value: 'guidelines:arch',    checked: false },
+  { name: 'Security & AI Guardrails (auth, OWASP LLM, injection)',  value: 'guidelines:sec',     checked: false },
+  { name: 'API & Webhooks (REST envelopes, versioning, signing)',   value: 'guidelines:api',     checked: false },
+  { name: 'Testing & AI Evaluation (pyramid, Playwright, judge)',   value: 'guidelines:test',    checked: false },
+  { name: 'Quality & Performance (strict TS, p95 budgets, logs)',   value: 'guidelines:quality', checked: false },
+  { name: 'Operations & SDLC (incident response, PR sizing, ADRs)', value: 'guidelines:ops',     checked: false },
 ];
 let simpleCursorIdx = 0;
 
@@ -790,12 +891,36 @@ function runSimpleInstallation() {
     else console.log(`${s.red}  ✗ Source design directory not found.${s.reset}`);
   }
 
-  if (selected.includes('guidelines')) {
+  const wantsAllGuidelines = selected.includes('guidelines');
+  const guidelinePacks = [
+    { key: 'guidelines:arch', folder: 'architecture', name: 'Architecture Guidelines' },
+    { key: 'guidelines:sec', folder: 'security', name: 'Security & AI Guardrails' },
+    { key: 'guidelines:api', folder: 'api', name: 'API & Webhook Contracts' },
+    { key: 'guidelines:test', folder: 'testing', name: 'Testing & AI Evaluation' },
+    { key: 'guidelines:quality', folder: 'quality-performance', name: 'Quality & Performance Guidelines' },
+    { key: 'guidelines:ops', folder: 'operations', name: 'Operations & SDLC Guidelines' },
+  ];
+  const hasSubpack = guidelinePacks.some(p => selected.includes(p.key));
+
+  if (wantsAllGuidelines) {
     const srcDir  = path.join(pkgRoot, 'guidelines');
     const destDir = path.join(targetRoot, 'docs', 'guidelines');
-    console.log(`${s.blue} Installing Engineering Guidelines...${s.reset}`);
+    console.log(`${s.blue} Installing All Engineering Guidelines...${s.reset}`);
     if (fs.existsSync(srcDir)) { writeFolder(srcDir, destDir); if (!isDryRun) console.log(`${s.green}  ✓ Copied to docs/guidelines${s.reset}`); }
     else console.log(`${s.red}  ✗ Source guidelines directory not found.${s.reset}`);
+  } else if (hasSubpack) {
+    const srcBase = path.join(pkgRoot, 'guidelines');
+    const destBase = path.join(targetRoot, 'docs', 'guidelines');
+    if (fs.existsSync(path.join(srcBase, 'SKILL.md'))) writeFile(path.join(srcBase, 'SKILL.md'), path.join(destBase, 'SKILL.md'));
+    if (fs.existsSync(path.join(srcBase, 'README.md'))) writeFile(path.join(srcBase, 'README.md'), path.join(destBase, 'README.md'));
+    for (const p of guidelinePacks) {
+      if (selected.includes(p.key)) {
+        console.log(`${s.blue} Installing ${p.name}...${s.reset}`);
+        const sp = path.join(srcBase, p.folder);
+        const dp = path.join(destBase, p.folder);
+        if (fs.existsSync(sp)) { writeFolder(sp, dp); if (!isDryRun) console.log(`${s.green}  ✓ Copied to docs/guidelines/${p.folder}${s.reset}`); }
+      }
+    }
   }
 
   if (selected.includes('pm')) {
@@ -818,7 +943,30 @@ if (args.includes('--help') || args.includes('-h') || args.includes('help')) {
 }
 
 // ─── Direct subcommands ───────────────────────────────────────────────────────
-const argMap = { antigravity: 'antigravity', devin: 'devin', windsurf: 'devin', cursor: 'cursor', claude: 'claude', codex: 'codex', copilot: 'copilot', design: 'design', guidelines: 'guidelines', pm: 'pm' };
+const argMap = {
+  antigravity: 'antigravity',
+  devin: 'devin',
+  windsurf: 'devin',
+  cursor: 'cursor',
+  claude: 'claude',
+  codex: 'codex',
+  copilot: 'copilot',
+  design: 'design',
+  pm: 'pm',
+  guidelines: 'guidelines',
+  architecture: 'guidelines:arch',
+  arch: 'guidelines:arch',
+  security: 'guidelines:sec',
+  sec: 'guidelines:sec',
+  api: 'guidelines:api',
+  testing: 'guidelines:test',
+  test: 'guidelines:test',
+  quality: 'guidelines:quality',
+  perf: 'guidelines:quality',
+  performance: 'guidelines:quality',
+  operations: 'guidelines:ops',
+  ops: 'guidelines:ops',
+};
 const directArgs = args.filter(a => a !== '--dry-run' && a !== '-d' && a !== '--force' && a !== '-f' && a !== '--simple');
 const hasDirectCmd = directArgs.some(a => argMap[a] || a === 'all');
 

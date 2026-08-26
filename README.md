@@ -67,15 +67,21 @@ Skip all menus and install specific components:
 
 ```bash
 npx --yes aayushus-skills all           # everything
+npx --yes aayushus-skills design        # Prism Design System only
+npx --yes aayushus-skills pm            # Product Management Skill only
+npx --yes aayushus-skills guidelines    # All Engineering Guidelines
+npx --yes aayushus-skills architecture  # Architecture Guidelines only
+npx --yes aayushus-skills security      # Security & AI Guardrails only
+npx --yes aayushus-skills api           # API & Webhook Contracts only
+npx --yes aayushus-skills testing       # Testing & AI Evaluation only
+npx --yes aayushus-skills quality       # Code Quality & Performance only
+npx --yes aayushus-skills operations    # Operations & SDLC only
 npx --yes aayushus-skills claude        # CLAUDE.md only
 npx --yes aayushus-skills cursor        # .cursorrules only
 npx --yes aayushus-skills devin         # Devin / Windsurf rules only
 npx --yes aayushus-skills antigravity   # Antigravity rules only
 npx --yes aayushus-skills codex         # AGENTS.md only
 npx --yes aayushus-skills copilot       # GitHub Copilot rules only
-npx --yes aayushus-skills design        # Prism Design System only
-npx --yes aayushus-skills guidelines    # Engineering Guidelines only
-npx --yes aayushus-skills pm            # Product Management Skill only
 ```
 
 ### Flags
@@ -111,17 +117,14 @@ The **Prism Design System** is a zero-decision B2B/SaaS design language. It inst
 
 ## Guidelines detail
 
-The **Engineering Guidelines** are a stack-agnostic engineering playbook:
+The **Engineering Guidelines** are a modular, stack-agnostic engineering playbook organized into 6 domains (18 atomic files):
 
-- `Architecture.md` — service structure, DB schema, module boundaries
-- `Security.md` — auth, file uploads, API security, secrets management
-- `Code-Quality.md` — testing, refactoring, PR review standards
-- `Performance.md` — caching, indexing, query optimization
-- `API-Design.md` — REST conventions, versioning, error shapes
-- `Testing.md` — unit, integration, and E2E test strategy
-- `Documentation.md` — ADR templates, README standards
-- `AI-Workflow.md` — model escalation strategy, context window discipline, parallel agent patterns
-- And more — see `docs/guidelines/` after install
+- **Architecture** (`docs/guidelines/architecture/`) — service topology, database schema & tenancy, zero-downtime migrations, async background queues
+- **Security & AI Guardrails** (`docs/guidelines/security/`) — auth & sessions, input validation, secrets management, OWASP Top 10 for LLMs, prompt injection defense, PII scrubbing
+- **API & Webhooks** (`docs/guidelines/api/`) — REST conventions, standard JSON envelopes, cursor pagination, rate limiting, webhook signing & DLQs
+- **Testing & QA** (`docs/guidelines/testing/`) — 70/20/10 test pyramid, database test isolation, mocking, Playwright E2E, golden datasets & LLM-as-a-judge evaluation
+- **Quality & Performance** (`docs/guidelines/quality-performance/`) — strict TypeScript standards, Result error types, p95 latency budgets, caching, structured JSON logging
+- **Operations & SDLC** (`docs/guidelines/operations/`) — SEV 1–4 incident response, PR sizing caps (<300 lines), feature flags, ADR templates, container standards, AI workflow escalation tiers
 
 ---
 

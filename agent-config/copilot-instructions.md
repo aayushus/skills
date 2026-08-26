@@ -1,7 +1,7 @@
 # GitHub Copilot workspace instructions
 
 This codebase uses project-specific conventions with hard rules that must never be broken.
-Always follow these. When in doubt, check installed project docs such as `docs/guidelines/` if they exist.
+Always follow these. When in doubt, check installed project docs under `docs/guidelines/` if they exist.
 
 ## Stack
 <!-- CUSTOMIZE: Replace this section with your project's actual stack -->
@@ -23,15 +23,16 @@ Always follow these. When in doubt, check installed project docs such as `docs/g
 4. **Unauthorized reads return 404** — never 403 (prevents existence leak)
 5. **Soft deletes for recoverable business data** — avoid hard deletes unless the domain explicitly requires them
 6. **Consistent primary keys** — use the project's chosen ID strategy everywhere
-7. **Cursor pagination only** — never offset/limit
+7. **Cursor pagination only** — never offset/limit on large sets
 8. **Async anything > 1 second** — use the project's background queue/worker strategy, never block an HTTP handler
 9. **Modern password hashing** — use Argon2id, bcrypt cost ≥ 12, or the platform-approved equivalent
 10. **Revocable user sessions** — prefer server-side session storage where revocation matters
 11. **Schema validation on every input boundary** — strict/no-extra-keys mode, including max lengths
-12. **Structured logs only** — include request/correlation IDs and tenant IDs where applicable
-13. **Secrets in a secrets manager or environment** — never in code, never logged
-14. **No unsafe dynamic typing** — use `unknown` with narrowing in TypeScript instead of `any`
-15. **No N+1 queries** — batch, join, preload, or select related data intentionally
+12. **AI guardrails** — validate all LLM-generated parameters with schemas; scrub PII before calling external model APIs
+13. **Structured logs only** — include request/correlation IDs and tenant IDs where applicable
+14. **Secrets in a secrets manager or environment** — never in code, never logged
+15. **No unsafe dynamic typing** — use `unknown` with narrowing in TypeScript instead of `any`
+16. **No N+1 queries** — batch, join, preload, or select related data intentionally
 
 ## Design system rules
 - If `src/design/SKILL.md` or `design/SKILL.md` exists, load it before UI work
@@ -47,7 +48,7 @@ Always follow these. When in doubt, check installed project docs such as `docs/g
 
 ## Code style
 - TypeScript `strict: true` + `noUncheckedIndexedAccess`
-- Functions ≤ 80 lines, files ≤ 500 lines
+- Functions ≤ 40 lines (max 80), files ≤ 300 lines (max 500)
 - No ad-hoc `console.log` debugging — use the project logger
 - No commented-out code — delete it
 - Boolean variables: `is/has/can/should` prefix

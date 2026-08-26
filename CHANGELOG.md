@@ -2,7 +2,16 @@
 
 ## 1.3.x
 
-### 1.3.3 *(next)*
+### 1.3.4 *(next)*
+- Restructure monolithic engineering guidelines into 6 domain subdirectories (`architecture/`, `security/`, `api/`, `testing/`, `quality-performance/`, `operations/`) containing 18 focused, atomic Markdown files
+- Add dedicated enterprise **AI Security & Guardrails** guide (`security/ai-security.md`) covering OWASP Top 10 for LLMs, prompt injection defense, PII scrubbing, and multi-tenant RAG isolation
+- Add **Zero-Downtime Database Migrations** (expand-and-contract pattern) to `architecture/database-and-tenancy.md`
+- Add **Git Workflow & Release Strategy** (`operations/git-and-release.md`) covering PR size limits (<300 lines), trunk-based workflow, and feature flags
+- Consolidate AI development workflow best practices into `operations/ai-workflow.md` and eliminate root SOP orphan
+- Synchronize guideline lookup routing tables across `CLAUDE.md`, `rules.md`, and `copilot-instructions.md`
+- Add `npm test` script to `package.json`
+
+### 1.3.3
 - Add wizard questions for testing/QA approach and CI quality gates
 - Inject QA and CI answers into selected agent rule files
 - Document wizard question coverage in README
