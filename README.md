@@ -1,8 +1,8 @@
 # aayushus-skills
 
-**One command to scaffold AI agent configs, a design system, engineering guidelines, and a PM skill into any project.**
+One command to bootstrap production-ready AI agent configs, a B2B design system, modular engineering guidelines, and a PM skill into any repo.
 
-Zero dependencies. Works with any stack. Safe by default — never overwrites existing files unless you say so.
+Zero dependencies. Works with any tech stack. Safe by default (never overwrites existing files without `--force`).
 
 ```bash
 npx --yes aayushus-skills
@@ -10,9 +10,21 @@ npx --yes aayushus-skills
 
 ---
 
-## The 4-Pillar AI-First SDLC Architecture
+## The Problem
 
-This package bootstraps the **[AI-First SDLC Playbook](https://aayushus.github.io/)** by provisioning the 4 core pillars needed for autonomous and paired AI development:
+Setting up AI coding assistants for real-world projects today is frustrating:
+
+1. **The repetitive setup chore**: Every time you start a new repository or onboard an existing codebase, you spend an hour manually creating `.cursorrules`, `CLAUDE.md`, copy-pasting architecture guidelines, wiring up design tokens, and figuring out what context each tool needs.
+2. **Agents code before thinking**: Without strict boundaries, agents jump straight into writing 500 lines of spaghetti code without a clear problem statement, user persona, or binary acceptance criteria.
+3. **Visual chaos & UI bikeshedding**: Without a rigid token contract, agents invent random hex codes, mismatching paddings, and generic icon sets that clash with the rest of your app.
+4. **Silent security & architecture drift**: AI assistants regularly produce code that skips input validation, ignores multi-tenant isolation, forgets rate limits, and introduces OWASP Top 10 LLM risks.
+5. **Team tool fragmentation**: One developer uses Cursor, another uses Claude Code, a third uses Copilot. With no shared ruleset, everyone gets inconsistent outputs and code quality degrades.
+
+---
+
+## What This CLI Does
+
+Instead of manually copy-pasting markdown files and prompts across repos, `aayushus-skills` scaffolds an integrated operating model in 5 seconds:
 
 ```
                  ┌──────────────────────────────────────────────┐
@@ -29,6 +41,11 @@ This package bootstraps the **[AI-First SDLC Playbook](https://aayushus.github.i
 │ ACs · Spikes    │           │ AI Surfaces      │           │ 18 Atomic Specs   │
 └─────────────────┘           └──────────────────┘           └───────────────────┘
 ```
+
+- **Agent Orchestrator**: Synchronizes Claude, Cursor, Antigravity, Devin, Codex, and Copilot around the same mental model and project stack.
+- **Product Management (`docs/pm/`)**: Enforces "Why before Code" with PRD templates, binary acceptance criteria, AI feature specs (model tiering, latency budgets, fallback UX), technical spikes, and vertical slicing.
+- **Prism Design System (`src/design/` or `design/`)**: Zero-decision design language with tokens, pre-built React components, and strict AI provenance rules (Prism glyph + purple/pink gradient).
+- **Modular Engineering Guidelines (`docs/guidelines/`)**: 18 atomic specifications across Architecture (zero-downtime DB migrations, queues), Security (auth, OWASP Top 10 for LLMs, PII scrubbing), API contracts, Testing (pyramid, Playwright, LLM-as-a-judge), Quality (strict TS, p95 budgets), and Operations (SEV 1–4, PR sizing <300 lines).
 
 ---
 
@@ -52,134 +69,79 @@ This package bootstraps the **[AI-First SDLC Playbook](https://aayushus.github.i
 | ↳ *Quality & Performance* | Strict TypeScript, Result types, p95 budgets, bundle caps, structured JSON logs | `docs/guidelines/quality-performance/` |
 | ↳ *Operations & SDLC* | Incident response (SEV 1–4), PR sizing (<300 lines), feature flags, ADRs, Docker | `docs/guidelines/operations/` |
 
-All rule files are **stack-agnostic** with `<!-- CUSTOMIZE -->` markers where your project-specific choices belong (ORM, queue, session strategy, QA approach, CI gates, etc.).
-
 ---
 
 ## Usage
 
-### Setup wizard (default)
+### Interactive Wizard (Default)
 
-Run in your project root. The wizard walks you through agent selection, stack/QA configuration, and optional components — then writes everything in one shot.
+Prompts you for your stack choices (framework, ORM, database, queues, auth, tenancy, CI gates) and writes tailored configs in one pass:
 
 ```bash
 npx --yes aayushus-skills
 ```
 
-Claude and Cursor configs are pre-selected; every other agent/config component can be picked independently. Stack and QA answers are injected directly into selected rule files. Design system, guidelines, and PM skill are opt-in.
+### Install Specific Parts
 
-### Wizard questions
-
-The default wizard captures the core decisions agents need before they start editing a project:
-
-| Area | What it asks |
-|---|---|
-| Agent rules | Claude, Cursor, Devin/Windsurf, Codex, GitHub Copilot, Antigravity |
-| Application stack | Frontend/framework, ORM/query layer, database, queue, API style, auth/session strategy, tenancy |
-| Quality setup | Testing/QA approach and CI quality gates |
-| Modular capabilities | Prism design system, PM skill, or specific guideline domain packs |
-
-Answers are written only into the rule files you choose. Optional installs remain independent; you can install just QA-aware rules without installing the design system, guidelines, or PM skill.
-
-### Flat menu
-
-Skip the wizard and use the checklist menu:
+You can install only what you need, either as full packages or atomic domain packs:
 
 ```bash
-npx --yes aayushus-skills --simple
-```
+# Everything
+npx --yes aayushus-skills all
 
-### Direct subcommands
+# Design & PM
+npx --yes aayushus-skills design        # Prism Design System
+npx --yes aayushus-skills pm            # Product Management Skill
 
-Skip all menus and install specific components directly:
-
-```bash
-npx --yes aayushus-skills all           # everything
-npx --yes aayushus-skills design        # Prism Design System only
-npx --yes aayushus-skills pm            # Product Management Skill only
-npx --yes aayushus-skills guidelines    # All Engineering Guidelines
-npx --yes aayushus-skills architecture  # Architecture Guidelines only
+# Engineering Guidelines (All or by domain)
+npx --yes aayushus-skills guidelines    # All 6 domains (18 docs)
 npx --yes aayushus-skills security      # Security & AI Guardrails only
-npx --yes aayushus-skills api           # API & Webhook Contracts only
-npx --yes aayushus-skills testing       # Testing & AI Evaluation only
-npx --yes aayushus-skills quality       # Code Quality & Performance only
-npx --yes aayushus-skills operations    # Operations & SDLC only
-npx --yes aayushus-skills claude        # CLAUDE.md only
-npx --yes aayushus-skills cursor        # .cursorrules only
-npx --yes aayushus-skills devin         # Devin / Windsurf rules only
-npx --yes aayushus-skills antigravity   # Antigravity rules only
-npx --yes aayushus-skills codex         # AGENTS.md only
-npx --yes aayushus-skills copilot       # GitHub Copilot rules only
+npx --yes aayushus-skills architecture  # Architecture & Database Tenancy only
+npx --yes aayushus-skills api           # REST Contracts & Webhook Signing only
+npx --yes aayushus-skills testing       # Testing Strategy & AI Evaluation only
+npx --yes aayushus-skills quality       # Code Standards & Performance Budgets only
+npx --yes aayushus-skills operations    # Incident Response, PR Sizing & ADRs only
+
+# Individual Agent Rules
+npx --yes aayushus-skills claude        # CLAUDE.md
+npx --yes aayushus-skills cursor        # .cursorrules
+npx --yes aayushus-skills antigravity   # .antigravityrules
+npx --yes aayushus-skills codex         # AGENTS.md
+npx --yes aayushus-skills devin         # .devin/rules/rules.md
+npx --yes aayushus-skills copilot       # .github/copilot-instructions.md
 ```
 
 ### Flags
 
-| Flag | Description |
-|---|---|
-| `-d`, `--dry-run` | Preview every file that would be written — nothing is modified |
-| `-f`, `--force` | Overwrite files that already exist (default skips them with a warning) |
-| `--simple` | Use the flat checklist menu instead of the wizard |
+- `-d, --dry-run`: Preview every file that will be written without making changes.
+- `-f, --force`: Overwrite existing files (default skips them safely).
+- `--simple`: Use a fast, single-screen checklist menu instead of the wizard.
 
 ```bash
-# Preview before committing
-npx --yes aayushus-skills --dry-run
+# Dry run example
 npx --yes aayushus-skills security --dry-run
-
-# Re-install over an existing setup
-npx --yes aayushus-skills claude --force
-npx --yes aayushus-skills all --force
 ```
 
 ---
 
-## Design system detail
+## Recommended Companion: Project CodeGuard
 
-The **Prism Design System** is a zero-decision B2B/SaaS design language. It installs a complete set of:
+For continuous automated enforcement of security guardrails and preventing agent regressions in CI, we recommend pairing this repository with **[Project CodeGuard (OASIS CoSAI)](https://github.com/cosai-oasis/project-codeguard/releases/tag/v1.4.0)**. 
 
-- `tokens.css` — CSS custom properties for depth layers, warm neutrals, spacing, radius, and typography
-- `components.tsx` + `components.css` — ready-to-use React components backed by Prism tokens
-- `Icons.tsx` — SVG icon set featuring the canonical Prism Glyph for AI provenance
-- `SKILL.md` — agent instruction file (load this into your AI agent so it builds UI autonomously without asking for visual direction)
-- 11 component & pattern specs: accordion, alerts, avatars, badges, button groups, tabs, pagination, form controls (radios, checkboxes, toggles), AI surfaces, and responsive mobile patterns
-
----
-
-## Guidelines detail
-
-The **Engineering Guidelines** are a modular, stack-agnostic engineering playbook organized into 6 domains (18 atomic files) + an agent entrypoint (`docs/guidelines/SKILL.md`):
-
-- **Architecture** (`docs/guidelines/architecture/`) — service topology, database schema & tenancy, zero-downtime migrations (expand-and-contract), async background queues
-- **Security & AI Guardrails** (`docs/guidelines/security/`) — auth & sessions, boundary input validation (Zod), secrets management, OWASP Top 10 for LLMs, direct & indirect prompt injection defense, PII scrubbing
-- **API & Webhooks** (`docs/guidelines/api/`) — REST conventions, standard JSON envelopes, cursor pagination, rate limiting, HMAC webhook signing & DLQs
-- **Testing & QA** (`docs/guidelines/testing/`) — 70/20/10 test pyramid, database test isolation, mocking, Playwright E2E, golden evaluation sets & LLM-as-a-judge evaluation
-- **Quality & Performance** (`docs/guidelines/quality-performance/`) — strict TypeScript standards, Result error types, p95 latency budgets, caching, structured JSON logging with correlation IDs
-- **Operations & SDLC** (`docs/guidelines/operations/`) — SEV 1–4 incident response, PR sizing caps (<300 lines), feature flags, ADR templates, Docker Compose standards, AI workflow escalation tiers
-
----
-
-## PM skill detail
-
-The **Product Management Skill** (`docs/pm/SKILL.md`) is an AI agent-compatible skill file. Load it into your agent when doing product planning or task scoping:
-
-- **PRD template** — problem statement, user persona, measurable goals, constraints, 30-day success metrics
-- **AI feature scoping extension** — model tier selection (Tier 1 Fast vs Tier 3 Frontier), streaming latency budgets, failure/fallback UX, golden evaluation rubrics
-- **User story standard** — As a / I want / So that format with binary acceptance criteria
-- **Technical spike template** — time-boxed discovery format for architectural unknowns before writing stories
-- **Vertical story slicing** — rules for keeping stories sized to $\le 1\text{ to }2\text{ days}$
-- **Issue readiness checklist** — gates for pulling work into active development
+CodeGuard provides automated scanning to ensure AI-generated code conforms to the secure coding standards, input validation, and LLM safety guardrails scaffolded by this CLI.
 
 ---
 
 ## Part of the AI-First SDLC
 
-This package is the bootstrap step for the **[AI-First SDLC Playbook](https://aayushus.github.io/)** — a seven-chapter operating model with named AI agents running across Jira, GitHub, Teams, and Confluence. Run `npx aayushus-skills` when setting up a new project to scaffold the agent configs, conventions, and quality gates the playbook assumes are in place.
+This CLI is the bootstrap step for the **[AI-First SDLC Playbook](https://aayushus.github.io/)** — a complete operating model for teams building software alongside autonomous and paired AI agents.
 
 ---
 
 ## Attribution
 
-The design elements, guidelines, and templates included in this package have been collected, adapted, and refined from various open resources, design frameworks, and community best practices — then customized for AI agent workflows. They are not entirely original works.
+Design tokens, guideline specs, and prompt structures in this package have been synthesized and refined from community best practices, open design systems, and real-world production setups, adapted specifically for agentic workflows.
 
 ---
 
-*Made by [Aayush Mediratta](https://mercpl.us/) · [GitHub](https://github.com/aayushus/skills)*
+*Maintained by [Aayush Mediratta](https://mercpl.us/) · [GitHub](https://github.com/aayushus/skills)*
