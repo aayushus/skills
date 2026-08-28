@@ -2,7 +2,14 @@
 
 ## 1.3.x
 
-### 1.3.4 *(next)*
+### 1.3.5
+- Add **Graphify Knowledge Graph & GraphRAG** integration:
+  - Scaffolds `skills/graphify/SKILL.md` for autonomous codebase architecture exploration, Louvain community detection, and GraphRAG.
+  - Automatically checks and installs the Python `graphify` CLI tool (`graphifyy`) via `uv tool`, `pipx`, or `pip`.
+  - Adds `/graphify` slash command routing to `CLAUDE.md`, `.cursorrules`, `rules.md`, and `copilot-instructions.md`.
+  - Adds `graphify` option to the interactive wizard and direct CLI subcommand (`npx aayushus-skills graphify`).
+
+### 1.3.4
 - Restructure monolithic engineering guidelines into 6 domain subdirectories (`architecture/`, `security/`, `api/`, `testing/`, `quality-performance/`, `operations/`) containing 18 focused, atomic Markdown files
 - Add dedicated enterprise **AI Security & Guardrails** guide (`security/ai-security.md`) covering OWASP Top 10 for LLMs, prompt injection defense, PII scrubbing, and multi-tenant RAG isolation
 - Add **Zero-Downtime Database Migrations** (expand-and-contract pattern) to `architecture/database-and-tenancy.md`

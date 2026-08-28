@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
+const { execSync } = require('child_process');
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 const s = {
@@ -153,6 +154,13 @@ const extraOpts = [
     dest:  'docs/pm/',
   },
   {
+    value: 'graphify',
+    label: 'Graphify (Knowledge Graph & GraphRAG)',
+    desc1: 'Turns your repo into an interactive knowledge graph, GraphRAG JSON, and MCP server.',
+    desc2: 'Installs graphify CLI tool + skill (skills/graphify/SKILL.md) for codebase navigation.',
+    dest:  'skills/graphify/  +  System CLI',
+  },
+  {
     value: 'guidelines',
     label: 'All Engineering Guidelines (Complete Playbook)',
     desc1: 'Complete 6-domain playbook — Architecture, Security, API, Testing, Performance, Ops',
@@ -230,6 +238,7 @@ Usage:
   npx --yes aayushus-skills all           Install everything directly
   npx --yes aayushus-skills design        Install Prism Design System only
   npx --yes aayushus-skills pm            Install Product Management Skill only
+  npx --yes aayushus-skills graphify      Install Graphify CLI tool + Skill only
   npx --yes aayushus-skills guidelines    Install All Engineering Guidelines
   npx --yes aayushus-skills architecture  Install Architecture Guidelines only
   npx --yes aayushus-skills security      Install Security & AI Guardrails only
@@ -249,6 +258,40 @@ Flags:
   -f, --force      Overwrite files that already exist
       --simple     Skip the wizard and use the flat checklist menu
   `);
+}
+
+function installGraphifyTool() {
+  console.log(`${s.blue}  Checking graphify CLI tool...${s.reset}`);
+  if (isDryRun) {
+    console.log(`${s.yellow}  [Dry Run] Would check and install graphify tool (uv / pipx / pip3 install graphifyy)${s.reset}`);
+    return;
+  }
+  try {
+    execSync('graphify --version', { stdio: 'ignore' });
+    console.log(`${s.green}  ✓ graphify CLI tool is already installed.${s.reset}`);
+    return;
+  } catch {}
+
+  let installed = false;
+  const methods = [
+    { name: 'uv', cmd: 'uv tool install graphifyy' },
+    { name: 'pipx', cmd: 'pipx install graphifyy' },
+    { name: 'pip3', cmd: 'pip3 install graphifyy' },
+    { name: 'python3 -m pip', cmd: 'python3 -m pip install graphifyy --break-system-packages' },
+  ];
+
+  for (const m of methods) {
+    try {
+      execSync(m.cmd, { stdio: 'ignore' });
+      console.log(`${s.green}  ✓ Installed graphify CLI tool via ${m.name}.${s.reset}`);
+      installed = true;
+      break;
+    } catch {}
+  }
+
+  if (!installed) {
+    console.log(`${s.yellow}  ℹ Note: To run graphify locally, install it via: uv tool install graphifyy (or pip install graphifyy)${s.reset}`);
+  }
 }
 
 // ─── Project detection ────────────────────────────────────────────────────────
@@ -574,6 +617,9 @@ function buildFileList() {
   if (state.extras.has('pm')) {
     files.push({ label: 'docs/pm/SKILL.md', dest: path.join(targetRoot, 'docs', 'pm', 'SKILL.md') });
   }
+  if (state.extras.has('graphify')) {
+    files.push({ label: 'skills/graphify/SKILL.md', dest: path.join(targetRoot, 'skills', 'graphify', 'SKILL.md'), note: 'also installs graphify CLI tool' });
+  }
 
   const wantsAllGuidelines = state.extras.has('guidelines');
   const guidelinePacks = [
@@ -793,6 +839,19 @@ function runWizardInstallation() {
     }
   }
 
+  if (state.extras.has('graphify')) {
+    const src  = path.join(pkgRoot, 'graphify', 'SKILL.md');
+    const dest = path.join(targetRoot, 'skills', 'graphify', 'SKILL.md');
+    console.log(`${s.blue}  Installing Graphify Skill...${s.reset}`);
+    if (fs.existsSync(src)) {
+      writeFile(src, dest);
+      if (!isDryRun) console.log(`${s.green}  ✓ Installed to skills/graphify/SKILL.md${s.reset}`);
+    } else {
+      console.log(`${s.red}  ✗ Source Graphify skill not found.${s.reset}`);
+    }
+    installGraphifyTool();
+  }
+
   console.log(`\n${s.green}${s.bold}  ${isDryRun ? '✓ Dry run complete — no files were modified.' : '✓ Setup complete!'}${s.reset}\n`);
   process.exit(0);
 }
@@ -819,6 +878,7 @@ const simpleOptions = [
   { name: 'GitHub Copilot Rules (.github/copilot-instructions.md)',   value: 'copilot',            checked: true  },
   { name: 'Prism Design System (tokens, components CSS/TSX)',      value: 'design',             checked: false },
   { name: 'Product Management Skill (PRDs, user stories, ACs)',     value: 'pm',                 checked: false },
+  { name: 'Graphify (Knowledge Graph CLI tool + Skill)',           value: 'graphify',           checked: false },
   { name: 'All Engineering Guidelines (6 domains, 18 docs)',       value: 'guidelines',         checked: false },
   { name: 'Architecture Guidelines (topology, DB, tenancy, async)', value: 'guidelines:arch',    checked: false },
   { name: 'Security & AI Guardrails (auth, OWASP LLM, injection)',  value: 'guidelines:sec',     checked: false },
@@ -931,6 +991,15 @@ function runSimpleInstallation() {
     else console.log(`${s.red}  ✗ Source PM skill not found.${s.reset}`);
   }
 
+  if (selected.includes('graphify')) {
+    const src  = path.join(pkgRoot, 'graphify', 'SKILL.md');
+    const dest = path.join(targetRoot, 'skills', 'graphify', 'SKILL.md');
+    console.log(`${s.blue} Installing Graphify Skill...${s.reset}`);
+    if (fs.existsSync(src)) { writeFile(src, dest); if (!isDryRun) console.log(`${s.green}  ✓ Copied to skills/graphify/SKILL.md${s.reset}`); }
+    else console.log(`${s.red}  ✗ Source Graphify skill not found.${s.reset}`);
+    installGraphifyTool();
+  }
+
   const msg = isDryRun ? '✓ Dry run complete — no files were modified.' : '✓ Installation complete!';
   console.log(`\n${s.green}${s.bold}${msg}${s.reset}\n`);
   process.exit(0);
@@ -953,6 +1022,7 @@ const argMap = {
   copilot: 'copilot',
   design: 'design',
   pm: 'pm',
+  graphify: 'graphify',
   guidelines: 'guidelines',
   architecture: 'guidelines:arch',
   arch: 'guidelines:arch',

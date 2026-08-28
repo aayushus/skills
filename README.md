@@ -1,6 +1,6 @@
 # aayushus-skills
 
-One command to bootstrap production-ready AI agent configs, a B2B design system, modular engineering guidelines, and a PM skill into any repo.
+One command to bootstrap production-ready AI agent configs, a B2B design system, modular engineering guidelines, a PM skill, and Graphify into any repo.
 
 Zero dependencies. Works with any tech stack. Safe by default (never overwrites existing files without `--force`).
 
@@ -40,12 +40,21 @@ Instead of manually copy-pasting markdown files and prompts across repos, `aayus
 │ PRDs · Stories  │           │ Tokens · UI code │           │ 6 SDLC Domains    │
 │ ACs · Spikes    │           │ AI Surfaces      │           │ 18 Atomic Specs   │
 └─────────────────┘           └──────────────────┘           └───────────────────┘
+                                        │
+                                        ▼
+                              ┌───────────────────┐
+                              │     GRAPHIFY      │
+                              │(skills/graphify/) │
+                              │Knowledge Graph    │
+                              │GraphRAG & MCP     │
+                              └───────────────────┘
 ```
 
 - **Agent Orchestrator**: Synchronizes Claude, Cursor, Antigravity, Devin, Codex, and Copilot around the same mental model and project stack.
 - **Product Management (`docs/pm/`)**: Enforces "Why before Code" with PRD templates, binary acceptance criteria, AI feature specs (model tiering, latency budgets, fallback UX), technical spikes, and vertical slicing.
 - **Prism Design System (`src/design/` or `design/`)**: Zero-decision design language with tokens, pre-built React components, and strict AI provenance rules (Prism glyph + purple/pink gradient).
 - **Modular Engineering Guidelines (`docs/guidelines/`)**: 18 atomic specifications across Architecture (zero-downtime DB migrations, queues), Security (auth, OWASP Top 10 for LLMs, PII scrubbing), API contracts, Testing (pyramid, Playwright, LLM-as-a-judge), Quality (strict TS, p95 budgets), and Operations (SEV 1–4, PR sizing <300 lines).
+- **Graphify (`skills/graphify/` + CLI Tool)**: Automatically installs the `graphify` CLI tool (via `uv`/`pip`) and scaffolds the skill to turn any codebase into an interactive knowledge graph with community detection, GraphRAG JSON, and MCP stdio server.
 
 ---
 
@@ -61,6 +70,7 @@ Instead of manually copy-pasting markdown files and prompts across repos, `aayus
 | **GitHub Copilot Rules** | `.github/copilot-instructions.md` | project root |
 | **Prism Design System** | tokens, components CSS/TSX, 11 pattern specs, AI surfaces | `src/design/` or `design/` |
 | **Product Management Skill** | PRD templates, user stories, binary ACs, AI feature scoping, technical spikes | `docs/pm/SKILL.md` |
+| **Graphify Knowledge Graph** | Graphify CLI tool + skill for codebase navigation & GraphRAG | `skills/graphify/SKILL.md` + System CLI |
 | **All Engineering Guidelines** | Complete 6-domain playbook (18 atomic specs + master skill & index) | `docs/guidelines/` |
 | ↳ *Architecture* | Service topology, database schema & tenancy, zero-downtime migrations, queues | `docs/guidelines/architecture/` |
 | ↳ *Security & AI Guardrails* | Auth, input validation, secrets, OWASP Top 10 for LLMs, prompt injection, PII | `docs/guidelines/security/` |
@@ -89,9 +99,10 @@ You can install only what you need, either as full packages or atomic domain pac
 # Everything
 npx --yes aayushus-skills all
 
-# Design & PM
+# Design, PM & Graphify
 npx --yes aayushus-skills design        # Prism Design System
 npx --yes aayushus-skills pm            # Product Management Skill
+npx --yes aayushus-skills graphify      # Graphify CLI tool + Skill
 
 # Engineering Guidelines (All or by domain)
 npx --yes aayushus-skills guidelines    # All 6 domains (18 docs)
@@ -120,6 +131,7 @@ npx --yes aayushus-skills copilot       # .github/copilot-instructions.md
 ```bash
 # Dry run example
 npx --yes aayushus-skills security --dry-run
+npx --yes aayushus-skills graphify --dry-run
 ```
 
 ---

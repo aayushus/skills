@@ -105,4 +105,6 @@ Detailed guidelines are optional. If `docs/guidelines/` is installed, refer to t
 | ADRs, READMEs, changelog standards | If installed: `docs/guidelines/operations/documentation-and-adrs.md` |
 | Docker Compose, container standards | If installed: `docs/guidelines/operations/container-standards.md` |
 | AI workflow, model escalation tiers | If installed: `docs/guidelines/operations/ai-workflow.md` |
+| Product planning, PRDs, user stories, ACs | If installed: `docs/pm/SKILL.md` |
+| Codebase knowledge graph, GraphRAG, relationships | If installed: `skills/graphify/SKILL.md` or check `graphify-out/graph.json` |
 | Building any UI component or screen | If installed: `src/design/SKILL.md` or `design/SKILL.md` |
