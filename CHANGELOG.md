@@ -2,6 +2,12 @@
 
 ## 1.3.x
 
+### 1.3.6
+- Add **AI Search & Technical SEO Skill (`seo/SKILL.md` -> `docs/seo/SKILL.md`)**:
+  - 20-point playbook covering AI crawler access (`robots.txt` for `OAI-SearchBot`, `PerplexityBot`, `Claude-Web`), WAF/CDN bot verification, XML sitemaps, `llms.txt`, IndexNow, Schema.org JSON-LD (`Organization`, `Article`, `Person`), entity signals, SSR/JS rendering, semantic HTML, Core Web Vitals, content clusters, FAQ answer blocks, E-E-A-T credentials, and AI referral tracking.
+  - Added `seo` (plus aliases `aeo`, `geo`) to the interactive setup wizard, `--simple` menu, and direct CLI subcommands (`npx aayushus-skills seo`).
+  - Wired task routing in `CLAUDE.md` and `rules.md`.
+
 ### 1.3.5
 - Add **Graphify Knowledge Graph & GraphRAG** integration:
   - Scaffolds `skills/graphify/SKILL.md` for autonomous codebase architecture exploration, Louvain community detection, and GraphRAG.

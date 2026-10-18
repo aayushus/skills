@@ -95,6 +95,7 @@
 | Docker Compose, container standards | If installed: `docs/guidelines/operations/container-standards.md` |
 | AI workflow, model escalation tiers, context discipline | If installed: `docs/guidelines/operations/ai-workflow.md` |
 | Product planning, PRDs, user stories, acceptance criteria | If installed: `docs/pm/SKILL.md` |
+| Technical SEO, AI crawler access (`robots.txt`, `llms.txt`), Schema.org JSON-LD, GEO/AEO | If installed: `docs/seo/SKILL.md` |
 | Codebase knowledge graph, GraphRAG, file relationships | If installed: `skills/graphify/SKILL.md` or check `graphify-out/graph.json` |
 | Any UI work | If installed: `src/design/SKILL.md` or `design/SKILL.md`; otherwise use the existing project UI system |
 

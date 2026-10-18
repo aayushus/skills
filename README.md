@@ -52,6 +52,7 @@ Instead of manually copy-pasting markdown files and prompts across repos, `aayus
 
 - **Agent Orchestrator**: Synchronizes Claude, Cursor, Antigravity, Devin, Codex, and Copilot around the same mental model and project stack.
 - **Product Management (`docs/pm/`)**: Enforces "Why before Code" with PRD templates, binary acceptance criteria, AI feature specs (model tiering, latency budgets, fallback UX), technical spikes, and vertical slicing.
+- **AI Search & Technical SEO (`docs/seo/`)**: 20-point SEO / AEO / GEO playbook covering AI crawler access (`robots.txt`, WAF rules, `llms.txt`), IndexNow, Schema.org JSON-LD (`Organization`, `Article`, `Person`), entity signals, SSR/JS rendering, semantic HTML, Core Web Vitals, topical clusters, and AI citation tracking.
 - **Prism Design System (`src/design/` or `design/`)**: Zero-decision design language with tokens, pre-built React components, and strict AI provenance rules (Prism glyph + purple/pink gradient).
 - **Modular Engineering Guidelines (`docs/guidelines/`)**: 18 atomic specifications across Architecture (zero-downtime DB migrations, queues), Security (auth, OWASP Top 10 for LLMs, PII scrubbing), API contracts, Testing (pyramid, Playwright, LLM-as-a-judge), Quality (strict TS, p95 budgets), and Operations (SEV 1–4, PR sizing <300 lines).
 - **Graphify (`skills/graphify/` + CLI Tool)**: Automatically installs the `graphify` CLI tool (via `uv`/`pip`) and scaffolds the skill to turn any codebase into an interactive knowledge graph with community detection, GraphRAG JSON, and MCP stdio server.
@@ -70,6 +71,7 @@ Instead of manually copy-pasting markdown files and prompts across repos, `aayus
 | **GitHub Copilot Rules** | `.github/copilot-instructions.md` | project root |
 | **Prism Design System** | tokens, components CSS/TSX, 11 pattern specs, AI surfaces | `src/design/` or `design/` |
 | **Product Management Skill** | PRD templates, user stories, binary ACs, AI feature scoping, technical spikes | `docs/pm/SKILL.md` |
+| **AI Search & Technical SEO Skill** | 20-point SEO/AEO/GEO playbook (`robots.txt`, `llms.txt`, Schema.org, IndexNow, CWV) | `docs/seo/SKILL.md` |
 | **Graphify Knowledge Graph** | Graphify CLI tool + skill for codebase navigation & GraphRAG | `skills/graphify/SKILL.md` + System CLI |
 | **All Engineering Guidelines** | Complete 6-domain playbook (18 atomic specs + master skill & index) | `docs/guidelines/` |
 | ↳ *Architecture* | Service topology, database schema & tenancy, zero-downtime migrations, queues | `docs/guidelines/architecture/` |
@@ -99,9 +101,10 @@ You can install only what you need, either as full packages or atomic domain pac
 # Everything
 npx --yes aayushus-skills all
 
-# Design, PM & Graphify
+# Design, PM, SEO & Graphify
 npx --yes aayushus-skills design        # Prism Design System
 npx --yes aayushus-skills pm            # Product Management Skill
+npx --yes aayushus-skills seo           # AI Search & Technical SEO Skill (also: aeo, geo)
 npx --yes aayushus-skills graphify      # Graphify CLI tool + Skill
 
 # Engineering Guidelines (All or by domain)

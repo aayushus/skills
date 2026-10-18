@@ -154,6 +154,13 @@ const extraOpts = [
     dest:  'docs/pm/',
   },
   {
+    value: 'seo',
+    label: 'AI Search & Technical SEO Skill (SEO / AEO / GEO)',
+    desc1: '20-point playbook for AI crawlers (robots.txt, llms.txt), Schema.org JSON-LD,',
+    desc2: 'IndexNow, semantic HTML, CWV, entity signals, topical clusters & AI citations.',
+    dest:  'docs/seo/',
+  },
+  {
     value: 'graphify',
     label: 'Graphify (Knowledge Graph & GraphRAG)',
     desc1: 'Turns your repo into an interactive knowledge graph, GraphRAG JSON, and MCP server.',
@@ -238,6 +245,7 @@ Usage:
   npx --yes aayushus-skills all           Install everything directly
   npx --yes aayushus-skills design        Install Prism Design System only
   npx --yes aayushus-skills pm            Install Product Management Skill only
+  npx --yes aayushus-skills seo           Install AI Search & Technical SEO Skill only
   npx --yes aayushus-skills graphify      Install Graphify CLI tool + Skill only
   npx --yes aayushus-skills guidelines    Install All Engineering Guidelines
   npx --yes aayushus-skills architecture  Install Architecture Guidelines only
@@ -617,6 +625,9 @@ function buildFileList() {
   if (state.extras.has('pm')) {
     files.push({ label: 'docs/pm/SKILL.md', dest: path.join(targetRoot, 'docs', 'pm', 'SKILL.md') });
   }
+  if (state.extras.has('seo')) {
+    files.push({ label: 'docs/seo/SKILL.md', dest: path.join(targetRoot, 'docs', 'seo', 'SKILL.md') });
+  }
   if (state.extras.has('graphify')) {
     files.push({ label: 'skills/graphify/SKILL.md', dest: path.join(targetRoot, 'skills', 'graphify', 'SKILL.md'), note: 'also installs graphify CLI tool' });
   }
@@ -839,6 +850,18 @@ function runWizardInstallation() {
     }
   }
 
+  if (state.extras.has('seo')) {
+    const src  = path.join(pkgRoot, 'seo', 'SKILL.md');
+    const dest = path.join(targetRoot, 'docs', 'seo', 'SKILL.md');
+    console.log(`${s.blue}  Installing AI Search & Technical SEO Skill...${s.reset}`);
+    if (fs.existsSync(src)) {
+      writeFile(src, dest);
+      if (!isDryRun) console.log(`${s.green}  ✓ Installed to docs/seo/SKILL.md${s.reset}`);
+    } else {
+      console.log(`${s.red}  ✗ Source SEO skill not found.${s.reset}`);
+    }
+  }
+
   if (state.extras.has('graphify')) {
     const src  = path.join(pkgRoot, 'graphify', 'SKILL.md');
     const dest = path.join(targetRoot, 'skills', 'graphify', 'SKILL.md');
@@ -878,6 +901,7 @@ const simpleOptions = [
   { name: 'GitHub Copilot Rules (.github/copilot-instructions.md)',   value: 'copilot',            checked: true  },
   { name: 'Prism Design System (tokens, components CSS/TSX)',      value: 'design',             checked: false },
   { name: 'Product Management Skill (PRDs, user stories, ACs)',     value: 'pm',                 checked: false },
+  { name: 'AI Search & Technical SEO Skill (SEO / AEO / GEO)',     value: 'seo',                checked: false },
   { name: 'Graphify (Knowledge Graph CLI tool + Skill)',           value: 'graphify',           checked: false },
   { name: 'All Engineering Guidelines (6 domains, 18 docs)',       value: 'guidelines',         checked: false },
   { name: 'Architecture Guidelines (topology, DB, tenancy, async)', value: 'guidelines:arch',    checked: false },
@@ -991,6 +1015,14 @@ function runSimpleInstallation() {
     else console.log(`${s.red}  ✗ Source PM skill not found.${s.reset}`);
   }
 
+  if (selected.includes('seo')) {
+    const src  = path.join(pkgRoot, 'seo', 'SKILL.md');
+    const dest = path.join(targetRoot, 'docs', 'seo', 'SKILL.md');
+    console.log(`${s.blue} Installing AI Search & Technical SEO Skill...${s.reset}`);
+    if (fs.existsSync(src)) { writeFile(src, dest); if (!isDryRun) console.log(`${s.green}  ✓ Copied to docs/seo/SKILL.md${s.reset}`); }
+    else console.log(`${s.red}  ✗ Source SEO skill not found.${s.reset}`);
+  }
+
   if (selected.includes('graphify')) {
     const src  = path.join(pkgRoot, 'graphify', 'SKILL.md');
     const dest = path.join(targetRoot, 'skills', 'graphify', 'SKILL.md');
@@ -1022,6 +1054,9 @@ const argMap = {
   copilot: 'copilot',
   design: 'design',
   pm: 'pm',
+  seo: 'seo',
+  aeo: 'seo',
+  geo: 'seo',
   graphify: 'graphify',
   guidelines: 'guidelines',
   architecture: 'guidelines:arch',
@@ -1050,7 +1085,7 @@ if (hasDirectCmd) {
 // ─── Non-interactive (CI/pipe) ────────────────────────────────────────────────
 if (!process.stdin.isTTY) {
   console.error(`${s.red}Non-interactive environment detected, but no direct install command was provided.${s.reset}`);
-  console.error(`${s.dim}Use a subcommand such as "all", "design", "guidelines", "pm", "claude", "codex", or "copilot".${s.reset}`);
+  console.error(`${s.dim}Use a subcommand such as "all", "design", "guidelines", "pm", "seo", "graphify", "claude", "codex", or "copilot".${s.reset}`);
   printUsage();
   process.exit(1);
 }
